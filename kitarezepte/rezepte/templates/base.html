@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="de" class="no-js">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>{% block title %} Kita-Rezepte {% endblock title %}</title>
+    <meta name="description" content="Planung von Menüs in Kitas">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="{% static 'vendor/bootstrap-4.1.2-dist/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'rezepte/css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'rezepte/css/print.css' %}" media="print" />
+    {% block extrahead %}{% endblock extrahead %}
+  </head>
+  <body>
+    <div class="container">
+    {% block navigation %} {% endblock navigation %}
+    {% block content %} {% endblock content %}
+    </div> <!-- /.container -->
+
+    {% block extracontent %}
+    {% endblock extracontent %}
+
+    <script src="{% static 'vendor/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap-4.1.2-dist/js/bootstrap.js' %}"></script>
+    {% block extrascripts %}
+    {% endblock extrascripts %}
+  </body>
+</html>

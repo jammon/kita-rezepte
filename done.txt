@@ -1,0 +1,2 @@
+x 2019-03-25 Frau Schröder anrufen 02223 703-41
+x 2019-03-25 Models nach Django portieren

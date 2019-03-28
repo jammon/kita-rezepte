@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block extrahead %}
+  <meta name="robots" content="NONE,NOARCHIVE" />
+{% endblock extrahead %}
+{% block content %}
+
+<div class="row">
+  <div class="col-md-8">
+<h2>Anmelden</h2>
+{% if form.errors %}
+<p class="bg-warning">Benutzername und Passwort passen nicht. Bitte versuchen Sie es noch mal.</p>
+{% endif %}
+
+{% if next %}
+  <p class="bg-warning">
+    {% if user.is_authenticated %}
+    Ihr Benutzerkonto hat keine Berechtigung für diese Seite. Bitte melden Sie sich mit einer Benutzerkennung an, die den nötigen Zugang hat.
+    {% else %}
+    Bitte anmelden, um diese Seite zu sehen.
+    {% endif %}
+  </p>
+{% endif %}
+
+{% include "rezepte/login-form.html" %}
+
+{# Assumes you setup the password_reset view in your URLconf #}
+<p><a href="{% url 'password_reset' %}">Passwort vergessen?</a></p>
+
+  </div>
+</div>
+{% endblock %}

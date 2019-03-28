@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+  <div class="row">
+    <div class="col">
+      <h1>Planung für {{ month_name }} {{ year}} </h1>
+      <table class="table">
+        <th>Tag</th>
+        <th>es kocht…</th>
+        <th>Vorspeise</th>
+        <th>Hauptgang</th>
+        <th>Nachtisch</th>
+      {% for m in days  %}
+        <tr>
+          <td>{{ forloop.counter }}.{{ month }}.{{ year }}</td>
+          {% if m is None %}
+            <td>--</td>
+            <td>nicht geplant</td>
+            <td>nicht geplant</td>
+            <td>nicht geplant</td>
+          {% else %}
+            <td>{{ m.koch|default_if_none:"--" }}</td>
+            <td class="vorspeise" id="vorspeise_{{ forloop.counter }}">
+              {{ m.vorspeise|default_if_none:"nicht geplant" }}
+            </td>
+            <td class="hauptgang" id="hauptgang_{{ forloop.counter }}">
+              {{ m.hauptgang|default_if_none:"nicht geplant" }}
+            </td>
+            <td class="nachtisch" id="nachtisch_{{ forloop.counter }}">
+              {{ m.nachtisch|default_if_none:"nicht geplant" }}
+            </td>
+          {% endif %}
+        </tr>
+      {% endfor %}
+      </table>
+    </div>
+  </div>
+{% endblock content %}
+
+{% block extrascripts %}
+<script>
+  var rezepte = rezepte || {};
+  rezepte.days = {{ days_js|safe }};
+  rezepte.rezepte = {{ rezepte|safe }};
+  rezepte.month = {{ month }} - 1;
+  rezepte.year = {{ year }};
+</script>
+{% endblock extrascripts %}

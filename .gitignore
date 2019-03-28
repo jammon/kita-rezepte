@@ -1,0 +1,6 @@
+*.sqlite3
+.DS_Store
+content/*
+venv/*
+pip.log
+*.pyc

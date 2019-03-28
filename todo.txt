@@ -1,0 +1,2 @@
+Welche Views brauche ich?
+list_filter auf Kategorien spezifisch für Model machen

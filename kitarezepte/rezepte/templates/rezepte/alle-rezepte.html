@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+  <div class="row">
+    <div class="col">
+      <h1>Rezepte</h1>
+      <table>
+      {% for r in recipes  %}
+        <tr>
+          <td><a href="{{ r.slug }}">{{ r.titel }}</a></td>
+          <td>{% if user.is_authenticated %}{{ r.preisToStr|safe }}{% endif %}</td>
+        </tr>
+      {% endfor %}
+      </table>
+    </div>
+  </div>
+{% endblock content %}

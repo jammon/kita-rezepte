@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+  <div class="row">
+    <div class="col">
+      <h1>Zutaten</h1>
+      <table>
+        <tr>
+          <th>Name</th>
+          <th>Einheit</th>
+          <th>Preis</th>
+          <th>Menge</th>
+          <th>Kategorie</th>
+        </tr>
+      {% for z in zutaten  %}
+        <tr>
+          <td><a href="{{ z.id }}">{{ z.name }}</a></td>
+          <td>{{ z.einheit }}</td>
+          <td>{{ z.preisInEuro }} </td>
+          <td>{{ z.menge_pro_einheit }} {{ z.masseinheit }} </td>
+          <td>{{ z.kategorie }} </td>
+        </tr>
+      {% endfor %}
+      </table>
+    </div>
+  </div>
+{% endblock content %}

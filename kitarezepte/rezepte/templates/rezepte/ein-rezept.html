@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="row">
+    <div class="col">
+      <h1>{{ recipe.titel }}</h1>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col col-sm-4 col-md-3">
+      <h2>Zutaten</h2>
+      {% for rz in recipe.zutaten.all  %}
+        <p>{{ rz }}</p>
+      {% endfor %}
+    </div>
+    <div class="col col-sm-8 col-md-9">
+      <h2>Zubereitung</h2>
+      <p>{{ recipe.zubereitung }}</p>
+      <h2>Anmerkungen</h2>
+      <p>{{ recipe.anmerkungen }}</p>
+    </div>
+  </div>
+{% endblock content %}
