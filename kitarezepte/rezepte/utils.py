@@ -1,34 +1,25 @@
 # coding: utf-8
 from datetime import date
-from django.shortcuts import get_object_or_404, get_list_or_404
+from django.contrib.sites.shortcuts import get_current_site
 from django.http import Http404
+from django.shortcuts import get_object_or_404, get_list_or_404
 
 
-def _client_kwargs(client_id='', client_slug='', **kwargs):
-    _kwargs = kwargs.copy()
-    if client_id:
-        _kwargs['client__id'] = client_id
-    elif client_slug:
-        _kwargs['client__slug'] = client_slug
-    else:
-        raise Http404("Either client_id or client_slug have to be given")
-    return _kwargs
+def get_client(request):
+    current_site = get_current_site(request)
+    client = current_site.domain.split('.')[0]
+    if client in ('localhost', '127'):
+        return 'test'
+    return client
 
-def get_for_client(
-        klass, client_id='', client_slug='', **kwargs):
-    return get_object_or_404(
-        klass, _client_kwargs(client_id, client_slug, **kwargs))
+def get_for_client(klass, client_slug='', **kwargs):
+    return get_object_or_404(klass, client__slug=client_slug, **kwargs)
 
-def get_list_for_client(
-        klass, client_id='', client_slug='', **kwargs):
-    return get_list_or_404(
-        klass, _client_kwargs(client_id, client_slug, **kwargs))
+def get_list_for_client(klass, client_slug='', **kwargs):
+    return get_list_or_404(klass, client__slug=client_slug, **kwargs)
 
-
-def str2date(s):
-    res = s.split('.')
-    res.reverse()
-    return date(*[int(n) for n in res])
+def day_fromJson(day):
+    return date(int(day[0:4]), int(day[5:7]), int(day[8:10]))
 
 def days_in_month(year, month):
     """ number of days in a given month

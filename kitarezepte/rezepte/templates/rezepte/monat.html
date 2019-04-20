@@ -4,45 +4,80 @@
   <div class="row">
     <div class="col">
       <h1>Planung für {{ month_name }} {{ year}} </h1>
-      <table class="table">
+      <table class="table" id="monat_table">
         <th>Tag</th>
-        <th>es kocht…</th>
         <th>Vorspeise</th>
         <th>Hauptgang</th>
         <th>Nachtisch</th>
-      {% for m in days  %}
-        <tr>
-          <td>{{ forloop.counter }}.{{ month }}.{{ year }}</td>
-          {% if m is None %}
-            <td>--</td>
-            <td>nicht geplant</td>
-            <td>nicht geplant</td>
-            <td>nicht geplant</td>
-          {% else %}
-            <td>{{ m.koch|default_if_none:"--" }}</td>
-            <td class="vorspeise" id="vorspeise_{{ forloop.counter }}">
-              {{ m.vorspeise|default_if_none:"nicht geplant" }}
-            </td>
-            <td class="hauptgang" id="hauptgang_{{ forloop.counter }}">
-              {{ m.hauptgang|default_if_none:"nicht geplant" }}
-            </td>
-            <td class="nachtisch" id="nachtisch_{{ forloop.counter }}">
-              {{ m.nachtisch|default_if_none:"nicht geplant" }}
-            </td>
-          {% endif %}
-        </tr>
-      {% endfor %}
       </table>
     </div>
   </div>
+{% comment "ChangePlanungView" %}{% endcomment %}
+<div class="modal fade" id="gangModal" tabindex="-1" role="dialog" 
+     aria-labelledby="gangModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="gangModalLabel">Planung für …</h5>
+        <button type="button" class="close" data-dismiss="modal"
+                aria-label="Abbrechen">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col col-md-8">
+              <label for="cpv-rezept">Gericht</label><br>
+              <input type="text" id="cpv-rezept" name="cpv-rezept" required
+                     size="30"><br>
+              <label for="cpv-rezepte">Rezepte</label><br>
+              <select name="cpv-rezepte" id="cpv-rezepte" size="3">
+                <option value="1">Reis</option>
+                <option value="2">Grießschnittchen</option>
+                <option value="3">Eintopf</option>
+                <option value="4">Kartoffelsuppe</option>
+              </select>
+            </div>
+            <div class="col col-md-4">
+              <label for="cpv-kategorien">Kategorien</label><br>
+              <select name="cpv-kategorien" id="cpv-kategorien" size="5">
+                <option value="Vorspeise">Vorspeise</option>
+                <option value="Hauptgang">Hauptgang</option>
+                <option value="Kartoffelgericht">Kartoffelgericht</option>
+                <option value="Süßspeise">Süßspeise</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          Abbrechen</button>
+        <button type="submit" class="btn btn-primary submit">Speichern</button>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock content %}
 
 {% block extrascripts %}
+<script src="{% static 'vendor/jquery-ui-1.12.1.custom/jquery-ui.js' %}"></script>
+<script src="{% static 'vendor/underscore.js' %}"></script>
+<script src="{% static 'vendor/backbone.js' %}"></script>
+<script src="{% static 'rezepte/js/models.js' %}"></script>
+<script src="{% static 'rezepte/js/views.js' %}"></script>
+<script src="{% static 'rezepte/js/changeviews.js' %}"></script>
 <script>
-  var rezepte = rezepte || {};
-  rezepte.days = {{ days_js|safe }};
-  rezepte.rezepte = {{ rezepte|safe }};
-  rezepte.month = {{ month }} - 1;
-  rezepte.year = {{ year }};
+  models.initialize({
+    'planungen': {{ planungen_js|safe }},
+    'rezepte': {{ rezepte|safe }},
+    'month': {{ month }},
+    'year': {{ year }},
+    'gangfolge': '{{ gangfolge }}',
+    'days_in_month': {{ days_in_month }},
+  });
+  let table = $("table#monat_table");
+  (new views.MonatView({el: table[0]})).render();
 </script>
 {% endblock extrascripts %}

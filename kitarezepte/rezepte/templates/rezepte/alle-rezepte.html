@@ -10,6 +10,10 @@
           <td><a href="{{ r.slug }}">{{ r.titel }}</a></td>
           <td>{% if user.is_authenticated %}{{ r.preisToStr|safe }}{% endif %}</td>
         </tr>
+      {% empty %}
+        <tr>
+          <td>Es sind noch keine Rezepte eingegeben.</td>
+        </tr>
       {% endfor %}
       </table>
     </div>

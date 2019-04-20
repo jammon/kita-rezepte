@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
 
-from .models import Zutat, Rezept, RezeptZutat, Menue, Gang, Client
+from .models import Zutat, Rezept, RezeptZutat, GangPlan, Client, Editor
 
 
 class KategorienMixin(object):
@@ -10,7 +10,8 @@ class KategorienMixin(object):
         return super().get_queryset(request).prefetch_related('kategorie')
 
     def kategorien(self, obj):
-        return u", ".join(o.name for o in obj.kategorie.all())
+        return ", ".join(o.name for o in obj.kategorie.all())
+
 
 class ZutatAdmin(admin.ModelAdmin):
     list_display = ('name', 'kategorie')
@@ -27,9 +28,16 @@ class RezeptAdmin(admin.ModelAdmin, KategorienMixin):
     list_filter = ('kategorie', )
 
 
+class GangPlanAdmin(admin.ModelAdmin):
+    ordering = ('datum',)
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).prefetch_related('rezept')
+
+
 admin.site.register(Zutat, ZutatAdmin)
 admin.site.register(Rezept, RezeptAdmin)
 admin.site.register(RezeptZutat)
-admin.site.register(Menue)
-admin.site.register(Gang)
+admin.site.register(GangPlan, GangPlanAdmin)
 admin.site.register(Client)
+admin.site.register(Editor)

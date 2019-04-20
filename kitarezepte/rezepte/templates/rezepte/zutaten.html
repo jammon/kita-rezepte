@@ -2,23 +2,27 @@
 {% load static %}
 {% block content %}
   <div class="row">
-    <div class="col">
+    <div class="col col-md-8 col-sm-10">
       <h1>Zutaten</h1>
-      <table>
+      <table class="table">
         <tr>
           <th>Name</th>
           <th>Einheit</th>
-          <th>Preis</th>
-          <th>Menge</th>
+          <th class="text-right">Preis</th>
+          <th class="text-right">Menge</th>
           <th>Kategorie</th>
         </tr>
       {% for z in zutaten  %}
         <tr>
           <td><a href="{{ z.id }}">{{ z.name }}</a></td>
           <td>{{ z.einheit }}</td>
-          <td>{{ z.preisInEuro }} </td>
-          <td>{{ z.menge_pro_einheit }} {{ z.masseinheit }} </td>
+          <td class="text-right">{{ z.preisInEuro }} &euro;</td>
+          <td class="text-right">{{ z.menge_pro_einheit }} {{ z.masseinheit }} </td>
           <td>{{ z.kategorie }} </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td>Es sind noch keine Zutaten eingegeben.</td>
         </tr>
       {% endfor %}
       </table>

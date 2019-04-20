@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.test import TestCase
-from rezepte.models import Client, Zutat, Rezept, RezeptZutat, Menue
+from rezepte.models import Client, Zutat, Rezept, RezeptZutat
 
 REIS = dict(name="Reis", 
             client_id = 1,
@@ -88,22 +88,3 @@ class RezeptZutat_TestCase(TestCase):
         rz = RezeptZutat(zutat=eier, menge=3)
         self.assertEqual(str(rz), "3 Eier")
 
-
-class Menue_TestCase(TestCase):
-
-    def test_get_gang(self):
-        ms = Rezept.objects.create(titel="Möhren-Salat", **REZEPT)
-        menue = Menue(vorspeise=ms)
-        self.assertEqual(menue.get_gang(0), ms)
-        menue2 = Menue(nachtisch=ms)
-        self.assertEqual(menue2.get_gang(2), ms)
-
-    def test_get_gang_titel(self):
-        ms = Rezept.objects.create(titel="Möhren-Salat", **REZEPT)
-        reis = Zutat.objects.create(**REIS)
-        rz = RezeptZutat.objects.create(
-            zutat=reis, rezept=ms, menge=500, nummer=1)
-        menue = Menue(vorspeise=ms)
-        self.assertEqual(menue.get_gang_titel(0), "Möhren-Salat")
-        self.assertEqual(menue.get_gang_titel(0, mit_preis=True),
-                         "Möhren-Salat 0,94 €")

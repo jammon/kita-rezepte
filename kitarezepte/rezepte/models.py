@@ -34,26 +34,14 @@ ZUTATENKATEGORIEN = (
     ("Sonst.", "Sonstiges"),
 )
 
-class Gang(models.Model):
-    """ Ein Gang, der geplant werden kann. 
-
-    Z.B. Frühstück, Vorspeise etc. Wird nötig für weitere Kunden.
-    """
-    name = models.CharField(max_length=25)
-
-    class Meta:
-        verbose_name = "Gang"
-        verbose_name_plural = "Gänge"
-
-    def __str__(self):
-        return self.name
-    
 class Client(models.Model):
     """ Eine Kita, für die geplant wird """
     name = models.CharField(max_length=25)
-    slug = models.SlugField(max_length=30, blank=True,
+    slug = models.SlugField(max_length=30, blank=True, unique=True,
                             help_text='wird i.d.R. aus titel berechnet')
-    gaenge = models.ManyToManyField(Gang)
+    gaenge = models.CharField(
+        max_length=50, help_text='z.B. "Vorspeise Hauptgang Nachtisch"',
+        default="Vorspeise Hauptgang Nachtisch")
 
     class Meta:
         verbose_name = "Mandant"
@@ -61,12 +49,21 @@ class Client(models.Model):
 
     def __str__(self):
         return self.name
-    
+
+    def save(self, *args, **kwargs):
+        self.slug = slug = slugify(self.name, allow_unicode=True)
+        super().save(*args, **kwargs)
+
 
 class Editor(models.Model):
     user = models.OneToOneField(
         User, related_name='editor', on_delete=models.CASCADE)
-    clients = models.ManyToManyField(Client)
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return "{} ist Editor für {}".format(
+            self.user.get_full_name() or self.user.get_username(),
+            self.client.name)
 
 
 class Zutat(models.Model):
@@ -138,7 +135,7 @@ class Rezept(models.Model):
     # zutaten = models.ManyToManyField(
     #     Zutat, through='RezeptZutat', related_name='rezepte')
     zubereitung = models.TextField()
-    anmerkungen = models.TextField()
+    anmerkungen = models.TextField(null=True, blank=True)
     eingegeben_von = models.ForeignKey(User, on_delete=models.SET_NULL,
                                        null=True, blank=True)
     ist_vorspeise = models.BooleanField(help_text="kann als Vorspeise dienen")
@@ -241,46 +238,20 @@ class RezeptZutat(models.Model):
         return cent2euro(self.preis()) + " €"
 
 
-class Menue(models.Model):
-    """ Speichert drei Rezepte (Vorspeise, Hauptgang und Nachtisch),
-    einen Koch und eine Bewertung
-
-    Zusätzlich werden Listen der Gänge, Titel der Gänge und
-    Preise der Gänge gespeichert.
-    Die Änderungsoperationen sollen immer auf den einzelnen
-    Rezept-Properties erfolgen.
+class GangPlan(models.Model):
+    """ Speichert ein Rezept mit Gang (Vorspeise, Hauptgang und Nachtisch)
+    und Datum
     """
     client = models.ForeignKey(
         Client, on_delete=models.CASCADE, related_name="menues")
-    datum = models.DateField(null=True)
-    koch = models.CharField(max_length=20, null=True, blank=True)
-    vorspeise = models.ForeignKey(
-        Rezept, on_delete=models.SET_NULL, null=True, blank=True,
-        related_name="vorspeise")
-    hauptgang = models.ForeignKey(
-        Rezept, on_delete=models.SET_NULL, null=True, blank=True,
-        related_name="hauptgang")
-    nachtisch = models.ForeignKey(
-        Rezept, on_delete=models.SET_NULL, null=True, blank=True,
-        related_name="nachtisch")
-    geschlossen = models.BooleanField(default=False)
+    datum = models.DateField()
+    rezept = models.ForeignKey(Rezept, on_delete=models.CASCADE)
+    gang = models.CharField(max_length=10)
+
 
     class Meta:
-        verbose_name = "Menü"
-        verbose_name_plural = "Menüs"
+        verbose_name = "Gangplan"
+        verbose_name_plural = "Gangpläne"
 
-    def get_gang(self, nr):
-        return getattr(self, ('vorspeise', 'hauptgang', 'nachtisch')[nr])
-
-    def get_gang_titel(self, nr):
-        gang = self.get_gang(nr)
-        return gang.titel if gang else ''
-
-    def get_gang_titel(self, nr, mit_preis=False):
-        gang = self.get_gang(nr)
-        if gang:
-            if mit_preis:
-                return gang.titel + " " + gang.preisToStr()
-            return gang.titel
-        return ''
-
+    def __str__(self):
+        return "Am {0.datum} als {0.gang} {0.rezept.titel}".format(self)

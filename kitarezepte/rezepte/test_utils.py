@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 from datetime import date
 from django.test import TestCase
-from rezepte.utils import str2date, prettyFloat, days_in_month
+from rezepte.utils import (day_fromJson, prettyFloat, days_in_month,
+                           )
 
 
-class Str2dateTestCase(TestCase):
+class Day_fromJsonTestCase(TestCase):
  
-    def test_str2date(self):
+    def test_day_fromJson(self):
         """ Strings are translated to Dates """
-        self.assertEqual(str2date("22.3.2019"), date(2019, 3, 22))
-        self.assertEqual(str2date("22.03.2019"), date(2019, 3, 22))
-        self.assertEqual(str2date("1.1.2019"), date(2019, 1, 1))
-        self.assertEqual(str2date("31.12.2019"), date(2019, 12, 31))
+        self.assertEqual(day_fromJson("2019-03-22"), date(2019, 3, 22))
+        self.assertEqual(day_fromJson("2019-01-01"), date(2019, 1, 1))
+        self.assertEqual(day_fromJson("2019-12-31"), date(2019, 12, 31))
 
 
 class PrettyFloatTestCase(TestCase):
@@ -32,3 +32,5 @@ class Days_in_MonthTestCase(TestCase):
         self.assertEqual(days_in_month(2019, 11), 30)
         self.assertEqual(days_in_month(2019, 12), 31)
         self.assertEqual(days_in_month(2020, 2), 29)
+
+

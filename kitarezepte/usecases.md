@@ -29,3 +29,12 @@
 
 ## Todos
 - evtl. Gänge in Menue als m2m realisieren
+
+## Mechanismen
+### Clients
+- Jeder Client hat eine Domain ("fooclient.kita-rezepte.de").
+- Der Client wird durch seinen Slug identifiziert ("fooclient").
+- Angemeldete Nutzer gehören zu einem Client.
+- Der Client, für den der Nutzer angemeldet ist, ist in der Session.
+- Auch angemeldete Nutzer können die Rezepte etc. eines anderen Clients betrachten. Dann unterscheidet sich der Client in der Session von dem Client der Domain.
+    + In einer späteren Ausbaustufe könnten sie für unterschiedliche Clients berechtigt sein, sind aber immer für einen Client angemeldet. Dieser ist in der Session.

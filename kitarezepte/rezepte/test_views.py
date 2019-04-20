@@ -1,24 +1,41 @@
 # -*- coding: utf-8 -*-
+from django.contrib.auth.models import User
+from django.http import Http404
 from django.test import TestCase
-from rezepte.views import get_client_query_args, menu_array
-from rezepte.models import Menue, Rezept
+from rezepte.models import Rezept, Client, Editor
+# from rezepte.views import 
 
 
-class QueryArgsTestCase(TestCase):
- 
-    def test_get_client_query_args(self):
-        """ Strings are translated to Dates """
-        self.assertEqual(get_client_query_args(client_id=5),
-                         {'client__id': 5})
-        self.assertEqual(get_client_query_args(client_slug='test'),
-                         {'client__slug': 'test'})
-        self.assertEqual(
-            get_client_query_args(client_id=5, client_slug='test'),
-            {'client__id': 5, 'client__slug': 'test'})
+class LoginTestcase(TestCase):
+    """Test login view"""
+
+    def test_get(self):
+        response = self.client.get('/login/')
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'rezepte/login.html')
+
+    def setup_user(self):
+        user = User.objects.create_user('test', 'test@test.tld', 'test')
+        client = Client.objects.create(name='Test-Kita')
+        Editor.objects.create(user=user, client=client)
+
+    def test_post(self):
+        self.setup_user()
+        response = self.client.post(
+            '/login/', {'username': 'test', 'password': 'test'})
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/test-kita/monat')
+        self.assertEqual(self.client.session['user_name'], 'test')
+        self.assertEqual(self.client.session['client_slug'], 'test-kita')
+
+    def test_post_wrong_data(self):
+        self.setup_user()
+        response = self.client.post(
+            '/login/', {'username': 'test', 'password': 'wrong'})
+        self.assertEqual(response.context['form'].is_valid(), False)
 
 
 REZEPT = dict(
-            client_id = 1,
             fuer_kinder = 20,
             fuer_erwachsene = 5,
             zubereitung = '',
@@ -28,15 +45,38 @@ REZEPT = dict(
             ist_nachtisch = False,
             kategorie = '')
 
-class MenueArrayTestCase(TestCase):
- 
-    def test_menu_array(self):
-        r1 = Rezept.objects.create(titel="Rezept 1", **REZEPT)
-        r2 = Rezept.objects.create(titel="Rezept 2", **REZEPT)
-        menue = Menue(vorspeise=r1, hauptgang=r2)
-        self.assertEqual(
-            menu_array(5, menue),
-            [5, [r1.id, "Rezept 1"], [r2.id, "Rezept 2"], [0, '']])
-        self.assertEqual(
-            menu_array(5, None),
-            [5, [0, ''], [0, ''], [0, '']])
+
+class RezepteTestcase(TestCase):
+    """Test rezepte view"""
+
+    def setUp(self):
+        client = Client.objects.create(name='Test-Kita')
+        self.rezept1 = Rezept.objects.create(
+            titel="Testrezept1", client=client, **REZEPT)
+        self.rezept2 = Rezept.objects.create(
+            titel="Testrezept2", client=client, **REZEPT)
+
+    def test_ein_rezept_id(self):
+        response = self.client.get('/test-kita/rezepte/' + str(self.rezept1.id))
+        self.assertTemplateUsed(response, 'rezepte/ein-rezept.html')
+        self.assertEqual(response.context['recipe'], self.rezept1)
+
+    def test_ein_rezept_slug(self):
+        response = self.client.get('/test-kita/rezepte/' + str(self.rezept1.slug))
+        self.assertTemplateUsed(response, 'rezepte/ein-rezept.html')
+        self.assertEqual(response.context['recipe'], self.rezept1)
+
+    def test_alle_rezepte(self):
+        response = self.client.get('/test-kita/rezepte/')
+        self.assertTemplateUsed(response, 'rezepte/alle-rezepte.html')
+        self.assertIn(self.rezept1, response.context['recipes'])
+        self.assertIn(self.rezept2, response.context['recipes'])
+
+    def test_anderer_client(self):
+        response = self.client.get('/andere-kita/rezepte/')
+        self.assertEqual(response.status_code, 404)
+        client = Client.objects.create(name='Andere Kita')
+        response = self.client.get('/{}/rezepte/'.format(client.slug))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'rezepte/alle-rezepte.html')
+        self.assertEqual(len(response.context['recipes']), 0)
