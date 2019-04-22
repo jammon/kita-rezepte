@@ -19,6 +19,7 @@ var ChangePlanungView = Backbone.View.extend({
         'input #cpv-kategorien': 'filter_rezepte',
         'input #cpv-rezept': 'filter_rezepte',
         'click .submit': 'submit',
+        'keydown': 'keyAction'
     },
     initialize: function(options) {
         views.dispatcher.on('edit_gang', this.edit_gang, this);
@@ -71,6 +72,25 @@ var ChangePlanungView = Backbone.View.extend({
             if (visible.length)
                 visible[0].selected = true;
         }
+    },
+    keyAction: function(e) {
+        let key = e.key;
+        if (key == "ArrowDown" || key == "Down") {
+            this.next_rezept(true, e);
+        } else if (key == "ArrowUp" || key == "Up") {
+            this.next_rezept(false, e);
+        }
+    },
+    next_rezept: function(forward, e) {
+        let selected = this.$("#cpv-rezepte>option:selected");
+        if (selected.length) {
+            let next = selected[forward ? 'next' : 'prev']();
+            if (next.length) next[0].selected = true;
+        } else {
+            let options = this.$("#cpv-rezepte>option");
+            options[forward ? 0 : options.length-1].selected = true;
+        }
+        e.preventDefault();
     },
     submit: function() {
         let rezept_id = this.$("#cpv-rezepte").val();
