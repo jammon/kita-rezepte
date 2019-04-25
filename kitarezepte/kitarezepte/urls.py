@@ -18,7 +18,7 @@ from django.conf.urls import url
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
-from rezepte import views
+from rezepte import views, ajax
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,4 +32,5 @@ urlpatterns = [
     url(r'(?P<client_slug>[a-z0-9_\-]+)/monat/(?P<year>[0-9]+)/(?P<month>[0-9]+)$',
         views.monat),
     url(r'(?P<client_slug>[a-z0-9_\-]+)/monat/?$', views.monat),
+    url(r'(?P<client_slug>[a-z0-9_\-]+)/ajax/set-gang/?$', ajax.set_gangplan),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

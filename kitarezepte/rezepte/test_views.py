@@ -2,7 +2,8 @@
 from django.contrib.auth.models import User
 from django.http import Http404
 from django.test import TestCase
-from rezepte.models import Rezept, Client, Editor
+from .models import Rezept, Client, Editor
+from .utils import TEST_REIS, TEST_REZEPT
 # from rezepte.views import 
 
 
@@ -35,26 +36,15 @@ class LoginTestcase(TestCase):
         self.assertEqual(response.context['form'].is_valid(), False)
 
 
-REZEPT = dict(
-            fuer_kinder = 20,
-            fuer_erwachsene = 5,
-            zubereitung = '',
-            anmerkungen = '',
-            ist_vorspeise = True,
-            ist_hauptgang = False,
-            ist_nachtisch = False,
-            kategorie = '')
-
-
 class RezepteTestcase(TestCase):
     """Test rezepte view"""
 
     def setUp(self):
         client = Client.objects.create(name='Test-Kita')
         self.rezept1 = Rezept.objects.create(
-            titel="Testrezept1", client=client, **REZEPT)
+            titel="Testrezept1", client=client, **TEST_REZEPT)
         self.rezept2 = Rezept.objects.create(
-            titel="Testrezept2", client=client, **REZEPT)
+            titel="Testrezept2", client=client, **TEST_REZEPT)
 
     def test_ein_rezept_id(self):
         response = self.client.get('/test-kita/rezepte/' + str(self.rezept1.id))
