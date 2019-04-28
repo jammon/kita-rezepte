@@ -10,14 +10,11 @@ var PlanungView = Backbone.View.extend({
     initialize: function(options) {
         this.className = this.model.get('gang');
         this.id = this.model.get('gang') + this.model.get('day');
+        this.listenTo(this.model, "change", this.render);
     },
     render: function() {
         const rezept = this.model.get('rezept');
-        if (rezept) {
-            this.$el.text(rezept.get('titel'));
-        } else {
-            this.$el.text('nicht geplant');
-        }
+        this.$el.text(rezept.get('titel'));
         return this;
     },
     edit_gang: function() {
@@ -34,12 +31,12 @@ var MonatView = Backbone.View.extend({
             models.data.gangfolge.forEach(function(g) {
                 var planung = models.planungen.findWhere({day: i, gang:g});
                 if (!planung) {
-                    let data = {
+                    planung = models.planungen.add({
                         day: i,
                         datum: [models.data.year, models.data.month, i],
                         gang: g,
-                    };
-                    planung = models.planungen.add(data);
+                        rezept: models.rezepte.get(-1),
+                    });
                 }
                 var pv = new PlanungView({model: planung});
                 row.append(pv.render().$el);

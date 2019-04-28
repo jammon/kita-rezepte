@@ -49,22 +49,25 @@ var ChangePlanungView = Backbone.View.extend({
             return $("<option>").val(kategorie).text(kategorie)
                                 .addClass('kategorie-option');
         }));
+        this.$(".error").empty();
         return this;
     },
     filter_rezepte: function(kategorie_changed) {
         let kat_string = this.$("#cpv-kategorien").val();
-        let kategorie = void 0;
+        let kategorie;
         if (kat_string && kat_string!=allerezepte_string)
             kategorie = models.kategorien[kat_string];
         let input = this.$("#cpv-rezept").val();
         let regex = new RegExp('.*' + input + '.*', 'i');
         let options = this.$("#cpv-rezepte").children();
+        // hide filtered options
         options.map(function() {
             $(this).toggleClass(
                 "hidden", 
                 !((!kategorie || kategorie.get(this.value)) &&
                   regex.test(this.text)));
         });
+        // if selection is hidden, select first option
         if (options.is(":selected.hidden")) {
             let visible = options.filter(function() {
                 return !$(this).hasClass("hidden");
@@ -96,7 +99,7 @@ var ChangePlanungView = Backbone.View.extend({
         let rezept_id = this.$("#cpv-rezepte").val();
         if (rezept_id===null || rezept_id===undefined)
             return;
-        alert(models.rezepte.get(rezept_id).get('titel') + "gewählt");
+        this.save_gang(rezept_id);
     },
     edit_gang: function(planung) {
         this.planung = planung;
@@ -104,9 +107,42 @@ var ChangePlanungView = Backbone.View.extend({
         this.rezepte = models.gangkategorien[this.gang_kategorie];
         this.render().$el.modal();
     },
+    save_gang: function(rezept_id) {
+        function error (jqXHR, textStatus, errorThrown) {
+            this.$(".error").text(errorThrown);
+        }
+        function success(data) {
+            this.planung.set('rezept', models.rezepte.get(data.rezept.id));
+            this.$el.modal('hide');
+        }
+        $.ajax({
+            method: "POST",
+            url: 'ajax/set-gang/', 
+            data: JSON.stringify({
+                rezept_id: rezept_id,
+                datum: date_str(this.planung.get('datum')),
+                gang: this.gang_kategorie,
+            }),
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            error: error,
+            success: success,
+            context: this,
+        });
+    },
+
 });
 var changeplanungview = new ChangePlanungView({el: $("#gangModal")});
 
+function date_str(date) {
+    function twodigits(nr) {
+        if (nr<10) 
+            return '0' + nr;
+        return '' + nr;
+    }
+    return date.getFullYear() + '-' + twodigits(date.getMonth()+1) + 
+           '-' + twodigits(date.getDate());
+}
 return {
     ChangePlanungView: ChangePlanungView,
 };

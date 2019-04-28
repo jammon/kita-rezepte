@@ -15,10 +15,11 @@ def set_gangplan(request, client_slug):
     if client_slug != request.session['client_slug']:
         return HttpResponse(status=403, reason="Falscher Client.")
     client = Client.objects.get(slug=client_slug)
+    data = json.loads(request.body)
     try:
-        rezept_id = request.POST['rezept_id']
-        datum = day_fromJson(request.POST['datum'])
-        gang = request.POST['gang']
+        rezept_id = data['rezept_id']
+        datum = day_fromJson(data['datum'])
+        gang = data['gang']
     except KeyError:
         return HttpResponse(status=422, reason="Fehlerhafte Anfrage.")
     try:

@@ -49,6 +49,9 @@
               </select>
             </div>
           </div>
+          <div class="row">
+            <div class="col bg-danger error"></div>
+          </div>
         </div>
       </div>
       <div class="modal-footer">
@@ -68,8 +71,9 @@
 <script src="{% static 'rezepte/js/models.js' %}"></script>
 <script src="{% static 'rezepte/js/views.js' %}"></script>
 <script src="{% static 'rezepte/js/changeviews.js' %}"></script>
+<script src="{% static 'rezepte/js/main.js' %}"></script>
 <script>
-  models.initialize({
+  main.initialize({
     'planungen': {{ planungen_js|safe }},
     'rezepte': {{ rezepte|safe }},
     'month': {{ month }},

@@ -54,19 +54,7 @@ var planungen = new Planungen();
 var rezepte = new Rezepte();
 
 
-function initialize(initdata) {
-    _.extend(data, {
-        gangfolge: initdata.gangfolge.split(' '),
-        days_in_month: initdata.days_in_month,
-        year: initdata.year,
-        month: initdata.month,
-    });
-    rezepte.reset(initdata.rezepte);
-    planungen.reset(initdata.planungen);
-}
-
 return {
-    initialize: initialize,
     planungen: planungen,
     rezepte: rezepte,
     kategorien: kategorien,
