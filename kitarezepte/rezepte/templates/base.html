@@ -15,7 +15,15 @@
   </head>
   <body>
     <div class="container">
-    {% block navigation %} {% endblock navigation %}
+    {% block navigation %}
+    <nav class="nav">
+      <a class="nav-link" href="/">Startseite</a>
+      <a class="nav-link" href="/rezepte">Rezepte</a>
+      <a class="nav-link" href="/zutaten">Zutaten</a>
+      <a class="nav-link" href="/monat">Monatsplan</a>
+      <a class="nav-link" href="#">Einkaufsliste</a>
+    </nav>
+    {% endblock navigation %}
     {% block content %} {% endblock content %}
     </div> <!-- /.container -->
 

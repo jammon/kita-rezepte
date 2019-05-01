@@ -58,7 +58,7 @@ class RezepteTestcase(TestCase):
 
     def test_alle_rezepte(self):
         response = self.client.get('/rezepte/')
-        self.assertTemplateUsed(response, 'rezepte/alle-rezepte.html')
+        self.assertTemplateUsed(response, 'rezepte/rezepte.html')
         self.assertIn(self.rezept1, response.context['recipes'])
         self.assertIn(self.rezept2, response.context['recipes'])
 

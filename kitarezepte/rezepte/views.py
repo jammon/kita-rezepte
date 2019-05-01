@@ -2,11 +2,11 @@
 import json
 from .models import Client, Rezept, Zutat, GangPlan
 from .forms import ZutatForm, RezeptForm
-from .utils import days_in_month, get_client
+from .utils import days_in_month, get_client, client_param
 from datetime import date
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth.forms import AuthenticationForm
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404, get_list_or_404
 from django.shortcuts import render, redirect
 from django.views.generic.detail import DetailView
@@ -17,9 +17,9 @@ MONAT = ("", "Januar", "Februar", "März", "April", "Mai", "Juni", "Juli",
          "August", "September", "Oktober", "November", "Dezember",)
 
 def index(request):
-    if request.user.is_authenticated:
+    if get_client(request):
         # TODO: change to client's domain
-        return redirect('/{}/monat'.format(request.session['client_slug']))
+        return redirect('/monat')
     return render(request, "rezepte/index.html")
 
 
@@ -52,9 +52,8 @@ def login(request):
 
     return render(request, 'rezepte/login.html', {'form': form})
 
-
-def rezepte(request, id=0, slug=''):
-    client_slug = get_client(request)
+@client_param
+def rezepte(request, client_slug='', id=0, slug=''):
     query_args = {'client__slug': client_slug}
     if id:
         query_args['id'] = int(id)
@@ -66,15 +65,15 @@ def rezepte(request, id=0, slug=''):
         if len(recipes)==0:
             # raise Http404 if client is not found
             get_object_or_404(Client, slug=client_slug)
-        return render(request, 'rezepte/alle-rezepte.html', {'recipes': recipes})
+        return render(request, 'rezepte/rezepte.html', {'recipes': recipes})
 
     # just one recipe
     recipe = get_object_or_404(Rezept, **query_args)
     return render(request, 'rezepte/rezept.html', {'recipe': recipe})
 
 
-def zutaten(request, id=0):
-    client_slug = get_client(request)
+@client_param
+def zutaten(request, client_slug='', id=0):
     zutaten = Zutat.objects.filter(client__slug=client_slug
         ).order_by('kategorie', 'name')
     if id:
@@ -94,6 +93,7 @@ def zutaten(request, id=0):
                    'zutat_id': id or ''})
 
 
+@client_param
 def edit_rezept(request, client_slug, id=0):
     if request.method == 'POST':
         form = RezeptForm(request.POST)
@@ -111,10 +111,9 @@ def edit_rezept(request, client_slug, id=0):
     return render(request, 'name.html', {'form': form})
 
 
-def monat(request, year=0, month=0):
-    client_slug = get_client(request)
+@client_param
+def monat(request, client_slug, year=0, month=0):
     today = date.today()
-    query_args = {'client__slug': client_slug}
     year = int(year) or today.year
     month = int(month) or today.month
     if month==12:
@@ -134,7 +133,7 @@ def monat(request, year=0, month=0):
     rezepte = [
         {'id': r.id, 'titel': r.titel,
          'kategorien': list(r.kategorie.names())}
-        for r in Rezept.objects.filter(**query_args)]
+        for r in Rezept.objects.filter(client__slug=client_slug)]
     data = {'planungen_js': json.dumps(planungen_js),
             'rezepte': json.dumps(rezepte),
             'month': month,

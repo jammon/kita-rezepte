@@ -9,16 +9,20 @@ def get_client(request):
     current_site = get_current_site(request)
     client = current_site.domain.split('.')[0]
     if client in ('localhost', '127'):
-        return 'dev'
+        return 'dev' if request.user.is_authenticated else ''
     if client == 'testserver':
         return 'test-kita'
+    if client == 'kita-rezepte':
+        return ''
     return client
 
-def get_for_client(klass, client_slug='', **kwargs):
-    return get_object_or_404(klass, client__slug=client_slug, **kwargs)
-
-def get_list_for_client(klass, client_slug='', **kwargs):
-    return get_list_or_404(klass, client__slug=client_slug, **kwargs)
+def client_param(view):
+    def view_with_client_param(request, *args, **kwargs):
+        client_slug = get_client(request)
+        if not client_slug:
+            raise Http404
+        return view(request, client_slug, *args, **kwargs)
+    return view_with_client_param
 
 def day_fromJson(day):
     """ expects a string like '2019-04-23' """
