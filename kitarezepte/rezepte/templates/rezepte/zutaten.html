@@ -7,7 +7,7 @@
     </div>
   </div>
   <div class="row">
-    <div class="col col-md-6">
+    <div class="col col-lg-6">
       <table class="table">
         <tr>
           <th>Name</th>
@@ -29,7 +29,7 @@
       {% endfor %}
       </table>
     </div>
-    <div class="col col-md-6">
+    <div class="col col-lg-6">
       <h2>{% if zutat_id %}Zutat bearbeiten {% else %}Neue Zutat {% endif %}</h2>
       <form action="{{ zutat_id }}" method="post">
         {% csrf_token %}

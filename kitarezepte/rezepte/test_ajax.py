@@ -22,10 +22,11 @@ class Set_GangplanTestcase(TestCase):
 
     def test_post(self):
         response = self.client.post(
-            '/{}/ajax/set-gang/'.format(self.rez_client.slug),
+            '/ajax/set-gang/',
             {'rezept_id': str(self.rezept.id), 
              'datum': '2019-04-23',
-             'gang': 'Vorspeise'})
+             'gang': 'Vorspeise'},
+            content_type='application/json')
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.content)
         self.assertEqual(data['success'], 'Planung erstellt')
@@ -38,27 +39,33 @@ class Set_GangplanTestcase(TestCase):
         self.assertEqual(gang.rezept_id, self.rezept.id)
 
     def test_post_wrong_client(self):
+        session = self.client.session
+        session['client_slug'] = 'otherclient'
+        session.save()
         response = self.client.post(
-            '/otherclient/ajax/set-gang/',
+            '/ajax/set-gang/',
             {'rezept_id': str(self.rezept.id), 
              'datum': '2019-04-23',
-             'gang': 'Vorspeise'})
+             'gang': 'Vorspeise'},
+            content_type='application/json')
         self.assertEqual(response.status_code, 403)
 
     def test_post_wrong_data(self):
         # no rezept_id
         response = self.client.post(
-            '/{}/ajax/set-gang/'.format(self.rez_client.slug),
+            '/ajax/set-gang/',
             {'datum': '2019-04-23',
-             'gang': 'Vorspeise'})
+             'gang': 'Vorspeise'},
+            content_type='application/json')
         self.assertEqual(response.status_code, 422)
 
     def test_post_rezept_not_found(self):
         response = self.client.post(
-            '/{}/ajax/set-gang/'.format(self.rez_client.slug),
+            '/ajax/set-gang/',
             {'rezept_id': 2342, 
              'datum': '2019-04-23',
-             'gang': 'Vorspeise'})
+             'gang': 'Vorspeise'},
+            content_type='application/json')
         self.assertEqual(response.status_code, 404)
 
 

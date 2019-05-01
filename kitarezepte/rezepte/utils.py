@@ -9,7 +9,9 @@ def get_client(request):
     current_site = get_current_site(request)
     client = current_site.domain.split('.')[0]
     if client in ('localhost', '127'):
-        return 'test'
+        return 'dev'
+    if client == 'testserver':
+        return 'test-kita'
     return client
 
 def get_for_client(klass, client_slug='', **kwargs):
@@ -54,8 +56,5 @@ TEST_REZEPT = dict(
             fuer_erwachsene = 5,
             zubereitung = '',
             anmerkungen = '',
-            ist_vorspeise = True,
-            ist_hauptgang = False,
-            ist_nachtisch = False,
             kategorie = '')
 

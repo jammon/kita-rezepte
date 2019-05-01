@@ -7,11 +7,12 @@ from django.views.decorators.http import require_POST
 import json
 
 from .models import Client, Rezept, GangPlan
-from .utils import day_fromJson
+from .utils import day_fromJson, get_client
 
 @login_required
 @require_POST
-def set_gangplan(request, client_slug):
+def set_gangplan(request):
+    client_slug = get_client(request)
     if client_slug != request.session['client_slug']:
         return HttpResponse(status=403, reason="Falscher Client.")
     client = Client.objects.get(slug=client_slug)

@@ -2,7 +2,7 @@
 import json
 from .models import Client, Rezept, Zutat, GangPlan
 from .forms import ZutatForm, RezeptForm
-from .utils import days_in_month
+from .utils import days_in_month, get_client
 from datetime import date
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth.forms import AuthenticationForm
@@ -40,7 +40,7 @@ def login(request):
                 if client:
                     request.session['client_slug'] = client.slug
                     # TODO: change to client's domain
-                    return HttpResponseRedirect('/{}/monat'.format(client.slug))
+                    return HttpResponseRedirect('/monat')
                 # redirect to a new URL:
                 return HttpResponseRedirect('/')
             else:
@@ -53,7 +53,8 @@ def login(request):
     return render(request, 'rezepte/login.html', {'form': form})
 
 
-def rezepte(request, client_slug, id=0, slug=''):
+def rezepte(request, id=0, slug=''):
+    client_slug = get_client(request)
     query_args = {'client__slug': client_slug}
     if id:
         query_args['id'] = int(id)
@@ -72,14 +73,14 @@ def rezepte(request, client_slug, id=0, slug=''):
     return render(request, 'rezepte/rezept.html', {'recipe': recipe})
 
 
-def zutaten(request, client_slug='', id=0):
+def zutaten(request, id=0):
+    client_slug = get_client(request)
     zutaten = Zutat.objects.filter(client__slug=client_slug
         ).order_by('kategorie', 'name')
     if id:
         zutat = zutaten.get(id=id)
     else:
-        client = Client.objects.get(slug=client_slug)
-        zutat = Zutat(client=client)
+        zutat = Zutat(client=Client.objects.get(slug=client_slug))
     if request.method == 'POST':
         form = ZutatForm(request.POST, instance=zutat)
         if form.is_valid():
@@ -110,7 +111,8 @@ def edit_rezept(request, client_slug, id=0):
     return render(request, 'name.html', {'form': form})
 
 
-def monat(request, client_slug='', year=0, month=0):
+def monat(request, year=0, month=0):
+    client_slug = get_client(request)
     today = date.today()
     query_args = {'client__slug': client_slug}
     year = int(year) or today.year
