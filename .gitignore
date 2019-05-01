@@ -5,3 +5,4 @@ venv/*
 kitarezepte/rezepte/static/vendor/*
 pip.log
 *.pyc
+*.bak

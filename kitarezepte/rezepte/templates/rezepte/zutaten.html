@@ -2,12 +2,15 @@
 {% load static %}
 {% block content %}
   <div class="row">
-    <div class="col col-md-8 col-sm-10">
+    <div class="col">
       <h1>Zutaten</h1>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col col-md-6">
       <table class="table">
         <tr>
           <th>Name</th>
-          <th>Einheit</th>
           <th class="text-right">Preis</th>
           <th class="text-right">Menge</th>
           <th>Kategorie</th>
@@ -15,7 +18,6 @@
       {% for z in zutaten  %}
         <tr>
           <td><a href="{{ z.id }}">{{ z.name }}</a></td>
-          <td>{{ z.einheit }}</td>
           <td class="text-right">{{ z.preisInEuro }} &euro;</td>
           <td class="text-right">{{ z.menge_pro_einheit }} {{ z.masseinheit }} </td>
           <td>{{ z.kategorie }} </td>
@@ -26,6 +28,14 @@
         </tr>
       {% endfor %}
       </table>
+    </div>
+    <div class="col col-md-6">
+      <h2>{% if zutat_id %}Zutat bearbeiten {% else %}Neue Zutat {% endif %}</h2>
+      <form action="{{ zutat_id }}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Submit">
+      </form>
     </div>
   </div>
 {% endblock content %}

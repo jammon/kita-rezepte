@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
 from .models import Client, Rezept, Zutat, GangPlan
+from .forms import ZutatForm, RezeptForm
 from .utils import days_in_month
 from datetime import date
 from django.contrib.auth import authenticate, login as auth_login
@@ -68,15 +69,45 @@ def rezepte(request, client_slug, id=0, slug=''):
 
     # just one recipe
     recipe = get_object_or_404(Rezept, **query_args)
-    return render(request, 'rezepte/ein-rezept.html', {'recipe': recipe})
+    return render(request, 'rezepte/rezept.html', {'recipe': recipe})
+
 
 def zutaten(request, client_slug='', id=0):
-    zutaten = Zutat.objects.filter(client__slug=client_slug)
-    if len(zutaten)==0:
-        get_object_or_404(Client, slug=client_slug)
+    zutaten = Zutat.objects.filter(client__slug=client_slug
+        ).order_by('kategorie', 'name')
+    if id:
+        zutat = zutaten.get(id=id)
+    else:
+        client = Client.objects.get(slug=client_slug)
+        zutat = Zutat(client=client)
+    if request.method == 'POST':
+        form = ZutatForm(request.POST, instance=zutat)
+        if form.is_valid():
+            neue_zutat = form.save()
+            return HttpResponseRedirect('')
+    else:
+        form = ZutatForm(instance=zutat)
     return render(request, 'rezepte/zutaten.html', 
-                  {'client': client_slug,
-                   'zutaten': zutaten})
+                  {'form': form,
+                   'zutaten': zutaten,
+                   'zutat_id': id or ''})
+
+
+def edit_rezept(request, client_slug, id=0):
+    if request.method == 'POST':
+        form = RezeptForm(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            # process the data in form.cleaned_data as required
+            # ...
+            # redirect to a new URL:
+            return HttpResponseRedirect('/thanks/')
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = RezeptForm()
+
+    return render(request, 'name.html', {'form': form})
 
 
 def monat(request, client_slug='', year=0, month=0):

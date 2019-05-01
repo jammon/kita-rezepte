@@ -72,7 +72,7 @@ class Zutat(models.Model):
     client = models.ForeignKey(
         Client, on_delete=models.CASCADE, related_name="zutaten")
     einheit = models.CharField(
-        max_length=10, default='',
+        max_length=10, default='', blank=True,
         help_text='''Packungseinheit für den Einkauf meist 1 kg, 1 l,
              aber auch 2,5 kg-Sack.
              Fällt weg bei Dingen wie Eiern, die eine natürliche Einheit
@@ -82,7 +82,7 @@ class Zutat(models.Model):
         help_text='der Preis einer Packungseinheit; in Cent')
     menge_pro_einheit = models.IntegerField(
         default=0,
-        help_text='Anzahl der Masseinheiten (s.u.) pro Packungseinheit; '
+        help_text='Anzahl der Masseinheiten pro Packungseinheit; '
         'bei 1 kg: 1000')
     masseinheit = models.CharField(max_length=5, choices=MASSEINHEITEN)
     kategorie = models.CharField(max_length=15, choices=ZUTATENKATEGORIEN)
@@ -138,9 +138,6 @@ class Rezept(models.Model):
     anmerkungen = models.TextField(null=True, blank=True)
     eingegeben_von = models.ForeignKey(User, on_delete=models.SET_NULL,
                                        null=True, blank=True)
-    ist_vorspeise = models.BooleanField(help_text="kann als Vorspeise dienen")
-    ist_hauptgang = models.BooleanField(help_text="kann als Hauptgang dienen")
-    ist_nachtisch = models.BooleanField(help_text="kann als Nachtisch dienen")
     kategorie = TaggableManager(verbose_name='Kategorie',
                                 help_text="Art des Essens",
                                 through=RezeptKategorie)

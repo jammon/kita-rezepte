@@ -14,6 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.conf import settings
+from django.urls import include, path, re_path
 from django.conf.urls import url
 from django.conf.urls.static import static
 from django.contrib import admin
@@ -24,13 +25,16 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index, name='index'),
     path('login/', views.login, name='login'),
-    url(r'(?P<client_slug>[a-z0-9_\-]+)/rezepte/$', views.rezepte),
-    url(r'(?P<client_slug>[a-z0-9_\-]+)/rezepte/(?P<id>[0-9]+)$', views.rezepte),
-    url(r'(?P<client_slug>[a-z0-9_\-]+)/rezepte/(?P<slug>[a-z0-9]+)$', views.rezepte),
-    url(r'(?P<client_slug>[a-z0-9_\-]+)/zutaten/$', views.zutaten),
-    url(r'(?P<client_slug>[a-z0-9_\-]+)/zutaten/(?P<id>[0-9]+)$', views.zutaten),
-    url(r'(?P<client_slug>[a-z0-9_\-]+)/monat/(?P<year>[0-9]+)/(?P<month>[0-9]+)$',
-        views.monat),
-    url(r'(?P<client_slug>[a-z0-9_\-]+)/monat/?$', views.monat),
-    url(r'(?P<client_slug>[a-z0-9_\-]+)/ajax/set-gang/?$', ajax.set_gangplan),
+    path('<slug:client_slug>/', include([
+        path('rezepte/', views.rezepte),
+        path('rezepte/<int:id>', views.rezepte),
+        path('rezepte/<int:id>/edit/˙', views.edit_rezept),
+        path('rezepte/<slug:slug>', views.rezepte),
+        path('zutaten/', views.zutaten),
+        path('zutaten/<int:id>', views.zutaten),
+        path('zutaten/<int:id>/edit', views.edit_zutat),
+        path('monat/<int:year>/<int:month>', views.monat),
+        path('monat', views.monat),
+        path('ajax/set-gang', ajax.set_gangplan),
+    ])),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
