@@ -18,8 +18,8 @@
     + Zutaten auswählen mit Mengenangaben
     + Markieren nach Essen und Gang
     + Preis errechnen
-- Menüs für einen Tag eingeben/ändern.
-- Alle Menüs eines Zeitraums (Monat) anzeigen.
+- Menüs für einen Tag eingeben/ändern. √
+- Alle Menüs eines Zeitraums (Monat) anzeigen. √
     + Je nach Anmeldestatus auch Anzeige von Kosten und Bearbeitungsmöglichkeit
 - Aus den geplanten Menüs eine Einkaufsliste erstellen.
     + Auflistung der Zutaten getrennt nach quantitativen und qualitativen Angaben
@@ -32,9 +32,9 @@
 
 ## Mechanismen
 ### Clients
-- Jeder Client hat eine Domain ("fooclient.kita-rezepte.de").
-- Der Client wird durch seinen Slug identifiziert ("fooclient").
-- Angemeldete Nutzer gehören zu einem Client.
-- Der Client, für den der Nutzer angemeldet ist, ist in der Session.
-- Auch angemeldete Nutzer können die Rezepte etc. eines anderen Clients betrachten. Dann unterscheidet sich der Client in der Session von dem Client der Domain.
+- Jeder Client hat eine Domain ("fooclient.kita-rezepte.de"). √
+- Der Client wird durch seinen Slug identifiziert ("fooclient"). √
+- Angemeldete Nutzer gehören zu einem Client. √
+- Der Client, für den der Nutzer angemeldet ist, ist in der Session. √
+- Auch angemeldete Nutzer können die Rezepte etc. eines anderen Clients betrachten. Dann unterscheidet sich der Client in der Session von dem Client der Domain. √
     + In einer späteren Ausbaustufe könnten sie für unterschiedliche Clients berechtigt sein, sind aber immer für einen Client angemeldet. Dieser ist in der Session.

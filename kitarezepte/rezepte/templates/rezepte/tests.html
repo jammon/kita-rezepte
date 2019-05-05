@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>Jasmine Spec Runner v3.4.0</title>
+
+  <link rel="shortcut icon" type="image/png" href="{% static 'tests/lib/jasmine-3.4.0/jasmine_favicon.png' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'tests/lib/jasmine-3.4.0/jasmine.css' %}">
+
+  <script src="{% static 'tests/lib/jasmine-3.4.0/jasmine.js' %}"></script>
+  <script src="{% static 'tests/lib/jasmine-3.4.0/jasmine-html.js' %}"></script>
+  <script src="{% static 'tests/lib/jasmine-3.4.0/boot.js' %}"></script>
+
+</head>
+
+<body>
+  <!-- include source files here... -->
+  <script src="{% static 'vendor/jquery-3.3.1.js' %}"></script>
+  <script src="{% static 'vendor/underscore.js' %}"></script>
+  <script src="{% static 'vendor/backbone.js' %}"></script>
+  <script src="{% static 'rezepte/js/models.js' %}"></script>
+  <script src="{% static 'rezepte/js/views.js' %}"></script>
+  <script src="{% static 'rezepte/js/changeviews.js' %}"></script>
+  <script src="{% static 'rezepte/js/main.js' %}"></script>
+
+  <!-- include spec files here... -->
+  <script src="{% static 'tests/spec/models.js' %}"></script>
+
+  <div id="changestaff"></div>
+</body>
+</html>

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import json
 import re
 from django.db import models
 from django.contrib.auth.models import User
@@ -114,6 +115,16 @@ class Zutat(models.Model):
         for rz in self.rezepte.all():
             rz.rezept.preis(update=True)
 
+    def toJson(self):
+        return json.dumps({
+            'id': self.id,
+            'name': self.name,
+            'einheit': self.einheit,
+            'preis_pro_einheit': self.preis_pro_einheit,
+            'menge_pro_einheit': self.menge_pro_einheit,
+            'masseinheit': self.masseinheit,
+            'kategorie': self.kategorie,
+        })
 
 class RezeptKategorie(TaggedItemBase):
     content_object = models.ForeignKey('Rezept', on_delete=models.CASCADE)
@@ -214,14 +225,27 @@ class RezeptZutat(models.Model):
 
     def __str__(self):
         if self.menge_qualitativ:
-            elements = [self.menge_qualitativ]
+            elements = [self.menge_qualitativ, self.zutat.name]
         else:
-            elements = [prettyFloat(self.menge)]
+            menge = prettyFloat(self.menge)
             einheit = self.zutat.get_einheit()
             if einheit:
-                elements.append(einheit)
-        elements.append(self.zutat.name)
+                elements = [menge, einheit, self.zutat.name]
+            else:
+                elements = [menge, self.zutat.name]
         return " ".join(elements)
+
+    def toJson(self):
+        res = {
+            'rezept_id': self.rezept_id,
+            'zutat_id': self.zutat_id,
+            'nummer': self.nummer,
+        }
+        if self.menge:
+            res['menge'] = self.menge
+        else:
+            res['menge_qualitativ'] = self.menge_qualitativ or ''
+        return json.dumps(res)
 
     def preis(self):
         '''Gibt den Preis der Zutat in Cent'''

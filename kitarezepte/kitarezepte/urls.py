@@ -14,11 +14,12 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.conf import settings
-from django.urls import include, path, re_path
 from django.conf.urls import url
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path, re_path
+from django.views.generic import TemplateView
+
 from rezepte import views, ajax
 
 urlpatterns = [
@@ -27,11 +28,14 @@ urlpatterns = [
     path('login/', views.login, name='login'),
     path('rezepte/', views.rezepte),
     path('rezepte/<int:id>', views.rezepte),
-    path('rezepte/<int:id>/edit/˙', views.edit_rezept),
+    path('rezepte/<int:id>/edit/', views.rezepte, {'edit': True}),
     path('rezepte/<slug:slug>', views.rezepte),
+    path('rezepte/<slug:slug>/edit/', views.rezepte, {'edit': True}),
     path('zutaten/', views.zutaten),
     path('zutaten/<int:id>', views.zutaten),
     path('monat/<int:year>/<int:month>', views.monat),
     path('monat', views.monat),
     path('ajax/set-gang/', ajax.set_gangplan),
+    path('tests', TemplateView.as_view(template_name="rezepte/tests.html"),
+        name='tests'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

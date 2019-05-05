@@ -18,7 +18,7 @@ class ZutatForm(forms.ModelForm):
         }
 
 
-class RezeptForm(forms.Form):
+class RezeptForm(forms.ModelForm):
     class Meta:
         model = Rezept
         fields = ('titel', 'untertitel', 'fuer_kinder', 'fuer_erwachsene',

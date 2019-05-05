@@ -43,7 +43,37 @@ var MonatView = Backbone.View.extend({
             });
             this.$el.append(row);
         }
+        return this;
     },
+});
+
+var RezeptZutatView = Backbone.View.extend({
+    tagName: 'p',
+    render: function() {
+        this.$el.text(this.model.toString());
+        return this;
+    },
+});
+
+var ZutatenListeView = Backbone.View.extend({
+    render: function() {
+        models.rezeptzutaten.each(function(rz) {
+            let rzv = new views.RezeptZutatView({model: rz});
+            this.$("#zutaten").append(rzv.render().el);
+        });
+    },
+});
+
+var ZutatenEingabeView = Backbone.View.extend({
+    render: function() {
+        this.$el.autocomplete({
+            source: models.zutaten.pluck('name'),
+        });
+    },
+});
+
+var MengenEingabeView = Backbone.View.extend({
+    // TODO
 });
 
 var dispatcher = _.clone(Backbone.Events)
@@ -51,6 +81,9 @@ var dispatcher = _.clone(Backbone.Events)
 return {
     PlanungView: PlanungView,
     MonatView: MonatView,
+    RezeptZutatView: RezeptZutatView,
+    ZutatenEingabeView: ZutatenEingabeView,
+    ZutatenListeView: ZutatenListeView,
     dispatcher: dispatcher,
 };
 })($, _, Backbone);

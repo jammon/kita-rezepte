@@ -48,15 +48,56 @@ var Rezept = Backbone.Model.extend({
     },
 });
 
+var Zutat = Backbone.Model.extend({
+    get_einheit: function() {
+        if (this.get('menge_pro_einheit'))
+            return this.get('masseinheit');
+        return this.get('einheit');
+    },
+});
+
+// RezeptZutat has
+// - zutat - a Zutat
+// - menge - a Float *or*
+// - menge_qualitativ - a string
+// - nummer - an Int
+var RezeptZutat = Backbone.Model.extend({
+    initialize: function() {
+        if (!this.get('zutat')) {
+            this.set('zutat', zutaten.get({id: this.get('zutat_id')}))
+        }
+    },
+    toString: function() {
+        let zutat = this.get('zutat');
+        let name = zutat.get('name');
+        if (this.get('menge_qualitativ'))
+            return this.get('menge_qualitativ') + ' ' + name;
+        let einheit = zutat.get_einheit();
+        let menge = this.get('menge');
+        if (einheit)
+            return menge + ' ' + einheit + ' ' + name;
+        return menge + ' ' + name;
+    },
+});
+
 var Planungen = Backbone.Collection.extend({model: Planung});
 var Rezepte = Backbone.Collection.extend({model: Rezept});
+var Zutaten = Backbone.Collection.extend({model: Zutat, comparator: 'name'});
+var RezeptZutaten = Backbone.Collection.extend({model: RezeptZutat, comparator: 'nummer'});
 var planungen = new Planungen();
 var rezepte = new Rezepte();
+var zutaten = new Zutaten();
+var rezeptzutaten = new RezeptZutaten();
 
 
 return {
     planungen: planungen,
     rezepte: rezepte,
+    zutaten: zutaten,
+    rezeptzutaten: rezeptzutaten,
+    Rezept: Rezept,
+    Zutat: Zutat,
+    RezeptZutat: RezeptZutat,
     kategorien: kategorien,
     gangkategorien: gangkategorien,
     data: data,

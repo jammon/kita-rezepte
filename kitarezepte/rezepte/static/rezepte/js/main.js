@@ -33,7 +33,7 @@ function setupCsrfProtection() {
 }
 
 
-function initialize(initdata) {
+function initialize_monat(initdata) {
     setupCsrfProtection();
     _.extend(models.data, {
         gangfolge: initdata.gangfolge.split(' '),
@@ -51,7 +51,19 @@ function initialize(initdata) {
     // Backbone.history.start({ pushState: true });
 }
 
+function initialize_rezept_edit(initdata) {
+    models.zutaten.reset(initdata.zutaten);
+    models.rezeptzutaten.reset(initdata.rezeptzutaten);
+    new views.ZutatenListeView({
+        el: $("#zutatenliste"),
+        collection: models.rezeptzutaten,
+    });
+    new views.ZutatenEingabeView({el: $("#zutateneingabe")});
+    new views.MengenEingabeView({el: $("#mengeneingabe")});
+}
+
 return {
-    initialize: initialize,
+    initialize_monat: initialize_monat,
+    initialize_rezept_edit: initialize_rezept_edit,
 };
 })($, _, Backbone);

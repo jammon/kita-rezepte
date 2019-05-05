@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+  <div class="row">
+    <form action=""></form>
+    <div class="col col-md-6">
+      <table>
+        <tr>
+          <td colspan="2">{{ form.titel.errors }}</td>
+        </tr>
+        <tr>
+          <td>{{ form.titel.label_tag }}</td>
+          <td>{{ form.titel }}</td>
+        </tr>
+        <tr>
+          <td colspan="2">{{ form.untertitel.errors }}</td>
+        </tr>
+        <tr>
+          <td>{{ form.untertitel.label_tag }}</td>
+          <td>{{ form.untertitel }}</td>
+        </tr>
+        <tr>
+          <td colspan="2">{{ form.fuer_kinder.errors }}</td>
+        </tr>
+        <tr>
+          <td>{{ form.fuer_kinder.label_tag }}</td>
+          <td>{{ form.fuer_kinder }}</td>
+        </tr>
+        <tr>
+          <td colspan="2">{{ form.fuer_erwachsene.errors }}</td>
+        </tr>
+        <tr>
+          <td>{{ form.fuer_erwachsene.label_tag }}</td>
+          <td>{{ form.fuer_erwachsene }}</td>
+        </tr>
+      </table>
+      <div id="zutaten">
+        <div id="zutatenliste"></div>
+        <table>
+          <tr>
+            <th><label for="zutateneingabe">Zutat</label></th>
+            <th><label for="mengeneingabe">Menge</label></th>
+            <th></th>
+          </tr>
+          <tr>
+            <td><input id="zutateneingabe" name="zutateneingabe" type="text"></td>
+            <td><input id="mengeneingabe" name="mengeneingabe" type="text"></td>
+            <td id="einheit_fuer_eingabe"></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <div class="col col-md-6">
+      <div>
+      {{ form.zubereitung.errors }}
+      {{ form.zubereitung.label_tag }}
+      {{ form.zubereitung }}
+      </div>
+      <div>        
+      {{ form.anmerkungen.errors }}
+      {{ form.anmerkungen.label_tag }}
+      {{ form.anmerkungen }}
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+{% block extrahead %}
+<link rel="stylesheet" href="{% static 'vendor/jquery-ui-1.12.1.custom/jquery-ui.css' %}">
+{% endblock extrahead %}
+{% block extrascripts %}
+<script src="{% static 'vendor/jquery-ui-1.12.1.custom/jquery-ui.js' %}"></script>
+<script src="{% static 'vendor/underscore.js' %}"></script>
+<script src="{% static 'vendor/backbone.js' %}"></script>
+<script src="{% static 'rezepte/js/models.js' %}"></script>
+<script src="{% static 'rezepte/js/views.js' %}"></script>
+<script src="{% static 'rezepte/js/changeviews.js' %}"></script>
+<script src="{% static 'rezepte/js/main.js' %}"></script>
+<script>
+  main.initialize_rezept_edit({
+    'zutaten': [{% for zutat in zutaten %}
+      {{ zutat.toJson|safe }},
+    {% endfor %}],
+    'rezeptzutaten': [{% for rz in rezeptzutaten %}
+      {{ rz.toJson|safe }},
+    {% endfor %}],
+  });
+</script>
+{% endblock extrascripts %}

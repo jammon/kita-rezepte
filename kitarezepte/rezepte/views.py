@@ -52,25 +52,55 @@ def login(request):
 
     return render(request, 'rezepte/login.html', {'form': form})
 
-@client_param
-def rezepte(request, client_slug='', id=0, slug=''):
-    query_args = {'client__slug': client_slug}
+def get_query_args(client_slug='', id=0, slug=''):
     if id:
-        query_args['id'] = int(id)
-    elif slug:
-        query_args['slug'] = slug
-    else:
+        return {'client__slug': client_slug, 'id': int(id)}
+    if slug:
+        return {'client__slug': client_slug, 'slug': slug}
+    return {'client__slug': client_slug}
+
+@client_param
+def rezepte(request, client_slug='', id=0, slug='', edit=False):
+    if not (id or slug):
         # deliver all recipes
-        recipes = Rezept.objects.filter(**query_args)
+        recipes = Rezept.objects.filter(client__slug=client_slug)
         if len(recipes)==0:
-            # raise Http404 if client is not found
-            get_object_or_404(Client, slug=client_slug)
+            try:
+                Client.objects.get(slug=client_slug)
+            except Client.DoesNotExist:
+                raise Http404
         return render(request, 'rezepte/rezepte.html', {'recipes': recipes})
 
-    # just one recipe
-    recipe = get_object_or_404(Rezept, **query_args)
-    return render(request, 'rezepte/rezept.html', {'recipe': recipe})
+    if edit:
+        return rezept_edit(request, client_slug, id, slug)
 
+    # show just one recipe
+    recipe = get_object_or_404(Rezept, **get_query_args(client_slug, id, slug))
+    return render(
+        request,
+        'rezepte/rezept.html',
+        {'recipe': recipe,
+         'zutaten': recipe.zutaten.all().select_related('zutat')})
+
+def rezept_edit(request, client_slug, id, slug):
+    if id or slug:
+        recipe = get_object_or_404(Rezept, **get_query_args(client_slug, id, slug))
+    else:
+        recipe = None
+    if request.method == 'POST':
+        form = RezeptForm(request.POST, instance=recipe)
+        if form.is_valid():
+            # process the data in form.cleaned_data as required
+            # ...
+            # redirect to a new URL:
+            return HttpResponseRedirect('/rezepte/' + rezept.slug)
+    else:
+        form = RezeptForm(instance=recipe)
+    zutaten = Zutat.objects.filter(client__slug=client_slug)
+    return render(request, 'rezepte/rezept-edit.html', 
+                  {'form': form,
+                   'zutaten': zutaten,
+                   'rezeptzutaten': recipe.zutaten.all().select_related('zutat')})
 
 @client_param
 def zutaten(request, client_slug='', id=0):
@@ -84,31 +114,13 @@ def zutaten(request, client_slug='', id=0):
         form = ZutatForm(request.POST, instance=zutat)
         if form.is_valid():
             neue_zutat = form.save()
-            return HttpResponseRedirect('')
+            return HttpResponseRedirect('/zutaten/')
     else:
         form = ZutatForm(instance=zutat)
     return render(request, 'rezepte/zutaten.html', 
                   {'form': form,
                    'zutaten': zutaten,
                    'zutat_id': id or ''})
-
-
-@client_param
-def edit_rezept(request, client_slug, id=0):
-    if request.method == 'POST':
-        form = RezeptForm(request.POST)
-        # check whether it's valid:
-        if form.is_valid():
-            # process the data in form.cleaned_data as required
-            # ...
-            # redirect to a new URL:
-            return HttpResponseRedirect('/thanks/')
-
-    # if a GET (or any other method) we'll create a blank form
-    else:
-        form = RezeptForm()
-
-    return render(request, 'name.html', {'form': form})
 
 
 @client_param
