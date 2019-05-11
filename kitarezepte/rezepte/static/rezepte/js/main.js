@@ -54,12 +54,7 @@ function initialize_monat(initdata) {
 function initialize_rezept_edit(initdata) {
     models.zutaten.reset(initdata.zutaten);
     models.rezeptzutaten.reset(initdata.rezeptzutaten);
-    new views.ZutatenListeView({
-        el: $("#zutatenliste"),
-        collection: models.rezeptzutaten,
-    });
-    new views.ZutatenEingabeView({el: $("#zutateneingabe")});
-    new views.MengenEingabeView({el: $("#mengeneingabe")});
+    (new views.ZutatenView({el: $("#zutaten")})).render();
 }
 
 return {
