@@ -68,6 +68,7 @@ var ZutatenListeView = Backbone.View.extend({
                 that.listUpdate();
             },
         });
+        this.listenTo(this.collection, "add", this.appendModelView);
     },
     render: function() {
         this.$el.children().remove();
@@ -88,22 +89,22 @@ var ZutatenListeView = Backbone.View.extend({
 });
 
 var ZutatenEingabeView = Backbone.View.extend({
-
     initialize: function() {
         var that = this;
         this.$el.autocomplete({
             source: models.zutaten.pluck('name'),
             change: function(event, ui) {
-                that.zutat_changed(ui.item.value);
+                that.check_zutat(ui.item.value, true);
             },
         });
     },
-    zutat_changed: function(value) {
-        let zutat = models.zutaten.findWhere({'name': value});
-        if (zutat) {
-            this.trigger("zutat-selected", zutat);
-        } else {
-            alert("Neue Zutat: " + value);
+    check_zutat: function(value, edited) {
+        let name = value || this.$el.val();
+        this.zutat = models.zutaten.findWhere({'name': name});
+        if (this.zutat) {
+            this.trigger("zutat-selected", this.zutat);
+        } else if (edited) {
+            alert("Neue Zutat: " + name);
         }
     },
 });
@@ -111,12 +112,27 @@ var ZutatenEingabeView = Backbone.View.extend({
 var MengenEingabeView = Backbone.View.extend({
     events: {
         'input': 'input_changed',
+        'keyup': 'maybe_enter',
     },
     initialize: function() {
-        this.regex = /^\d+(,\d*)?$/
+        this.regex = /^\d+(,\d*)?$/;
+        this.quantitativ = false;
     },
     input_changed: function(event) {
-        this.trigger('menge-changed', this.regex.test(event.target.value));
+        this.quantitativ = this.regex.test(event.target.value);
+        this.trigger('menge-changed', this.quantitativ);
+    },
+    maybe_enter: function(event) {
+        if (event.key=='Enter') {
+            this.trigger('menge-ready');
+        }
+    },
+    get_menge: function() {
+        if (this.quantitativ) {
+            return {menge: parseFloat(this.$el.val().replace(',', '.'))};
+        } else {
+            return {menge_qualitativ: this.$el.val()};
+        }
     },
 });
 
@@ -131,20 +147,27 @@ var EinheitView = Backbone.View.extend({
 
 var ZutatenView = Backbone.View.extend({
     initialize: function() {
-        this.zutatenliste = new ZutatenListeView({
+        this.zutatenliste = (new ZutatenListeView({
             el: this.$("#zutatenliste"),
             collection: models.rezeptzutaten,
-        });
+        })).render();
         this.zutateneingabe = new ZutatenEingabeView({el: this.$("#zutateneingabe")});
         this.mengeneingabe = new MengenEingabeView({el: this.$("#mengeneingabe")});
         this.einheitview = new EinheitView({el: this.$("#einheit_fuer_eingabe")});
         this.einheitview.listenTo(
-            this.zutateneingabe, "zutat-selected", this.einheitview.new_unit)
+            this.zutateneingabe, "zutat-selected", this.einheitview.new_unit);
         this.einheitview.listenTo(
-            this.mengeneingabe, 'menge-changed', this.einheitview.change_greyed_out)
+            this.mengeneingabe, 'menge-changed', this.einheitview.change_greyed_out);
+        this.listenTo(this.mengeneingabe, 'menge-ready', this.neue_zutat);
+        this.zutateneingabe.check_zutat();
     },
     zutat_changed: function(zutat) {
         this.$("#einheit_fuer_eingabe").text(zutat.get_einheit());
+    },
+    neue_zutat: function() {
+        let rz_dict = this.mengeneingabe.get_menge();
+        rz_dict['zutat'] = this.zutateneingabe.zutat;
+        models.rezeptzutaten.add(rz_dict);
     },
 });
 
