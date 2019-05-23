@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
+  <form action="" id="rezept-edit-form" method="post">{% csrf_token %}
   <div class="row">
-    <form action=""></form>
     <div class="col col-md-6">
       <table>
         <tr>
@@ -35,7 +35,7 @@
         </tr>
       </table>
       <div id="zutaten">
-        <ul id="zutatenliste"></ul>
+        <ul id="zutatenliste" class="list-group"></ul>
         <table>
           <tr>
             <th><label for="zutateneingabe">Zutat</label></th>
@@ -61,8 +61,10 @@
       {{ form.anmerkungen.label_tag }}
       {{ form.anmerkungen }}
       </div>
+      <div><button class="submit btn btn-default" type="button">Speichern</button></div>
     </div>
   </div>
+  </form>
 {% endblock content %}
 {% block extrahead %}
 <link rel="stylesheet" href="{% static 'vendor/jquery-ui-1.12.1.custom/jquery-ui.css' %}">

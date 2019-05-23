@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
-from .models import Client, Rezept, Zutat, GangPlan
+from .models import Client, Rezept, Zutat, RezeptZutat, GangPlan
 from .forms import ZutatForm, RezeptForm
 from .utils import days_in_month, get_client, client_param
 from datetime import date
@@ -89,11 +89,19 @@ def rezept_edit(request, client_slug, id, slug):
         recipe = None
     if request.method == 'POST':
         form = RezeptForm(request.POST, instance=recipe)
+        # import pdb; pdb.set_trace()
         if form.is_valid():
-            # process the data in form.cleaned_data as required
-            # ...
-            # redirect to a new URL:
-            return HttpResponseRedirect('/rezepte/' + rezept.slug)
+            form.save()
+            # ditch old RezeptZutaten
+            RezeptZutat.objects.filter(rezept=recipe).delete()
+            # collect and save RezeptZutaten
+            rezeptzutaten = []
+            for k, v in request.POST.items():
+                if k.startswith('rz'):
+                    rezeptzutaten.append(RezeptZutat(rezept=recipe, **json.loads(v)))
+            for rz in rezeptzutaten:
+                RezeptZutat.objects.bulk_create(rezeptzutaten)
+            return HttpResponseRedirect('/rezepte/' + recipe.slug)
     else:
         form = RezeptForm(instance=recipe)
     zutaten = Zutat.objects.filter(client__slug=client_slug)

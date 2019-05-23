@@ -53,21 +53,25 @@ var MonatView = Backbone.View.extend({
 //
 var RezeptZutatView = Backbone.View.extend({
     tagName: 'li',
+    className: "list-group-item",
+    events: {
+        'click .delete': 'delete',
+    },
     render: function() {
-        this.$el.text(this.model.toString());
+        this.$el.html(
+            '<span class="delete">&times;</span>' + this.model.toString());
         return this;
+    },
+    delete: function() {
+        this.$el.remove();
+        this.trigger('delete', this);
     },
 });
 
 var ZutatenListeView = Backbone.View.extend({
-    zutaten_views: [],
     initialize: function() {
         var that = this;
-        this.$el.sortable({
-            update: function(event, ui) {
-                that.listUpdate();
-            },
-        });
+        this.$el.sortable();
         this.listenTo(this.collection, "add", this.appendModelView);
     },
     render: function() {
@@ -80,12 +84,14 @@ var ZutatenListeView = Backbone.View.extend({
         var view = new views.RezeptZutatView({model: model}).render();
         this.$el.append(view.el);
         this.zutaten_views.push(view);
+        this.listenTo(view, 'delete', this.delete_model);
     },
-    listUpdate: function() {
-        _.each(this.zutaten_views, function(view){
-            view.model.set('nummer', view.$el.index());
+    delete_model: function(view) {
+        this.collection.remove(view.model);
+        this.zutaten_views = this.zutaten_views.filter(function(v) {
+            return view != v;
         });
-    }
+    },
 });
 
 var ZutatenEingabeView = Backbone.View.extend({
@@ -106,6 +112,11 @@ var ZutatenEingabeView = Backbone.View.extend({
         } else if (edited) {
             alert("Neue Zutat: " + name);
         }
+    },
+    empty: function(focus) {
+        this.$el.val('');
+        this.zutat = void 0;
+        if (focus) this.$el.focus();
     },
 });
 
@@ -133,6 +144,9 @@ var MengenEingabeView = Backbone.View.extend({
         } else {
             return {menge_qualitativ: this.$el.val()};
         }
+    },
+    empty: function() {
+        this.$el.val('');
     },
 });
 
@@ -166,8 +180,19 @@ var ZutatenView = Backbone.View.extend({
     },
     neue_zutat: function() {
         let rz_dict = this.mengeneingabe.get_menge();
+        this.mengeneingabe.empty();
         rz_dict['zutat'] = this.zutateneingabe.zutat;
+        this.zutateneingabe.empty(true);
+        rz_dict['nummer'] = models.rezeptzutaten.length;
         models.rezeptzutaten.add(rz_dict);
+    },
+    write_rz_inputs: function() {
+        this.zutatenliste.zutaten_views.forEach(function(view, index) {
+            this.$el.append($("<input>").attr({
+                name: "rz" + view.$el.index(),
+                type: "hidden",
+            }).val(view.model.toJson()));
+        }, this);
     },
 });
 

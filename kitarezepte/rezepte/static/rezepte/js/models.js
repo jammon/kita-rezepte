@@ -78,6 +78,11 @@ var RezeptZutat = Backbone.Model.extend({
             return menge + ' ' + einheit + ' ' + name;
         return menge + ' ' + name;
     },
+    toJson: function() {
+        let res = _.pick(this.attributes, 'menge', 'menge_qualitativ', 'nummer');
+        res.zutat_id = this.get('zutat').get('id');
+        return JSON.stringify(res);
+    },
 });
 
 var Planungen = Backbone.Collection.extend({model: Planung});
