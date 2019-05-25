@@ -34,8 +34,20 @@
       <form action="{{ zutat_id }}" method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <input type="submit" value="Submit">
+        <input type="submit" value="Speichern">
       </form>
+      {% if rezepte %}
+        <div>
+          <h2>{{ zutat.name }} wird in diesen Rezepten verwendet:</h2>
+          <ul>
+            {% for r in rezepte %}
+              <li><a href="/rezepte/{{ r.slug }}">{{ r.titel }}</a></li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% else %}
+        <div>{{ zutat.name }} wird zur Zeit in keinem Rezept verwendet.</div>
+      {% endif %}
     </div>
   </div>
 {% endblock content %}

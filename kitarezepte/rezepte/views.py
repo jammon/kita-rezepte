@@ -116,8 +116,14 @@ def zutaten(request, client_slug='', id=0):
         ).order_by('kategorie', 'name')
     if id:
         zutat = zutaten.get(id=id)
+        if not zutat:
+            return Http404
+        rezepte = Rezept.objects.filter(zutaten__zutat=zutat
+            ).order_by('titel')
     else:
+        # neue Zutat
         zutat = Zutat(client=Client.objects.get(slug=client_slug))
+        rezepte = []
     if request.method == 'POST':
         form = ZutatForm(request.POST, instance=zutat)
         if form.is_valid():
@@ -128,7 +134,9 @@ def zutaten(request, client_slug='', id=0):
     return render(request, 'rezepte/zutaten.html', 
                   {'form': form,
                    'zutaten': zutaten,
-                   'zutat_id': id or ''})
+                   'zutat_id': id or '',
+                   'zutat': zutat,
+                   'rezepte': rezepte})
 
 
 @client_param
