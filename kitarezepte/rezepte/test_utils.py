@@ -2,7 +2,7 @@
 from datetime import date
 from django.test import TestCase
 from rezepte.utils import (day_fromJson, prettyFloat, days_in_month,
-                           )
+                           euro2cent)
 
 
 class Day_fromJsonTestCase(TestCase):
@@ -34,3 +34,12 @@ class Days_in_MonthTestCase(TestCase):
         self.assertEqual(days_in_month(2020, 2), 29)
 
 
+class Euro2CentTestCase(TestCase):
+ 
+    def test_euro2cent(self):
+        """ Calculates the Cents from an Euro string """
+        self.assertEqual(euro2cent("15"), 1500)
+        self.assertEqual(euro2cent("3,79"), 379)
+        self.assertEqual(euro2cent("3.79"), 379)
+        self.assertRaises(ValueError, euro2cent, "foo")
+        self.assertRaises(ValueError, euro2cent, "3,79 Euro")

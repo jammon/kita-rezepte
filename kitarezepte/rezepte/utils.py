@@ -45,6 +45,12 @@ def cent2euro(cent):
     res = "{:.2f}".format(cent / 100.0)
     return res.replace('.', ',')
 
+def euro2cent(euro):
+    """ Calculates the Cents from an Euro string. 
+
+    Can raise ValueError
+    """
+    return int(round(100*float(euro.replace(',', '.'))))
 
 TEST_REIS = dict(name="Reis", 
             client_id = 1,

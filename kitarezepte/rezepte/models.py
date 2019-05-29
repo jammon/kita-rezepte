@@ -83,7 +83,7 @@ class Zutat(models.Model):
         help_text='der Preis einer Packungseinheit; in Cent')
     menge_pro_einheit = models.IntegerField(
         default=0,
-        help_text='Anzahl der Masseinheiten pro Packungseinheit; '
+        help_text='Anzahl der Maßeinheiten pro Packungseinheit; '
         'bei 1 kg: 1000')
     masseinheit = models.CharField(max_length=5, choices=MASSEINHEITEN)
     kategorie = models.CharField(max_length=15, choices=ZUTATENKATEGORIEN)

@@ -65,10 +65,8 @@ def rezepte(request, client_slug='', id=0, slug='', edit=False):
         # deliver all recipes
         recipes = Rezept.objects.filter(client__slug=client_slug)
         if len(recipes)==0:
-            try:
-                Client.objects.get(slug=client_slug)
-            except Client.DoesNotExist:
-                raise Http404
+            # Does the client event exist?
+            get_object_or_404(Client, slug=client_slug)
         return render(request, 'rezepte/rezepte.html', {'recipes': recipes})
 
     if edit:
@@ -111,13 +109,14 @@ def rezept_edit(request, client_slug, id, slug):
                    'rezeptzutaten': recipe.zutaten.all().select_related('zutat')})
 
 @client_param
-def zutaten(request, client_slug='', id=0):
+def zutaten(request, client_slug='', id=0, msg=''):
     zutaten = Zutat.objects.filter(client__slug=client_slug
         ).order_by('kategorie', 'name')
     if id:
-        zutat = zutaten.get(id=id)
-        if not zutat:
-            return Http404
+        try:
+            zutat = zutaten.get(id=id)
+        except Zutat.DoesNotExist:
+            raise Http404
         rezepte = Rezept.objects.filter(zutaten__zutat=zutat
             ).order_by('titel')
     else:
@@ -131,12 +130,26 @@ def zutaten(request, client_slug='', id=0):
             return HttpResponseRedirect('/zutaten/')
     else:
         form = ZutatForm(instance=zutat)
+    print('msg: ', msg)
     return render(request, 'rezepte/zutaten.html', 
                   {'form': form,
                    'zutaten': zutaten,
                    'zutat_id': id or '',
                    'zutat': zutat,
-                   'rezepte': rezepte})
+                   'rezepte': rezepte,
+                   'msg': msg})
+
+
+@client_param
+def zutaten_delete(request, client_slug=''):
+    if request.method != 'POST' or 'zutat_id' not in request.POST:
+        return redirect("zutaten")
+    id = request.POST['zutat_id']
+    zutat = get_object_or_404(Zutat, client__slug=client_slug, id=id)
+    Zutat.objects.filter(client__slug=client_slug, id=id).delete()
+    return redirect("/zutaten/", 
+                    client_slug=client_slug,
+                    msg='Zutat {} wurde gelöscht'.format(zutat.name))
 
 
 @client_param

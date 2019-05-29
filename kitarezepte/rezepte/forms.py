@@ -3,7 +3,12 @@ from django import forms
 
 from .models import Zutat, Rezept, MASSEINHEITEN, ZUTATENKATEGORIEN
 
+
 class ZutatForm(forms.ModelForm):
+    masseinheit = forms.ChoiceField(
+        choices=MASSEINHEITEN,
+        widget=forms.RadioSelect)
+
     class Meta:
         model = Zutat
         fields = ('name', 'einheit', 'preis_pro_einheit', 'menge_pro_einheit', 
@@ -13,7 +18,6 @@ class ZutatForm(forms.ModelForm):
             'einheit': 'Packungseinheit',
             'preis_pro_einheit': 'Preis pro Einheit',
             'menge_pro_einheit': 'Menge pro Einheit',
-            'masseinheit': 'Maßeinheit',
             'kategorie': 'Kategorie',
         }
 
