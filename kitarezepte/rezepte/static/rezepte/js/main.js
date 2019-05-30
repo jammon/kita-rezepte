@@ -40,6 +40,7 @@ function initialize_monat(initdata) {
         days_in_month: initdata.days_in_month,
         year: initdata.year,
         month: initdata.month,
+        is_authenticated: initdata.is_authenticated,
     });
     models.rezepte.reset(initdata.rezepte);
     models.rezepte.add({

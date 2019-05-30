@@ -3,7 +3,7 @@ var models = (function($, _, Backbone) {
 
 var kategorien = {};
 var gangkategorien = {};
-var data = {};
+var data = {};  // data like 'gangfolge', 'days_in_month', 'year', 'month', 'is_authenticated'
 
 // var _user_can_change = false;
 // function user_can_change(can_change) {
@@ -33,6 +33,7 @@ var Planung = Backbone.Model.extend({
 // - id
 // - titel
 // - kategorien (Array, could be "Vorspeise" etc. or "Reisgericht" etc.) 
+// - preis (in Cent)
 var Rezept = Backbone.Model.extend({
     initialize: function() {
         // für jede Kategorie eine eigene Collection
@@ -45,6 +46,15 @@ var Rezept = Backbone.Model.extend({
             }
             kategorie_obj[kategorie].add(this);
         }, this);
+    },
+    titel_mit_preis: function() {
+        if (this.get('id')==-1)
+            return 'nicht geplant'
+        let preis = this.get('preis');
+        if (preis != '--') {
+            preis = ((preis / 100) + '').replace('.', ',');
+        }
+        return this.get('titel') + '  ' + preis + ' €';
     },
 });
 

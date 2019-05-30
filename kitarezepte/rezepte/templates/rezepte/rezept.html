@@ -9,7 +9,13 @@
     <div class="col col-sm-4 col-md-3">
       <h2>Zutaten</h2>
       {% for rz in zutaten  %}
-        <p>{{ rz }}</p>
+        <p>
+          {% if user.is_authenticated %}
+            <a href="/zutaten/{{ rz.zutat.id }}">{{ rz }}</a>
+          {% else %}
+            {{ rz }}
+          {% endif %}
+        </p>
       {% endfor %}
     </div>
     <div class="col col-sm-8 col-md-9">

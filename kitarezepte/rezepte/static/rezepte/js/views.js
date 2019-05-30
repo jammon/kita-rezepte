@@ -16,11 +16,14 @@ var PlanungView = Backbone.View.extend({
     },
     render: function() {
         const rezept = this.model.get('rezept');
-        this.$el.text(rezept.get('titel'));
+        this.$el.text(models.data.is_authenticated ? 
+            rezept.titel_mit_preis() : 
+            rezept.get('titel'));
         return this;
     },
     edit_gang: function() {
-        dispatcher.trigger('edit_gang', this.model);
+        if (models.data.is_authenticated)
+            dispatcher.trigger('edit_gang', this.model);
     },
 });
 

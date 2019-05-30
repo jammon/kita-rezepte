@@ -7,7 +7,7 @@
 - Zutaten eingeben
     + die Zutaten müssen eine Kategorie haben √
     + die Zutaten sollen einen Preis pro Menge haben √
-    + Zutaten eingeben
+    + Zutaten eingeben √
 - Preis der Zutaten aktualisieren 
     + automatisch Preise der Rezepte aktualisieren √
 - Rezepte eingeben
@@ -15,9 +15,9 @@
     + der Titel soll die URL bestimmen (als Slug) √
     + Untertitel/Anmerkung, um ähnliche Rezepte zu unterscheiden √
     + die Rezepte enthalten Zutaten mit Mengen √
-    + Zutaten auswählen mit Mengenangaben
-    + Markieren nach Essen und Gang
-    + Preis errechnen
+    + Zutaten auswählen mit Mengenangaben √
+    + Markieren nach Essen und Gang √
+    + Preis errechnen √
 - Menüs für einen Tag eingeben/ändern. √
 - Alle Menüs eines Zeitraums (Monat) anzeigen. √
     + Je nach Anmeldestatus auch Anzeige von Kosten und Bearbeitungsmöglichkeit

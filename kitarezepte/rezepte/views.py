@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 import json
-from .models import Client, Rezept, Zutat, RezeptZutat, GangPlan
+from .models import Client, Rezept, Zutat, RezeptZutat, GangPlan, KEIN_PREIS
 from .forms import ZutatForm, RezeptForm
 from .utils import days_in_month, get_client, client_param
 from datetime import date
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404, get_list_or_404
 from django.shortcuts import render, redirect
@@ -59,6 +60,8 @@ def get_query_args(client_slug='', id=0, slug=''):
         return {'client__slug': client_slug, 'slug': slug}
     return {'client__slug': client_slug}
 
+
+# Rezepte ------------------------------------------------------------------
 @client_param
 def rezepte(request, client_slug='', id=0, slug='', edit=False):
     if not (id or slug):
@@ -108,6 +111,9 @@ def rezept_edit(request, client_slug, id, slug):
                    'zutaten': zutaten,
                    'rezeptzutaten': recipe.zutaten.all().select_related('zutat')})
 
+
+# Zutaten ------------------------------------------------------------------
+@login_required
 @client_param
 def zutaten(request, client_slug='', id=0, msg=''):
     zutaten = Zutat.objects.filter(client__slug=client_slug
@@ -127,6 +133,7 @@ def zutaten(request, client_slug='', id=0, msg=''):
         form = ZutatForm(request.POST, instance=zutat)
         if form.is_valid():
             neue_zutat = form.save()
+            neue_zutat.updateRezeptpreise()
             return HttpResponseRedirect('/zutaten/')
     else:
         form = ZutatForm(instance=zutat)
@@ -137,7 +144,8 @@ def zutaten(request, client_slug='', id=0, msg=''):
                    'zutat_id': id or '',
                    'zutat': zutat,
                    'rezepte': rezepte,
-                   'msg': msg})
+                   'msg': msg,
+                   'is_authenticated': request.user.is_authenticated })
 
 
 @client_param
@@ -152,6 +160,7 @@ def zutaten_delete(request, client_slug=''):
                     msg='Zutat {} wurde gelöscht'.format(zutat.name))
 
 
+# Monat ------------------------------------------------------------------
 @client_param
 def monat(request, client_slug, year=0, month=0):
     today = date.today()
@@ -172,14 +181,17 @@ def monat(request, client_slug, year=0, month=0):
          'rezept_id': g.rezept.id, 
          'rezept_titel': g.rezept.titel} for g in planungen]
     rezepte = [
-        {'id': r.id, 'titel': r.titel,
-         'kategorien': list(r.kategorie.names())}
+        {'id': r.id, 
+         'titel': r.titel,
+         'kategorien': list(r.kategorie.names()),
+         'preis': '--' if r._preis==KEIN_PREIS else r._preis}
         for r in Rezept.objects.filter(client__slug=client_slug)]
-    data = {'planungen_js': json.dumps(planungen_js),
-            'rezepte': json.dumps(rezepte),
+    data = {'planungen': planungen_js,
+            'rezepte': rezepte,
             'month': month,
             'month_name': MONAT[month],
             'year': year,
             'gangfolge': "Vorspeise Hauptgang Nachtisch",
-            'days_in_month': days_in_month(year, month)}
-    return render(request, 'rezepte/monat.html', data)
+            'days_in_month': days_in_month(year, month),
+            'is_authenticated': request.user.is_authenticated }
+    return render(request, 'rezepte/monat.html', {'data': json.dumps(data)})

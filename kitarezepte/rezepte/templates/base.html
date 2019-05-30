@@ -18,7 +18,9 @@
     {% block navigation %}
     <nav class="nav">
       <a class="nav-link" href="/rezepte">Rezepte</a>
-      <a class="nav-link" href="/zutaten">Zutaten</a>
+      {% if user.is_authenticated %}
+        <a class="nav-link" href="/zutaten">Zutaten</a>
+      {% endif %}
       <a class="nav-link" href="/monat">Monatsplan</a>
       <a class="nav-link" href="#">Einkaufsliste</a>
     </nav>

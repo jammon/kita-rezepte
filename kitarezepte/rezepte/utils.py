@@ -6,11 +6,11 @@ from django.shortcuts import get_object_or_404, get_list_or_404
 
 
 def get_client(request):
-    current_site = get_current_site(request)
-    client = current_site.domain.split('.')[0]
+    client = get_current_site(request).domain.split('.')[0]
     if client in ('localhost', '127'):
-        return 'dev' if request.user.is_authenticated else ''
+        return 'dev'
     if client == 'testserver':
+        # for unittests
         return 'test-kita'
     if client == 'kita-rezepte':
         return ''

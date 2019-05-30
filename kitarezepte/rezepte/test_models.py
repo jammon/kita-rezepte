@@ -9,7 +9,7 @@ class Zutat_TestCase(TestCase):
     def test_preisInEuro(self):
         """ The price in Euro is displayed correctly """
         zutat = Zutat()
-        self.assertEqual(zutat.preisInEuro(), "0,00")
+        self.assertEqual(zutat.preisInEuro(), "--")
         zutat.preis_pro_einheit = 189
         self.assertEqual(zutat.preisInEuro(), "1,89")
 
@@ -58,6 +58,10 @@ class RezeptZutat_TestCase(TestCase):
         rz = RezeptZutat(zutat=reis, menge=500)
         self.assertEqual(rz.preis(), 94)
         self.assertEqual(rz.preisToStr(), "0,94 €")
+
+        rz = RezeptZutat(zutat=reis, menge_qualitativ="etwas")
+        self.assertEqual(rz.preis(), 0)
+        self.assertEqual(rz.preisToStr(), "0,00 €")
 
     def test_str(self):
         reis = Zutat.objects.create(**TEST_REIS)

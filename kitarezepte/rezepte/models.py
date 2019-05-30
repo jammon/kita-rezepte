@@ -35,6 +35,8 @@ ZUTATENKATEGORIEN = (
     ("Sonst.", "Sonstiges"),
 )
 
+KEIN_PREIS = -1
+
 class Client(models.Model):
     """ Eine Kita, für die geplant wird """
     name = models.CharField(max_length=25)
@@ -79,7 +81,7 @@ class Zutat(models.Model):
              Fällt weg bei Dingen wie Eiern, die eine natürliche Einheit
              haben; dann "Stück"''')
     preis_pro_einheit = models.IntegerField(
-        default=0,
+        default=KEIN_PREIS,
         help_text='der Preis einer Packungseinheit; in Cent')
     menge_pro_einheit = models.IntegerField(
         default=0,
@@ -100,6 +102,8 @@ class Zutat(models.Model):
 
         z.B. "3,59"
         """
+        if self.preis_pro_einheit==KEIN_PREIS:
+            return "--"
         return cent2euro(self.preis_pro_einheit)
 
     def get_einheit(self):
@@ -111,6 +115,10 @@ class Zutat(models.Model):
     def updateRezeptpreise(self):
         """ Wenn der Preis einer Zutat geändert wurde,
         müssen die Rezeptpreise entsprechend angepasst werden.
+
+        TODO: Dies macht für jedes Rezept 
+        - eine Abfrage nach den Zutaten und 
+        - ein save
         """
         for rz in self.rezepte.all():
             rz.rezept.preis(update=True)
@@ -154,7 +162,7 @@ class Rezept(models.Model):
                                 through=RezeptKategorie)
     # z.B. Gemüse, Teigwaren, Suppe, Getreide, Reis usw.
     _preis = models.IntegerField(
-        default=0,
+        default=KEIN_PREIS,
         help_text='kann leer sein, wird dann automatisch berechnet')
 
     class Meta:
@@ -188,7 +196,7 @@ class Rezept(models.Model):
     def preis(self, update=False):
         """ Gibt den vorberechneten Preis in Cent oder rechnet ihn neu
         """
-        if self._preis == 0 or update:
+        if self._preis == KEIN_PREIS or update:
             self._preis = sum(
                 [zutat.preis() for zutat in self.zutaten.all()])
             if self.pk:
@@ -252,6 +260,8 @@ class RezeptZutat(models.Model):
         if self.menge_qualitativ:
             return 0
         z = self.zutat
+        if z.preis_pro_einheit==KEIN_PREIS:
+            return 0
         return int(self.menge * z.preis_pro_einheit //
                    (z.menge_pro_einheit or 1))
 
