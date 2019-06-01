@@ -1,2 +1,2 @@
-Django==2.1.7
+Django==2.2.1
 django-taggit==1.1.0
