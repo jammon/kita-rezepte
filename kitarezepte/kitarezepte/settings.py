@@ -163,3 +163,5 @@ if servermode=='production':
     STATIC_ROOT = "/var/www/virtual/kitarez/html/static/"
 
 LOGIN_URL = '/login/'
+
+SECURE_CONTENT_TYPE_NOSNIFF = True
