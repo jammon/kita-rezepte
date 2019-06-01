@@ -130,7 +130,7 @@ class Get_Einkaufsliste_TestCase(TestCase):
             [("Milchreis", milchreis.id), ("Wasserreis", wasserreis.id)])
         self.assertEqual(
             el['messbar'],
-            [(reis, 1300.0), (wasser, 2000.0), (milch, 4000.0)])
+            [(reis, '1300'), (wasser, '2000'), (milch, '4000')])
         self.assertEqual(
             el['qualitativ'],
             [(wasser, ['etwas', 'etwas'])])

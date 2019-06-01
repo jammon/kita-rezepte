@@ -20,15 +20,14 @@
     + Preis errechnen √
 - Menüs für einen Tag eingeben/ändern. √
 - Alle Menüs eines Zeitraums (Monat) anzeigen. √
-    + Je nach Anmeldestatus auch Anzeige von Kosten und Bearbeitungsmöglichkeit
-- Aus den geplanten Menüs eine Einkaufsliste erstellen.
-    + Auflistung der Zutaten getrennt nach quantitativen und qualitativen Angaben
-    + Auflistung der geplanten Rezepte
-- Aus einem Rezept (evtl. eines anderen Mandanten) eine Kopie zum Editieren erstellen
-    + Benachrichtigung des Rezeptspenders?
+    + Je nach Anmeldestatus auch Anzeige von Kosten und Bearbeitungsmöglichkeit √
+- Aus den geplanten Menüs eine Einkaufsliste erstellen. √
+    + Auflistung der Zutaten getrennt nach quantitativen und qualitativen Angaben √
+    + Auflistung der geplanten Rezepte √
 
 ## Todos
-- evtl. Gänge in Menue als m2m realisieren
+- Aus einem Rezept (evtl. eines anderen Mandanten) eine Kopie zum Editieren erstellen
+    + Benachrichtigung des Rezeptspenders?
 
 ## Mechanismen
 ### Clients
@@ -38,3 +37,7 @@
 - Der Client, für den der Nutzer angemeldet ist, ist in der Session. √
 - Auch angemeldete Nutzer können die Rezepte etc. eines anderen Clients betrachten. Dann unterscheidet sich der Client in der Session von dem Client der Domain. √
     + In einer späteren Ausbaustufe könnten sie für unterschiedliche Clients berechtigt sein, sind aber immer für einen Client angemeldet. Dieser ist in der Session.
+
+## Weitere Pläne
+- Für jedes Rezept anzeigen, wann es die letzten Male geplant wurde (nur für angemeldete Nutzer)
+- Häufig oder selten geplante Rezepte

@@ -11,21 +11,74 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+import string
+from configparser import ConfigParser, NoSectionError
+from random import choice
+
+
+def random_string(length=50):
+    return ''.join([choice(string.digits + string.ascii_letters) for i in range(length)])
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
+CONFIG_FILE = os.path.join(BASE_DIR, 'kita-rezepte.cnf')
+config = ConfigParser()
+config.read_string("""
+    [django]
+    [server]
+        mode: production
+""")
+config.read(CONFIG_FILE)
+try:
+    SECRET_KEY = config['django']['key']
+except KeyError:
+    config['django']['key'] = SECRET_KEY = random_string(50)
+    with open(CONFIG_FILE, 'w') as configfile:
+        config.write(configfile)
+
+
+# Database
+# https://docs.djangoproject.com/en/2.0/ref/settings/#databases
+servermode = config['server']['mode']
+if servermode=='development':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
+elif servermode=='production':
+    DB_CONFIG_FILE = os.path.expanduser('~/.my.cnf')
+    db_config = ConfigParser()
+    with open(DB_CONFIG_FILE) as db_conf_file:
+        db_config.read_file(db_conf_file)
+
+    db_username = db_config['client']['user']
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': db_username,
+            'USER': db_username,
+            'PASSWORD': db_config['client']['password'],
+            'TEST': {
+                'NAME': db_username + '_test',
+            },
+            'CONN_MAX_AGE': 5,
+        }
+    }
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'w3g_8%3^=@4e7lxs0i$z8&=x591hf7x-@+!ipp1g=u-wvg^dj3'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = servermode=='development'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = (
+    [] if DEBUG else 
+    ['.kita-rezepte.de', '.kitarez.uber.space'])
 
 
 # Application definition
@@ -74,33 +127,15 @@ TEMPLATES = [
 WSGI_APPLICATION = 'kitarezepte.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/2.0/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator', },
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator', },
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator', },
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator', },
 ]
 
 
@@ -122,5 +157,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+if servermode=='production':
+    STATIC_ROOT = "/var/www/virtual/kitarez/html/static/"
 
 LOGIN_URL = '/login/'

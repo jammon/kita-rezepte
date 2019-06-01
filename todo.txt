@@ -1,3 +1,9 @@
 list_filter auf Kategorien spezifisch für Model machen
 Rezepte.slug akzeptiert keine Sonderzeichen
 zutat.name sollte unique sein
+HSTS einschalten https://docs.djangoproject.com/en/2.2/ref/middleware/#http-strict-transport-security
+HTTPS aktivieren, CSRF_COOKIE_SECURE und SESSION_COOKIE_SECURE setzen
+CONN_MAX_AGE setzen
+Cached templates aktivieren https://docs.djangoproject.com/en/2.2/ref/templates/api/#template-loaders
+Logging einbauen
+ADMINS einstellen für Fehlerbenachrichtigungen
