@@ -3,6 +3,7 @@
 content/*
 venv/*
 kitarezepte/rezepte/static/vendor/*
+local/*
 pip.log
 *.pyc
 *.bak
