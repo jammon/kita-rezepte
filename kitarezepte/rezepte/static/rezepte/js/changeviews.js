@@ -117,7 +117,7 @@ var ChangePlanungView = Backbone.View.extend({
         }
         $.ajax({
             method: "POST",
-            url: 'ajax/set-gang/', 
+            url: '/ajax/set-gang/', 
             data: JSON.stringify({
                 rezept_id: rezept_id,
                 datum: date_str(this.planung.get('datum')),

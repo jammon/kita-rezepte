@@ -2,8 +2,15 @@
 {% load static %}
 {% block content %}
   <div class="row">
+    <div class="col col-md-8"><h1>Planung für {{ month_name }} {{ year}} </h1></div>
+    <div class="col col-md-4">
+      <a href="{{ prev.link }}">< {{ prev.name }} </a>
+      -
+      <a href="{{ next.link }}">{{ next.name }} ></a>
+    </div>
+  </div>
+  <div class="row">
     <div class="col">
-      <h1>Planung für {{ month_name }} {{ year}} </h1>
       <table class="table" id="monat_table">
         <th>Tag</th>
         <th>Vorspeise</th>

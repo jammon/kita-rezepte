@@ -36,7 +36,8 @@ urlpatterns = [
     path('zutaten/delete', views.zutaten_delete),
     path('monat/<int:year>/<int:month>', views.monat),
     path('monat', views.monat),
+    path('einkaufsliste', views.einkaufsliste),
     path('ajax/set-gang/', ajax.set_gangplan),
     path('tests', TemplateView.as_view(template_name="rezepte/tests.html"),
-        name='tests'),
+         name='tests'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

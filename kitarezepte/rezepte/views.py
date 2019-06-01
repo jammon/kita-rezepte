@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 import json
-from .models import Client, Rezept, Zutat, RezeptZutat, GangPlan, KEIN_PREIS
+from .models import (Client, Rezept, Zutat, RezeptZutat, GangPlan, KEIN_PREIS,
+                     get_einkaufsliste)
 from .forms import ZutatForm, RezeptForm
-from .utils import days_in_month, get_client, client_param
-from datetime import date
+from .utils import (days_in_month, get_client, client_param, next_dow, MONATSNAMEN, 
+                    next_month)
+from datetime import date, timedelta
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
@@ -13,9 +15,6 @@ from django.shortcuts import render, redirect
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 
-
-MONAT = ("", "Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", 
-         "August", "September", "Oktober", "November", "Dezember",)
 
 def index(request):
     if get_client(request):
@@ -189,9 +188,22 @@ def monat(request, client_slug, year=0, month=0):
     data = {'planungen': planungen_js,
             'rezepte': rezepte,
             'month': month,
-            'month_name': MONAT[month],
             'year': year,
             'gangfolge': "Vorspeise Hauptgang Nachtisch",
             'days_in_month': days_in_month(year, month),
             'is_authenticated': request.user.is_authenticated }
-    return render(request, 'rezepte/monat.html', {'data': json.dumps(data)})
+    return render(request, 'rezepte/monat.html', {
+        'data': json.dumps(data),
+        'month_name': MONATSNAMEN[month],
+        'year': year,
+        'next': next_month(year, month, 1),
+        'prev': next_month(year, month, -1),
+    })
+
+# Einkaufsliste ------------------------------------------------------------------
+@client_param
+def einkaufsliste(request, client_slug, start=None, dauer=0):
+    start = start or next_dow(1)  # TODO: auf den einzelnen Client anpassen
+    dauer = dauer or 7
+    return render(request, 'rezepte/einkaufsliste.html',
+                  get_einkaufsliste(client_slug, start, dauer))

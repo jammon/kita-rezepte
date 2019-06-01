@@ -2,7 +2,7 @@
 from datetime import date
 from django.test import TestCase
 from rezepte.utils import (day_fromJson, prettyFloat, days_in_month,
-                           euro2cent)
+                           euro2cent, next_dow)
 
 
 class Day_fromJsonTestCase(TestCase):
@@ -43,3 +43,15 @@ class Euro2CentTestCase(TestCase):
         self.assertEqual(euro2cent("3.79"), 379)
         self.assertRaises(ValueError, euro2cent, "foo")
         self.assertRaises(ValueError, euro2cent, "3,79 Euro")
+
+
+class Next_DowTestCase(TestCase):
+ 
+    def test_next_dow(self):
+        """ Calculates the next occurence of a certain day of week """
+        today = date(2019, 5, 30)  # Thursday = 3
+        self.assertEqual(next_dow(3, today), today)
+        self.assertEqual(next_dow(4, today), date(2019, 5, 31))
+        self.assertEqual(next_dow(6, today), date(2019, 6, 2))
+        self.assertEqual(next_dow(0, today), date(2019, 6, 3))
+        self.assertEqual(next_dow(2, today), date(2019, 6, 5))

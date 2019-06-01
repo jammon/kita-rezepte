@@ -1,2 +1,3 @@
 list_filter auf Kategorien spezifisch für Model machen
 Rezepte.slug akzeptiert keine Sonderzeichen
+zutat.name sollte unique sein

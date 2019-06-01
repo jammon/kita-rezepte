@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+  <div class="row">
+    <div class="col">
+      <h1>Einkaufliste</h1>
+      <p>ab {{ start }} für {{ dauer }} Tage</p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col col-lg-4">
+      <p>Folgende Rezepte wurden geplant:</p>
+      {% for titel, id in rezepte %}
+        <p><a href="/rezepte/{{ id }}">{{ titel }}</a></p>
+      {% endfor %}
+    </div>
+    <div class="col col-lg-4">
+      <h2>Benötigte Mengen:</h2>
+      {% if messbar %}
+      <table class="table">
+      {% for zutat, menge in messbar %}
+        {% ifchanged  %}
+        <tr>
+          <td colspan="3"><h3>{{ zutat.kategorie }}</h3></td>
+        </tr>
+        {% endifchanged %}
+        <tr>
+          <td><a href="/zutaten/{{ zutat.id }}">{{ zutat.name }}</a></td>
+          <td class="text-right">{{ menge }}</td>
+          <td>{{ zutat.masseinheit }}</td>
+        </tr>
+      {% endfor %}
+      </table>
+      {% else %}
+      <p>Nichts geplant.</p>
+      {% endif %}
+    </div>
+    <div class="col col-lg-4">
+      <h2>Qualitative Angaben:</h2>
+      {% if qualitativ %}
+      <table class="table">
+      {% for zutat, mengen in qualitativ %}
+        {% ifchanged  %}
+        <tr>
+          <td colspan="3"><h3>{{ zutat.kategorie }}</h3></td>
+        </tr>
+        {% endifchanged %}
+        <tr>
+          <td><a href="/zutaten/{{ zutat.id }}">{{ zutat.name }}</a></td>
+          <td>{{ mengen|join:", " }}</td>
+        </tr>
+      {% endfor %}
+      </table>
+      {% else %}
+      <p>Nichts geplant.</p>
+      {% endif %}
+    </div>
+  </div>
+{% endblock content %}
+{% block extrascripts %}
+<script>
+</script>
+{% endblock extrascripts %}

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
+from datetime import date
 from django.test import TestCase
-from .models import Client, Zutat, Rezept, RezeptZutat
+from .models import Client, Zutat, Rezept, RezeptZutat, GangPlan, get_einkaufsliste
 from .utils import TEST_REIS, TEST_REZEPT
 
 
@@ -74,4 +75,64 @@ class RezeptZutat_TestCase(TestCase):
         eier = Zutat(name="Eier", client_id=1, einheit="")
         rz = RezeptZutat(zutat=eier, menge=3)
         self.assertEqual(str(rz), "3 Eier")
+
+
+class Get_Einkaufsliste_TestCase(TestCase):
+
+    def test_get_einkaufsliste(self):
+        client = Client.objects.create(
+            name="Test", slug="test", gaenge="Vorspeise Hauptgang Nachtisch")
+        
+        reis = Zutat.objects.create(name="Reis", 
+            client = client,
+            einheit="1 kg",
+            preis_pro_einheit=189,
+            menge_pro_einheit=1000,
+            masseinheit="g",
+            kategorie="Grund.")
+        wasser = Zutat.objects.create(name="Wasser", 
+            client = client,
+            einheit="1 l",
+            preis_pro_einheit=10,
+            menge_pro_einheit=1000,
+            masseinheit="ml",
+            kategorie="Grund.")
+        milch = Zutat.objects.create(name="Milch", 
+            client = client,
+            einheit="1 l",
+            preis_pro_einheit=129,
+            menge_pro_einheit=1000,
+            masseinheit="ml",
+            kategorie="Milchprodukte")
+        
+        args = dict(client = client, fuer_kinder=20, fuer_erwachsene=5, zubereitung='')
+        wasserreis = Rezept.objects.create(titel="Wasserreis", **args)
+        milchreis = Rezept.objects.create(titel="Milchreis", **args)
+        
+        RezeptZutat.objects.bulk_create([
+            RezeptZutat(rezept=wasserreis, zutat=reis, menge=500.0, nummer=1),
+            RezeptZutat(rezept=wasserreis, zutat=wasser, menge=2000.0, nummer=2),
+            RezeptZutat(rezept=milchreis, zutat=reis, menge=400.0, nummer=1),
+            RezeptZutat(rezept=milchreis, zutat=milch, menge=2000.0, nummer=2),
+            RezeptZutat(rezept=milchreis, zutat=wasser, menge_qualitativ="etwas", nummer=3),
+        ])
+        args = dict(client = client, gang="Hauptgang")
+        GangPlan.objects.bulk_create([
+            GangPlan(datum=date(2019, 5, 31), rezept=milchreis, **args),
+            GangPlan(datum=date(2019, 6, 1), rezept=wasserreis, **args),
+            GangPlan(datum=date(2019, 6, 2), rezept=milchreis, **args),
+            GangPlan(datum=date(2019, 6, 3), rezept=wasserreis, **args),
+        ])
+        el = get_einkaufsliste('test', date(2019, 5, 31), 3)
+
+        self.assertEqual(
+            el['rezepte'],
+            [("Milchreis", milchreis.id), ("Wasserreis", wasserreis.id)])
+        self.assertEqual(
+            el['messbar'],
+            [(reis, 1300.0), (wasser, 2000.0), (milch, 4000.0)])
+        self.assertEqual(
+            el['qualitativ'],
+            [(wasser, ['etwas', 'etwas'])])
+
 

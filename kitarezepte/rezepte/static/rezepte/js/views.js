@@ -27,14 +27,17 @@ var PlanungView = Backbone.View.extend({
     },
 });
 
+const Tagnamen = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"]
 var MonatView = Backbone.View.extend({
     id: 'monat-table',
     render: function() {
         for (let i = 1; i <= models.data.days_in_month; i++) {
-            var row = $("<tr>", {"class": 'day-row'});
-            row.append($("<td>").text(i + '.' + models.data.month + '.'));
+            let day = new Date(models.data.year, models.data.month-1, i);
+            let row = $("<tr>", {"class": 'day-row'});
+            row.append($("<td>").text(
+                Tagnamen[day.getDay()] + '. ' + i + '.' + models.data.month + '.'));
             models.data.gangfolge.forEach(function(g) {
-                var planung = models.planungen.findWhere({day: i, gang:g});
+                let planung = models.planungen.findWhere({day: i, gang:g});
                 if (!planung) {
                     planung = models.planungen.add({
                         day: i,
@@ -43,7 +46,7 @@ var MonatView = Backbone.View.extend({
                         rezept: models.rezepte.get(-1),
                     });
                 }
-                var pv = new PlanungView({model: planung});
+                let pv = new PlanungView({model: planung});
                 row.append(pv.render().$el);
             });
             this.$el.append(row);

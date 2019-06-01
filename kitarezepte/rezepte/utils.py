@@ -1,9 +1,12 @@
 # coding: utf-8
-from datetime import date
+from datetime import date, timedelta
 from django.contrib.sites.shortcuts import get_current_site
 from django.http import Http404
 from django.shortcuts import get_object_or_404, get_list_or_404
 
+
+MONATSNAMEN = ("", "Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", 
+         "August", "September", "Oktober", "November", "Dezember",)
 
 def get_client(request):
     client = get_current_site(request).domain.split('.')[0]
@@ -51,6 +54,33 @@ def euro2cent(euro):
     Can raise ValueError
     """
     return int(round(100*float(euro.replace(',', '.'))))
+
+def next_dow(dow, today=None):
+    """ return next <day of week> as date 
+
+    where <day of week> is 0..6 for Monday..Sunday.
+    The <today> argument is only for testing
+    """
+    today = today or date.today()
+    weekday = today.weekday()
+    return today + timedelta(
+        days = dow - weekday + (0 if weekday<=dow else 7))
+
+def next_month(year, month, offset=1):
+    newyear, newmonth = year, month + offset
+    if newmonth<1:
+        newmonth += 12
+        newyear += -1
+    elif newmonth>12:
+        newmonth += -12
+        newyear += 1
+    return {
+        'name': "{} {}".format(MONATSNAMEN[newmonth], newyear),
+        'link': "/monat/{}/{}".format(newyear, newmonth),
+    }
+
+
+
 
 TEST_REIS = dict(name="Reis", 
             client_id = 1,

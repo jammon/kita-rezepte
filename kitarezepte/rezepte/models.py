@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import json
 import re
+from collections import Counter, defaultdict
+from datetime import timedelta
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.text import slugify
@@ -286,3 +288,39 @@ class GangPlan(models.Model):
 
     def __str__(self):
         return "Am {0.datum} als {0.gang} {0.rezept.titel}".format(self)
+
+
+def get_einkaufsliste(client_slug, start, dauer):
+    rezept_plaene = GangPlan.objects.filter(  # Für "Folgende Rezepte wurden geplant"
+        client__slug=client_slug,
+        datum__gte=start,
+        datum__lt=start+timedelta(dauer)
+    ).values_list('rezept__titel', 'rezept_id')
+    messbar = defaultdict(float)  # Die Zutaten mit quantitativer Mengenangabe
+    qualitativ = defaultdict(list)  # Die Zutaten mit qualitativer Mengenangabe
+    rezeptcounts = Counter([p[1] for p in rezept_plaene])
+    rezeptzutaten = RezeptZutat.objects.filter(rezept_id__in=rezeptcounts.keys()
+        ).select_related('zutat')
+    
+    for rz in rezeptzutaten:
+        # Wenn messbar:
+        if rz.menge:
+            # Zutat mit Mengenangabe aufsummieren
+            messbar[rz.zutat] += rz.menge * rezeptcounts[rz.rezept_id]
+        # sonst:
+        else:
+            # Zutat mit qualitativer Mengenangabe abspeichern
+            qualitativ[rz.zutat].extend([rz.menge_qualitativ] * rezeptcounts[rz.rezept_id])
+
+    def key(item):
+        zutat = item[0]
+        return zutat.kategorie, zutat.name
+
+    return {
+        'start': start,
+        'dauer': dauer,
+        'rezepte': sorted(set(rezept_plaene)),
+        'messbar': sorted(((zutat, prettyFloat(menge)) for zutat, menge in messbar.items()),
+                          key=key),
+        'qualitativ': sorted(qualitativ.items(), key=key)
+    }
