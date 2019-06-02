@@ -16,13 +16,25 @@
   <body>
     <div class="container">
     {% block navigation %}
-    <nav class="nav">
-      <a class="nav-link" href="/rezepte">Rezepte</a>
-      {% if user.is_authenticated %}
-        <a class="nav-link" href="/zutaten">Zutaten</a>
-      {% endif %}
-      <a class="nav-link" href="/monat">Monatsplan</a>
-      <a class="nav-link" href="/einkaufsliste">Einkaufsliste</a>
+    <nav class="nav navbar navbar-expand-md navbar-light bg-light">
+      <button class="navbar-toggler" type="button" data-toggle="collapse" 
+        data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" 
+        aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="navbar-nav mr-auto">
+          <a class="nav-item nav-link" href="/rezepte">Rezepte</a>
+          {% if user.is_authenticated %}
+            <a class="nav-item nav-link" href="/zutaten">Zutaten</a>
+          {% endif %}
+          <a class="nav-item nav-link" href="/monat">Monatsplan</a>
+          <a class="nav-item nav-link" href="/einkaufsliste">Einkaufsliste</a>
+        </div>
+        <span class="navbar-text">
+          {{ request.user.get_full_name }} ({{ request.session.client_slug }})
+        </span>
+      </div>
     </nav>
     {% endblock navigation %}
     {% block content %} {% endblock content %}

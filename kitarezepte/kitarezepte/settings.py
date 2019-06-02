@@ -29,6 +29,7 @@ config.read_string("""
     [django]
     [server]
         mode: production
+        domain: kita-rezepte
 """)
 config.read(CONFIG_FILE)
 try:
@@ -38,6 +39,7 @@ except KeyError:
     with open(CONFIG_FILE, 'w') as configfile:
         config.write(configfile)
 
+KITAREZEPTE_DOMAIN = config['server']['domain']
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
