@@ -17,9 +17,10 @@ from django.views.generic.list import ListView
 
 
 def index(request):
-    if get_client(request):
-        # TODO: change to client's domain
-        return redirect('/monat')
+    client_slug = get_client(request)
+    if client_slug:
+        client = get_object_or_404(Client, slug=client_slug)
+        return render(request, "rezepte/client-index.html", {'client': client})
     return render(request, "rezepte/index.html")
 
 

@@ -1,5 +1,6 @@
 # coding: utf-8
 from datetime import date, timedelta
+from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
 from django.http import Http404
 from django.shortcuts import get_object_or_404, get_list_or_404
@@ -15,7 +16,7 @@ def get_client(request):
     if client == 'testserver':
         # for unittests
         return 'test-kita'
-    if client == 'kita-rezepte':
+    if client in ('kita-rezepte', settings.KITAREZEPTE_DOMAIN, 'www'):
         return ''
     return client
 
