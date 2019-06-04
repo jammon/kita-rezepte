@@ -60,7 +60,7 @@ class Client(models.Model):
         super().save(*args, **kwargs)
 
     def get_domain(self):
-        get_client_domain(self.slug)
+        return get_client_domain(self.slug)
 
 
 class Editor(models.Model):
