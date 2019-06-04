@@ -4,8 +4,12 @@
   <div class="row">
     <div class="col-md-8 col-xs-12">
       <h1>Kita-Rezepte</h1>
-      <p>Hier werden die Rezepte und Kochpläne der Kindertagesstätte Pusteblume e.V. in Kempen dargestellt und verwaltet.</p>
-      <p>Wir kochen das Mittagessen für unsere Kinder selbst. Wir kochen jahreszeitlich orientiert; die Lebensmittel stammen aus kontrolliert biologischer Landwirtschaft. Gemüse und Milchprodukte werden einmal wöchentlich von einem Bio-Bauern aus der Region geliefert. Grundnahrungsmittel werden über einen Bio-Großhandel bezogen.</p>
+      <p>Hier werden die Rezepte und Kochpläne von Tageseinrichtungen geplant, dargestellt und verwaltet.</p>
+      <ul>
+        {% for client in clients %}
+          <li><a href="{{ client.get_domain }}">{{ client.name }}</a></li>
+        {% endfor %}
+      </ul>
     </div>
     <div class="col-md-4 col-xs-12">
       {% if request.user.is_authenticated %}

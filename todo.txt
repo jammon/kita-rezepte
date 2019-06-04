@@ -8,4 +8,3 @@
 (B) Logging einbauen
 (B) ADMINS einstellen für Fehlerbenachrichtigungen
 (A) Link zur Hauptseite in die navbar
-(A) Hauptseite für jede Kita gestalten
