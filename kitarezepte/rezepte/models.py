@@ -9,7 +9,7 @@ from django.utils.text import slugify
 from taggit.managers import TaggableManager
 from taggit.models import TaggedItemBase
 
-from .utils import prettyFloat, cent2euro
+from .utils import prettyFloat, cent2euro, get_client_domain
 
 REZEPTKATEGORIEN = (
     ("Reis", "Reis"),
@@ -58,6 +58,9 @@ class Client(models.Model):
     def save(self, *args, **kwargs):
         self.slug = slug = slugify(self.name, allow_unicode=True)
         super().save(*args, **kwargs)
+
+    def get_domain(self):
+        get_client_domain(self.slug)
 
 
 class Editor(models.Model):

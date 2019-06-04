@@ -30,6 +30,7 @@ config.read_string("""
     [server]
         mode: production
         domain: kita-rezepte
+        fulldomain: kita-rezepte.de
 """)
 config.read(CONFIG_FILE)
 try:
@@ -40,6 +41,7 @@ except KeyError:
         config.write(configfile)
 
 KITAREZEPTE_DOMAIN = config['server']['domain']
+KITAREZEPTE_FULL_DOMAIN = config['server']['fulldomain']
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases

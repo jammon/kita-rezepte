@@ -21,7 +21,8 @@ def index(request):
     if client_slug:
         client = get_object_or_404(Client, slug=client_slug)
         return render(request, "rezepte/client-index.html", {'client': client})
-    return render(request, "rezepte/index.html")
+    clients = Client.objects.all().order_by('name')
+    return render(request, "rezepte/index.html", {'clients': clients})
 
 
 def login(request):

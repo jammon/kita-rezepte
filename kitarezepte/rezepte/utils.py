@@ -20,6 +20,12 @@ def get_client(request):
         return ''
     return client
 
+def get_client_domain(slug):
+    if slug in ('dev', 'test-kita'):
+        return '127.0.0.1'
+    return slug + '.' + settings.KITAREZEPTE_FULL_DOMAIN
+
+
 def client_param(view):
     def view_with_client_param(request, *args, **kwargs):
         client_slug = get_client(request)
@@ -79,8 +85,6 @@ def next_month(year, month, offset=1):
         'name': "{} {}".format(MONATSNAMEN[newmonth], newyear),
         'link': "/monat/{}/{}".format(newyear, newmonth),
     }
-
-
 
 
 TEST_REIS = dict(name="Reis", 
