@@ -4,3 +4,4 @@ x 2019-05-01 Welche Views brauche ich?
 x 2019-05-29 Wenn man eine Zutat bearbeitet hat, soll man auf die allgemeine Zutatenliste kommen
 x 2019-06-02 Angemeldeten User in navbar anzeigen
 x 2019-06-03 Hauptseite für jede Kita gestalten
+x 2019-06-10 Rezeptzutaten mit qualitativen Mengenangaben erscheinen doppelt

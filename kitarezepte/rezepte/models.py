@@ -262,7 +262,7 @@ class RezeptZutat(models.Model):
 
     def preis(self):
         '''Gibt den Preis der Zutat in Cent'''
-        if self.menge_qualitativ:
+        if self.menge_qualitativ or not self.menge:
             return 0
         z = self.zutat
         if z.preis_pro_einheit==KEIN_PREIS:

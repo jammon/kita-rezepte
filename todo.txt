@@ -8,3 +8,12 @@
 (B) Logging einbauen
 (B) ADMINS einstellen für Fehlerbenachrichtigungen
 (A) Link zur Hauptseite in die navbar
+(B) Hauptseite der Kitas mit TinyMCE editierbar machen
+(B) Deployment checklist durcharbeiten
+Rezeptzutaten mit gleichem Namen durcharbeiten
+Planungen für Rezepte mit gleichem Namen durcharbeiten
+(B) memcache oder redis einsetzen für sessions
+(A) Slugs mit Umlauten funktionieren nicht in URLs
+(A) Zubereitung und Anmerkungen als html ausgeben
+(A) TinyMCE für Zubereitung ung Anmerkungen
+in Rezepteliste Kategorie-Überschriften einfügen
