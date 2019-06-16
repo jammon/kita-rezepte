@@ -40,4 +40,5 @@ urlpatterns = [
     path('ajax/set-gang/', ajax.set_gangplan),
     path('tests', TemplateView.as_view(template_name="rezepte/tests.html"),
          name='tests'),
+    re_path(r'^tinymce/', include('tinymce.urls')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

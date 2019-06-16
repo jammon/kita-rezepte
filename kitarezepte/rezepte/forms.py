@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django import forms
+from tinymce.widgets import TinyMCE
 
 from .models import Zutat, Rezept, MASSEINHEITEN, ZUTATENKATEGORIEN
 
@@ -30,5 +31,9 @@ class RezeptForm(forms.ModelForm):
         labels = {
             'fuer_kinder': 'Anzahl Kinder', 
             'fuer_erwachsene': 'Anzahl Erwachsene', 
+        }
+        widgets = {
+            'zubereitung': TinyMCE(attrs={'cols': 50, 'rows': 20}),
+            'anmerkungen': TinyMCE(attrs={'cols': 50, 'rows': 10}),
         }
 

@@ -153,7 +153,7 @@ class Rezept(models.Model):
        Die Zutaten werden getrennt davon mit dem Key des Rezepts gespeichert
        (Model RezeptZutat).
     '''
-    titel = models.CharField(max_length=30)
+    titel = models.CharField(max_length=60)
     untertitel = models.CharField(max_length=100, blank=True, null=True)
     client = models.ForeignKey(
         Client, on_delete=models.CASCADE, related_name="rezepte")
@@ -192,7 +192,8 @@ class Rezept(models.Model):
         vergeben ist.
         """
         # Slug erstellen und Sonderzeichen ersetzen
-        self.slug = slug = slugify(self.titel, allow_unicode=True
+        self.slug = slug = (
+            slugify(self.titel, allow_unicode=True) or 'kein-titel'
             ).translate(translate_specials)
         # Alle Slugs raussuchen, die genau so anfangen
         existing_slugs = Rezept.objects.all().filter(slug__startswith=slug)\

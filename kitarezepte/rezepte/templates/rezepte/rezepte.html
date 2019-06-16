@@ -12,7 +12,7 @@
         </tr>
         {% endifchanged %}
         <tr>
-          <td><a href="{{ r.id }}">{{ r.titel }}</a></td>
+          <td><a href="{{ r.slug }}">{{ r.titel }}</a></td>
           <td>{% if user.is_authenticated %}{{ r.preisToStr|safe }}{% endif %}</td>
         </tr>
       {% empty %}

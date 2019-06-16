@@ -1,23 +1,22 @@
-(D) list_filter auf Kategorien spezifisch für Model machen
-(B) zutat.name sollte unique sein
-(B) HSTS einschalten https://docs.djangoproject.com/en/2.2/ref/middleware/#http-strict-transport-security
-(B) HTTPS aktivieren, CSRF_COOKIE_SECURE und SESSION_COOKIE_SECURE setzen
-(C) CONN_MAX_AGE setzen
-(C) Cached templates aktivieren https://docs.djangoproject.com/en/2.2/ref/templates/api/#template-loaders
-(B) Logging einbauen
-(B) ADMINS einstellen für Fehlerbenachrichtigungen
+(D) list_filter auf Kategorien spezifisch für Model machen +admin
+(B) zutat.name sollte unique sein +models
+(B) HSTS einschalten https://docs.djangoproject.com/en/2.2/ref/middleware/#http-strict-transport-security +deployment
+(B) HTTPS aktivieren, CSRF_COOKIE_SECURE und SESSION_COOKIE_SECURE setzen +deployment
+(C) CONN_MAX_AGE setzen +deployment
+(C) Cached templates aktivieren https://docs.djangoproject.com/en/2.2/ref/templates/api/#template-loaders +deployment
+(B) Logging einbauen +deployment
+(B) ADMINS einstellen für Fehlerbenachrichtigungen +deployment
 (A) Link zur Hauptseite in die navbar
 (B) Hauptseite der Kitas mit TinyMCE editierbar machen
-(B) Deployment checklist durcharbeiten
-Rezeptzutaten mit gleichem Namen durcharbeiten
-Planungen für Rezepte mit gleichem Namen durcharbeiten
-(B) memcache oder redis einsetzen für sessions
-(A) TinyMCE für Zubereitung ung Anmerkungen
-Monatsplan stellt die Planungen nicht dar
-im Monatsplan sind keine Rezepte auswählbar
-Wochenendtage im Monatsplan berücksichtigen
-Tagesplan programmieren
-Wenn die Menge nicht angegeben ist, steht bei der Rezeptzutat undefined
-Die Kategorien der Rezepte werden beim Scan nicht übernommen
-Wenn ein Rezept nicht gefunden wird, auf die Rezepte-Seite weiterleiten
-Kategorien bei Rezepte anzeigen und bearbeitbar machen
+(B) Deployment checklist durcharbeiten +deployment
+(B) Rezeptzutaten mit gleichem Namen durcharbeiten +Inhalte
+(B) Planungen für Rezepte mit gleichem Namen durcharbeiten +Inhalte
+(B) memcache oder redis einsetzen für sessions +deployment
+(B) im +Monatsplan sind keine Rezepte auswählbar
+(A) Wochenendtage im +Monatsplan berücksichtigen
+(A) +Tagesplan programmieren
+(B) Wenn die Menge nicht angegeben ist, steht bei der Rezeptzutat undefined +rezept
+(A) Die Kategorien der Rezepte werden beim Scan nicht übernommen +Inhalte
+(C) Wenn ein Rezept nicht gefunden wird, auf die Rezepte-Seite weiterleiten +rezept
+(A) Kategorien bei Rezepte anzeigen und bearbeitbar machen +rezept
+(A) Wenn ein +rezept editiert wird, erscheinen die Zutaten hinterher mehrfach

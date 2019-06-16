@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 {% load static %}
+{% block extrahead %}
+  <link rel="stylesheet" href="{% static 'vendor/jquery-ui-1.12.1.custom/jquery-ui.css' %}">
+  {{ form.media }}
+{% endblock extrahead %}
 {% block content %}
   <form action="" id="rezept-edit-form" method="post">{% csrf_token %}
   <div class="row">
@@ -66,9 +70,6 @@
   </div>
   </form>
 {% endblock content %}
-{% block extrahead %}
-<link rel="stylesheet" href="{% static 'vendor/jquery-ui-1.12.1.custom/jquery-ui.css' %}">
-{% endblock extrahead %}
 {% block extrascripts %}
 <script src="{% static 'vendor/jquery-ui-1.12.1.custom/jquery-ui.js' %}"></script>
 <script src="{% static 'vendor/underscore.js' %}"></script>
