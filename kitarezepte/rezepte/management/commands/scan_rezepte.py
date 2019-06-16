@@ -16,6 +16,7 @@ rezept_dict = {}
 rezept_zutaten = []
 gangplaene = []
 zutatenkategorien = {lang: kurz for kurz, lang in ZUTATENKATEGORIEN}
+gelesen = defaultdict(int)
 
 def euro2cent(euro):
     """ Calculates the Cents from an Euro string. 
@@ -43,6 +44,9 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS('Einlesen erfolgreich.'))
         self.stdout.write('{} Zutaten, {} Rezepte, {} Pläne eingelesen.'.format(
             len(zutaten), len(rezepte), len(gangplaene)))
+        self.stdout.write('Gelesen:')
+        for k, v in gelesen.items():
+            self.stdout.write('{}: {}'.format(k, v))
         GangPlan.objects.bulk_create(gangplaene)
 
 # zutaten ------------------------------------------------------------------
@@ -55,6 +59,7 @@ class Command(BaseCommand):
             if zutat is not None:
                 zutaten.append(zutat)
                 zutat_dict[zutat.name] = zutat
+                gelesen['Zutaten'] +=1
         Zutat.objects.bulk_create(zutaten)
 
     def get_zutat(self, soup):
@@ -110,6 +115,7 @@ class Command(BaseCommand):
                 if rezept is not None:
                     rezepte.append(rezept)
                     rezept_dict[rezept.titel] = rezept
+                    gelesen['Rezepte'] +=1
 
     def read_rezept(self, url):
         r = requests.get('https://kita-rezepte.appspot.com/' + url)
@@ -123,19 +129,20 @@ class Command(BaseCommand):
             'fuer_kinder': soup.find(id='kinder').string,
             'fuer_erwachsene': soup.find(id='erwachsene').string,
             'zubereitung': ''.join([str(part) for part in soup.find(id='zubereitung').contents]),
-            'kategorie': [soup.find(id='kategorie').string,
-                          soup.find(id='rezept_gang').string],
         }
-        div = self.rezeptbuch.find('h4', string=rezept_dict['titel']).next_sibling
-        while isinstance(div, NavigableString):
-            div = div.next_sibling
-        rezept_dict['anmerkungen'] = div.find(class_="anmerkungen").string
+        div = self.rezeptbuch.find('h4', string=rezept_dict['titel'])
+        rezept_dict['anmerkungen'] = div.parent.find(class_="anmerkungen").string or ''
+        if rezept_dict['anmerkungen']:
+            gelesen['Anmerkungen'] +=1
         rezept = Rezept.objects.create(**rezept_dict)
+        rezept.kategorie.add(soup.find(id='kategorie').string,
+                             soup.find(id='rezept_gang').string)
 
         for nr, tr in enumerate(soup.find(id='zutatenliste').find_all('tr')):
             rz = self.read_rezeptzutat(tr.td.string, rezept.id, nr+1)
             if rz is not None:
                 rezept_zutaten.append(rz)
+                gelesen['Rezeptzutaten'] +=1
         return rezept
 
     def read_rezeptzutat(self, string, rezept_id, nummer):
@@ -181,9 +188,9 @@ class Command(BaseCommand):
                 tds = tr.find_all('td')
                 tag = tds[0].a.string.strip()[:-1]
                 datum = date(jahr, monat, int(tag))
-                self.read_gangplan(datum, 'vorspeise', tds[2].span.string.strip())
-                self.read_gangplan(datum, 'hauptgang', tds[3].span.string.strip())
-                self.read_gangplan(datum, 'nachtisch', tds[4].span.string.strip())
+                self.read_gangplan(datum, 'Vorspeise', tds[2].span.string.strip())
+                self.read_gangplan(datum, 'Hauptgang', tds[3].span.string.strip())
+                self.read_gangplan(datum, 'Nachtisch', tds[4].span.string.strip())
 
             monat -= 1
             if monat == 0:
@@ -200,4 +207,5 @@ class Command(BaseCommand):
             rezept = rezept_dict[rezept_titel],
             gang = gang)
         gangplaene.append(gangplan)
+        gelesen['Pläne'] +=1
         return gangplan

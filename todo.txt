@@ -1,5 +1,4 @@
 (D) list_filter auf Kategorien spezifisch für Model machen
-(D) Rezepte.slug akzeptiert keine Sonderzeichen
 (B) zutat.name sollte unique sein
 (B) HSTS einschalten https://docs.djangoproject.com/en/2.2/ref/middleware/#http-strict-transport-security
 (B) HTTPS aktivieren, CSRF_COOKIE_SECURE und SESSION_COOKIE_SECURE setzen
@@ -13,7 +12,12 @@
 Rezeptzutaten mit gleichem Namen durcharbeiten
 Planungen für Rezepte mit gleichem Namen durcharbeiten
 (B) memcache oder redis einsetzen für sessions
-(A) Slugs mit Umlauten funktionieren nicht in URLs
-(A) Zubereitung und Anmerkungen als html ausgeben
 (A) TinyMCE für Zubereitung ung Anmerkungen
-in Rezepteliste Kategorie-Überschriften einfügen
+Monatsplan stellt die Planungen nicht dar
+im Monatsplan sind keine Rezepte auswählbar
+Wochenendtage im Monatsplan berücksichtigen
+Tagesplan programmieren
+Wenn die Menge nicht angegeben ist, steht bei der Rezeptzutat undefined
+Die Kategorien der Rezepte werden beim Scan nicht übernommen
+Wenn ein Rezept nicht gefunden wird, auf die Rezepte-Seite weiterleiten
+Kategorien bei Rezepte anzeigen und bearbeitbar machen

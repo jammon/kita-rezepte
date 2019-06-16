@@ -68,10 +68,19 @@ def rezepte(request, client_slug='', id=0, slug='', edit=False):
     if not (id or slug):
         # deliver all recipes
         recipes = Rezept.objects.filter(client__slug=client_slug)
-        if len(recipes)==0:
-            # Does the client event exist?
-            get_object_or_404(Client, slug=client_slug)
-        return render(request, 'rezepte/rezepte.html', {'recipes': recipes})
+        client = get_object_or_404(Client, slug=client_slug)
+        gaenge = client.gaenge.split()
+        for r in recipes:
+            for g in gaenge:
+                if g in r.kategorie.names():
+                    r.gang = g
+                    break
+            else:
+                r.gang = 'Unsortiert'
+        def sortkey(rezept):
+            return rezept.gang + rezept.slug
+        return render(request, 'rezepte/rezepte.html',
+                      {'recipes': sorted(recipes, key=sortkey)})
 
     if edit:
         return rezept_edit(request, client_slug, id, slug)

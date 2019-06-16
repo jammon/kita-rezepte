@@ -142,6 +142,11 @@ class Zutat(models.Model):
 class RezeptKategorie(TaggedItemBase):
     content_object = models.ForeignKey('Rezept', on_delete=models.CASCADE)
 
+TRANSTABLE = {'ä': 'ae', 'ö': 'oe', 'ü': 'ue', 
+              'Ä': 'ae', 'Ö': 'oe', 'Ü': 'ue', 
+              'ß': 'ss', 
+              'é': 'e', 'è': 'e', 'à': 'a', }
+translate_specials = str.maketrans(TRANSTABLE)
 
 class Rezept(models.Model):
     '''Enthält ein Rezept mit Titel, Kochanweisung usw.
@@ -186,7 +191,9 @@ class Rezept(models.Model):
         """Errechnet ein slug, das aus dem Titel erstellt wird und noch nicht
         vergeben ist.
         """
-        self.slug = slug = slugify(self.titel, allow_unicode=True)
+        # Slug erstellen und Sonderzeichen ersetzen
+        self.slug = slug = slugify(self.titel, allow_unicode=True
+            ).translate(translate_specials)
         # Alle Slugs raussuchen, die genau so anfangen
         existing_slugs = Rezept.objects.all().filter(slug__startswith=slug)\
             .exclude(pk=self.pk)\

@@ -47,9 +47,9 @@ class Rezept_TestCase(TestCase):
         ms0 = Rezept.objects.create(titel="Möhren-Salat süß", **TEST_REZEPT)
         ms1 = Rezept.objects.create(titel="Möhren-Salat", **TEST_REZEPT)
         ms2 = Rezept.objects.create(titel="Möhren-Salat", **TEST_REZEPT)
-        self.assertEqual(ms0.slug, "möhren-salat-süß")
-        self.assertEqual(ms1.slug, "möhren-salat")
-        self.assertEqual(ms2.slug, "möhren-salat1")
+        self.assertEqual(ms0.slug, "moehren-salat-suess")
+        self.assertEqual(ms1.slug, "moehren-salat")
+        self.assertEqual(ms2.slug, "moehren-salat1")
 
 
 class RezeptZutat_TestCase(TestCase):

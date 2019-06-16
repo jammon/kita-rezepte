@@ -6,8 +6,13 @@
       <h1>Rezepte</h1>
       <table class="table">
       {% for r in recipes  %}
+        {% ifchanged %}
         <tr>
-          <td><a href="{{ r.slug }}">{{ r.titel }}</a></td>
+          <td colspan="2"><h2>{{ r.gang }}</h2></td>
+        </tr>
+        {% endifchanged %}
+        <tr>
+          <td><a href="{{ r.id }}">{{ r.titel }}</a></td>
           <td>{% if user.is_authenticated %}{{ r.preisToStr|safe }}{% endif %}</td>
         </tr>
       {% empty %}

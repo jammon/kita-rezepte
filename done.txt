@@ -5,3 +5,8 @@ x 2019-05-29 Wenn man eine Zutat bearbeitet hat, soll man auf die allgemeine Zut
 x 2019-06-02 Angemeldeten User in navbar anzeigen
 x 2019-06-03 Hauptseite für jede Kita gestalten
 x 2019-06-10 Rezeptzutaten mit qualitativen Mengenangaben erscheinen doppelt
+x 2019-06-15 Slugs mit Umlauten funktionieren nicht in URLs
+x 2019-06-15 Rezepte.slug akzeptiert keine Sonderzeichen
+x 2019-06-15 Zubereitung und Anmerkungen als html ausgeben
+x 2019-06-16 Edit-Seite auf Rezeptseite verlinken
+x 2019-06-16 in Rezepteliste Kategorie-Überschriften einfügen
