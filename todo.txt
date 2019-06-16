@@ -13,7 +13,6 @@
 (B) Planungen für Rezepte mit gleichem Namen durcharbeiten +Inhalte
 (B) memcache oder redis einsetzen für sessions +deployment
 (B) im +Monatsplan sind keine Rezepte auswählbar
-(A) Wochenendtage im +Monatsplan berücksichtigen
 (A) +Tagesplan programmieren
 (B) Wenn die Menge nicht angegeben ist, steht bei der Rezeptzutat undefined +rezept
 (A) Die Kategorien der Rezepte werden beim Scan nicht übernommen +Inhalte

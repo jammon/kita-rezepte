@@ -34,24 +34,30 @@ var MonatView = Backbone.View.extend({
         for (let i = 1; i <= models.data.days_in_month; i++) {
             let day = new Date(models.data.year, models.data.month-1, i);
             let row = $("<tr>", {"class": 'day-row'});
-            row.append($("<td>").text(
-                Tagnamen[day.getDay()] + '. ' + i + '.' + models.data.month + '.'));
-            models.data.gangfolge.forEach(function(g) {
-                let planung = models.planungen.findWhere({day: i, gang:g});
-                if (!planung) {
-                    planung = models.planungen.add({
-                        day: i,
-                        datum: [models.data.year, models.data.month, i],
-                        gang: g,
-                        rezept: models.rezepte.get(-1),
-                    });
-                }
-                let pv = new PlanungView({model: planung});
-                row.append(pv.render().$el);
-            });
+            row.append($("<td>").text(this.day_title(day)));
+            if ([0, 6].indexOf(day.getDay())>-1){
+                row.append($("<td>").attr('colspan', models.data.gangfolge.length));
+            } else {
+                models.data.gangfolge.forEach(function(g) {
+                    let planung = models.planungen.findWhere({day: i, gang:g});
+                    if (!planung) {
+                        planung = models.planungen.add({
+                            day: i,
+                            datum: [models.data.year, models.data.month, i],
+                            gang: g,
+                            rezept: models.rezepte.get(-1),
+                        });
+                    }
+                    let pv = new PlanungView({model: planung});
+                    row.append(pv.render().$el);
+                });
+            }
             this.$el.append(row);
         }
         return this;
+    },
+    day_title: function(day) {
+        return Tagnamen[day.getDay()] + '. ' + day.getDate() + '.' + models.data.month + '.';
     },
 });
 
