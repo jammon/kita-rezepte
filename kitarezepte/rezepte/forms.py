@@ -33,7 +33,7 @@ class RezeptForm(forms.ModelForm):
             'fuer_erwachsene': 'Anzahl Erwachsene', 
         }
         widgets = {
-            'zubereitung': TinyMCE(attrs={'cols': 50, 'rows': 20}),
-            'anmerkungen': TinyMCE(attrs={'cols': 50, 'rows': 10}),
+            'zubereitung': TinyMCE(attrs={'cols': 50, 'rows': 12}),
+            'anmerkungen': TinyMCE(attrs={'cols': 50, 'rows': 6}),
         }
 

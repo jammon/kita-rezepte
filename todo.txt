@@ -19,4 +19,3 @@
 (A) Die Kategorien der Rezepte werden beim Scan nicht übernommen +Inhalte
 (C) Wenn ein Rezept nicht gefunden wird, auf die Rezepte-Seite weiterleiten +rezept
 (A) Kategorien bei Rezepte anzeigen und bearbeitbar machen +rezept
-(A) Wenn ein +rezept editiert wird, erscheinen die Zutaten hinterher mehrfach

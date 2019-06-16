@@ -12,3 +12,4 @@ x 2019-06-16 Edit-Seite auf Rezeptseite verlinken
 x 2019-06-16 in Rezepteliste Kategorie-Überschriften einfügen
 x 2019-06-16 TinyMCE für Zubereitung ung Anmerkungen
 x 2019-06-16 +Monatsplan stellt die Planungen nicht dar
+x 2019-06-16 Wenn ein +rezept editiert wird, erscheinen die Zutaten hinterher mehrfach

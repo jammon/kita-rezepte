@@ -110,8 +110,7 @@ def rezept_edit(request, client_slug, id, slug):
             for k, v in request.POST.items():
                 if k.startswith('rz'):
                     rezeptzutaten.append(RezeptZutat(rezept=recipe, **json.loads(v)))
-            for rz in rezeptzutaten:
-                RezeptZutat.objects.bulk_create(rezeptzutaten)
+            RezeptZutat.objects.bulk_create(rezeptzutaten)
             return HttpResponseRedirect('/rezepte/' + recipe.slug)
     else:
         form = RezeptForm(instance=recipe)
