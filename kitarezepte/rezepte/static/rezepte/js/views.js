@@ -34,7 +34,7 @@ var MonatView = Backbone.View.extend({
         for (let i = 1; i <= models.data.days_in_month; i++) {
             let day = new Date(models.data.year, models.data.month-1, i);
             let row = $("<tr>", {"class": 'day-row'});
-            row.append($("<td>").text(this.day_title(day)));
+            row.append(this.day_title(day));
             if ([0, 6].indexOf(day.getDay())>-1){
                 row.append($("<td>").attr('colspan', models.data.gangfolge.length));
             } else {
@@ -57,7 +57,13 @@ var MonatView = Backbone.View.extend({
         return this;
     },
     day_title: function(day) {
-        return Tagnamen[day.getDay()] + '. ' + day.getDate() + '.' + models.data.month + '.';
+        return $("<th>")
+            .append($("<a>")
+                .text(Tagnamen[day.getDay()] + '. ' + 
+                      day.getDate() + '.' + models.data.month + '.')
+                .attr('href', ['/tag', models.data.year, models.data.month, 
+                               day.getDate()].join('/'))
+            );
     },
 });
 

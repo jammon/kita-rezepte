@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="row">
+    <div class="col">
+      <h1>Menüplan für {{ day|date:"j. F Y" }}</h1>
+    </div>
+  </div>
+  {% for p in planungen %}
+  <div class="row">
+    <div class="col">
+      <h2>
+        {{ p.gang }}: <a href="/rezepte/{{ p.rezept.slug }}">{{ p.rezept.titel }}</a>
+      </h2>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col col-sm-4 xs-12">
+      {# <h3>Zutaten</h3> #}
+      {% for rz in p.rezept.zutaten.all  %}
+        <p>
+          {% if user.is_authenticated %}
+            <a href="/zutaten/{{ rz.zutat.id }}">{{ rz }}</a>
+          {% else %}
+            {{ rz }}
+          {% endif %}
+        </p>
+      {% endfor %}
+    </div>
+    <div class="col col-sm-8 xs-12">
+      {# <h3>Zubereitung</h3> #}
+      {{ p.rezept.zubereitung|safe }}
+      {% if p.rezept.anmerkungen %}
+        <h3>Anmerkungen</h3>
+        {{ p.rezept.anmerkungen|safe }}
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+{% endblock content %}

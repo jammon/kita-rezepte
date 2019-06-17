@@ -183,7 +183,7 @@ def monat(request, client_slug, year=0, month=0):
         datum__gte=date(year, month, 1),
         datum__lt=naechster_erster,
         client__slug=client_slug,
-    ).select_related('rezept')
+    ).select_related('rezept_zutaten')
     planungen_js = [
         {'datum': [g.datum.year, g.datum.month, g.datum.day],
          'gang': g.gang, 
@@ -199,7 +199,7 @@ def monat(request, client_slug, year=0, month=0):
             'rezepte': rezepte,
             'month': month,
             'year': year,
-            'gangfolge': "Vorspeise Hauptgang Nachtisch",
+            'gangfolge': "Vorspeise Hauptgang Nachtisch",  # TODO
             'days_in_month': days_in_month(year, month),
             'is_authenticated': request.user.is_authenticated }
     return render(request, 'rezepte/monat.html', {
@@ -209,6 +209,24 @@ def monat(request, client_slug, year=0, month=0):
         'next': next_month(year, month, 1),
         'prev': next_month(year, month, -1),
     })
+
+
+# Tag ------------------------------------------------------------------
+@client_param
+def tag(request, client_slug, year=0, month=0, day=0):
+    day = date(int(year), int(month), int(day)) if year else date.today()
+    planungen = GangPlan.objects.filter(
+        datum=day,
+        client__slug=client_slug,
+    ).select_related('rezept')
+    client = get_object_or_404(Client, slug=client_slug)
+    def sortkey(planung):
+        return client.gaenge.find(planung.gang)
+    data = {'planungen': sorted(planungen, key=sortkey),
+            'day': day,
+            'is_authenticated': request.user.is_authenticated }
+    return render(request, 'rezepte/tag.html', data)
+
 
 # Einkaufsliste ------------------------------------------------------------------
 @client_param

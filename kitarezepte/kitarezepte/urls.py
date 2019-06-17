@@ -36,6 +36,8 @@ urlpatterns = [
     path('zutaten/delete', views.zutaten_delete),
     path('monat/<int:year>/<int:month>', views.monat),
     path('monat', views.monat),
+    path('tag/<int:year>/<int:month>/<int:day>', views.tag),
+    path('tag', views.tag),
     path('einkaufsliste', views.einkaufsliste),
     path('ajax/set-gang/', ajax.set_gangplan),
     path('tests', TemplateView.as_view(template_name="rezepte/tests.html"),
