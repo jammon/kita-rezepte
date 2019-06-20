@@ -14,7 +14,6 @@
 (B) memcache oder redis einsetzen für sessions +deployment
 (B) im +Monatsplan sind keine Rezepte auswählbar
 (B) Wenn die Menge nicht angegeben ist, steht bei der Rezeptzutat undefined +rezept
-(A) Die Kategorien der Rezepte werden beim Scan nicht übernommen +Inhalte
 (C) Wenn ein Rezept nicht gefunden wird, auf die Rezepte-Seite weiterleiten +rezept
 (A) Kategorien bei Rezepte anzeigen und bearbeitbar machen +rezept
 (D) Meta-Description und Title für die einzelnen Seiten anpassen

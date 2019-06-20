@@ -167,6 +167,7 @@ class Rezept(models.Model):
     anmerkungen = models.TextField(null=True, blank=True)
     eingegeben_von = models.ForeignKey(User, on_delete=models.SET_NULL,
                                        null=True, blank=True)
+    gang = models.CharField(max_length=10)
     kategorie = TaggableManager(verbose_name='Kategorie',
                                 help_text="Art des Essens",
                                 through=RezeptKategorie)

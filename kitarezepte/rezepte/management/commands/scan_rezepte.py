@@ -128,15 +128,17 @@ class Command(BaseCommand):
             'client_id': self.client_id,
             'fuer_kinder': soup.find(id='kinder').string,
             'fuer_erwachsene': soup.find(id='erwachsene').string,
-            'zubereitung': ''.join([str(part) for part in soup.find(id='zubereitung').contents]),
+            'zubereitung': ''.join(map(str, soup.find(id='zubereitung').contents)),
+            'gang': soup.find(id='rezept_gang').string,
         }
         div = self.rezeptbuch.find('h4', string=rezept_dict['titel'])
         rezept_dict['anmerkungen'] = div.parent.find(class_="anmerkungen").string or ''
         if rezept_dict['anmerkungen']:
             gelesen['Anmerkungen'] +=1
         rezept = Rezept.objects.create(**rezept_dict)
-        rezept.kategorie.add(soup.find(id='kategorie').string,
-                             soup.find(id='rezept_gang').string)
+        kategorie = soup.find(id='kategorie').string
+        if kategorie:
+            rezept.kategorie.add(kategorie)
 
         for nr, tr in enumerate(soup.find(id='zutatenliste').find_all('tr')):
             rz = self.read_rezeptzutat(tr.td.string, rezept.id, nr+1)

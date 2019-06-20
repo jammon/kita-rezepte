@@ -25,8 +25,11 @@
         <h2>Anmerkungen</h2>
         <p>{{ recipe.anmerkungen|safe }}</p>
       {% endif %}
+      <p>Geeignet als {{ recipe.gang }} </p>
+      <p>Kategorie {{ recipe.kategorie.names|join:", " }} </p>
+
       {% if user.is_authenticated %}
-        <a href="{{ recipe.id }}/edit" class="btn btn-default" role="button">Bearbeiten</a>
+        <p><a href="{{ recipe.id }}/edit" class="btn btn-default" role="button">Bearbeiten</a></p>
       {% endif %}
     </div>
   </div>

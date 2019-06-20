@@ -15,3 +15,5 @@ x 2019-06-16 +Monatsplan stellt die Planungen nicht dar
 x 2019-06-16 Wenn ein +rezept editiert wird, erscheinen die Zutaten hinterher mehrfach
 x 2019-06-16 Wochenendtage im +Monatsplan berücksichtigen
 x 2019-06-17 +Tagesplan programmieren
+x 2019-06-20 Gang als eigenes Field bei +Rezept
+x 2019-06-20 Die Kategorien der Rezepte werden beim Scan nicht übernommen +Inhalte

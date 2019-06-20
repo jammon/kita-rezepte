@@ -71,11 +71,7 @@ def rezepte(request, client_slug='', id=0, slug='', edit=False):
         client = get_object_or_404(Client, slug=client_slug)
         gaenge = client.gaenge.split()
         for r in recipes:
-            for g in gaenge:
-                if g in r.kategorie.names():
-                    r.gang = g
-                    break
-            else:
+            if not r.gang:
                 r.gang = 'Unsortiert'
         def sortkey(rezept):
             return rezept.gang + rezept.slug
@@ -86,39 +82,39 @@ def rezepte(request, client_slug='', id=0, slug='', edit=False):
         return rezept_edit(request, client_slug, id, slug)
 
     # show just one recipe
-    recipe = get_object_or_404(Rezept, **get_query_args(client_slug, id, slug))
+    rezept = get_object_or_404(Rezept, **get_query_args(client_slug, id, slug))
     return render(
         request,
         'rezepte/rezept.html',
-        {'recipe': recipe,
-         'zutaten': recipe.zutaten.all().select_related('zutat')})
+        {'recipe': rezept,
+         'zutaten': rezept.zutaten.all().select_related('zutat').order_by('nummer')})
 
 def rezept_edit(request, client_slug, id, slug):
     if id or slug:
-        recipe = get_object_or_404(Rezept, **get_query_args(client_slug, id, slug))
+        rezept = get_object_or_404(Rezept, **get_query_args(client_slug, id, slug))
     else:
-        recipe = None
+        rezept = None
     if request.method == 'POST':
-        form = RezeptForm(request.POST, instance=recipe)
+        form = RezeptForm(request.POST, instance=rezept)
         # import pdb; pdb.set_trace()
         if form.is_valid():
             form.save()
             # ditch old RezeptZutaten
-            RezeptZutat.objects.filter(rezept=recipe).delete()
+            RezeptZutat.objects.filter(rezept=rezept).delete()
             # collect and save RezeptZutaten
             rezeptzutaten = []
             for k, v in request.POST.items():
                 if k.startswith('rz'):
-                    rezeptzutaten.append(RezeptZutat(rezept=recipe, **json.loads(v)))
+                    rezeptzutaten.append(RezeptZutat(rezept=rezept, **json.loads(v)))
             RezeptZutat.objects.bulk_create(rezeptzutaten)
-            return HttpResponseRedirect('/rezepte/' + recipe.slug)
+            return HttpResponseRedirect('/rezepte/' + rezept.slug)
     else:
-        form = RezeptForm(instance=recipe)
+        form = RezeptForm(instance=rezept)
     zutaten = Zutat.objects.filter(client__slug=client_slug)
     return render(request, 'rezepte/rezept-edit.html', 
                   {'form': form,
                    'zutaten': zutaten,
-                   'rezeptzutaten': recipe.zutaten.all().select_related('zutat')})
+                   'rezeptzutaten': rezept.zutaten.all().select_related('zutat')})
 
 
 # Zutaten ------------------------------------------------------------------
@@ -183,7 +179,7 @@ def monat(request, client_slug, year=0, month=0):
         datum__gte=date(year, month, 1),
         datum__lt=naechster_erster,
         client__slug=client_slug,
-    ).select_related('rezept_zutaten')
+    ).select_related('rezept')
     planungen_js = [
         {'datum': [g.datum.year, g.datum.month, g.datum.day],
          'gang': g.gang, 
@@ -192,14 +188,16 @@ def monat(request, client_slug, year=0, month=0):
     rezepte = [
         {'id': r.id, 
          'titel': r.titel,
+         'gang': r.gang,
          'kategorien': list(r.kategorie.names()),
          'preis': '--' if r._preis==KEIN_PREIS else r._preis}
         for r in Rezept.objects.filter(client__slug=client_slug)]
+    client = get_object_or_404(Client, slug=client_slug)
     data = {'planungen': planungen_js,
             'rezepte': rezepte,
             'month': month,
             'year': year,
-            'gangfolge': "Vorspeise Hauptgang Nachtisch",  # TODO
+            'gangfolge': client.gaenge,
             'days_in_month': days_in_month(year, month),
             'is_authenticated': request.user.is_authenticated }
     return render(request, 'rezepte/monat.html', {
