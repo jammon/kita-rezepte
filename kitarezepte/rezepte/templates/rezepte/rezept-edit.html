@@ -55,15 +55,25 @@
       </div>
     </div>
     <div class="col col-md-6">
-      <div>
+      <div class="editorwindow">
       {{ form.zubereitung.errors }}
       {{ form.zubereitung.label_tag }}
       {{ form.zubereitung }}
       </div>
-      <div>        
+      <div class="editorwindow">        
       {{ form.anmerkungen.errors }}
       {{ form.anmerkungen.label_tag }}
       {{ form.anmerkungen }}
+      </div>
+      <div class="inline-list">
+        {{ form.gang_list.errors }}
+        {{ form.gang_list.label_tag }}
+        {{ form.gang_list }}
+      </div>
+      <div>
+        {{ form.kategorie.errors }}
+        {{ form.kategorie.label_tag }}
+        {{ form.kategorie }}
       </div>
       <div><button class="submit btn btn-default" type="button">Speichern</button></div>
     </div>

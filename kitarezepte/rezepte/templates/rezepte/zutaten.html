@@ -58,7 +58,7 @@
           <tr>
             <td>{{ form.menge_pro_einheit.label_tag }}</td>
             <td>
-              <div class="menge_pro_einheit">
+              <div class="menge_pro_einheit inline-list">
                 {{ form.menge_pro_einheit }}
                 {{ form.masseinheit }}
               </div>
@@ -68,7 +68,7 @@
           </tr>
           <tr>
             <td>{{ form.kategorie.label_tag }}</td>
-            <td>
+            <td class="inline-list">
               {{ form.kategorie }}
               <div  class="text-danger errorlist">{{ form.kategorie.errors }}</div>
               <div class="help_text">{{ form.kategorie.help_text }}</div>
