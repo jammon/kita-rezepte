@@ -6,11 +6,11 @@ from .forms import ZutatForm, RezeptForm
 from .utils import (days_in_month, get_client, client_param, next_dow, MONATSNAMEN, 
                     next_month)
 from datetime import date, timedelta
-from django.contrib.auth import authenticate, login as auth_login
+from django.contrib import auth
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, Http404
-from django.shortcuts import get_object_or_404, get_list_or_404
+from django.shortcuts import get_object_or_404
 from django.shortcuts import render, redirect
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
@@ -18,6 +18,7 @@ from django.views.generic.list import ListView
 
 def index(request):
     client_slug = get_client(request)
+    print('client_slug:', client_slug)
     if client_slug:
         client = get_object_or_404(Client, slug=client_slug)
         return render(request, "rezepte/client-index.html", {'client': client})
@@ -26,33 +27,32 @@ def index(request):
 
 
 def login(request):
-    # if this is a POST request we need to process the form data
     if request.method == 'POST':
-        # create a form instance and populate it with data from the request:
         form = AuthenticationForm(request, request.POST)
-        # check whether it's valid:
         if form.is_valid():
-            # process the data in form.cleaned_data as required
-            # ...
             user = form.get_user()
             if user is not None:
-                auth_login(request, user)
-                request.session['user_name'] = user.get_full_name() or user.get_username()
-                client = user.editor.client
-                if client:
-                    request.session['client_slug'] = client.slug
+                auth.login(request, user)
+                write_client_id_to_session(request.session, user)
+                if request.session['client_slug']:
                     # TODO: change to client's domain
                     return HttpResponseRedirect('/monat')
-                # redirect to a new URL:
                 return HttpResponseRedirect('/')
             else:
-                # Return an 'invalid login' error message.
                 form.add_error(None, "Fehler bei der Anmeldung!")
-    # if a GET (or any other method) we'll create a blank form
     else:
         form = AuthenticationForm()
-
     return render(request, 'rezepte/login.html', {'form': form})
+
+
+def write_client_id_to_session(session, user):
+    session['user_name'] = user.get_full_name() or user.get_username()
+    if user.editor:
+        client = user.editor.client
+        session['client_id'] = client.id
+        session['client_slug'] = client.slug
+        session['gaenge'] = client.get_gaenge()
+
 
 def get_query_args(client_slug='', id=0, slug=''):
     if id:
