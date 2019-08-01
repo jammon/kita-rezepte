@@ -1,8 +1,32 @@
 # -*- coding: utf-8 -*-
 from datetime import date
+from django.conf import settings
 from django.test import TestCase
+from django.test.client import RequestFactory
 from rezepte.utils import (day_fromJson, prettyFloat, days_in_month,
-                           euro2cent, next_dow)
+                           euro2cent, next_dow, host2client)
+
+class Host2ClientTestCase(TestCase):
+ 
+
+    def test_host2client(self):
+        
+        def do_test(domain, expected):
+            self.assertEqual(
+                host2client(domain), 
+                expected,
+                f"host2client liefert für {domain} {host2client(domain)} statt {expected}")
+        
+        do_test('localhost', 'dev')
+        do_test('localhost:8000', 'dev')
+        do_test('127.0.0.1', 'dev')
+        do_test('127.0.0.1:8000', 'dev')
+        do_test('testserver', 'test-kita')
+        do_test('kita-rezepte.de', '')
+        do_test('www.kita-rezepte.de', '')
+        do_test(settings.KITAREZEPTE_FULL_DOMAIN, '')
+        do_test('www.' + settings.KITAREZEPTE_FULL_DOMAIN, '')
+        do_test('7zwerge.' + settings.KITAREZEPTE_FULL_DOMAIN, '7zwerge')
 
 
 class Day_fromJsonTestCase(TestCase):

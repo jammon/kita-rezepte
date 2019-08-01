@@ -10,15 +10,18 @@ MONATSNAMEN = ("", "Januar", "Februar", "März", "April", "Mai", "Juni", "Juli",
          "August", "September", "Oktober", "November", "Dezember",)
 
 def get_client(request):
-    client = get_current_site(request).domain.split('.')[0]
-    if client in ('localhost', '127'):
+    return host2client(get_current_site(request).domain)
+
+def host2client(host):
+    h = host.split(':')[0].split('.')[0]
+    if h in ('localhost', '127'):
         return 'dev'
-    if client == 'testserver':
+    if h == 'testserver':
         # for unittests
         return 'test-kita'
-    if client in ('kita-rezepte', settings.KITAREZEPTE_DOMAIN, 'www'):
+    if h in ('kita-rezepte', settings.KITAREZEPTE_DOMAIN, 'www'):
         return ''
-    return client
+    return h
 
 def get_client_domain(slug):
     if slug in ('dev', 'test-kita'):
