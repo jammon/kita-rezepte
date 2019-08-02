@@ -67,16 +67,11 @@ def get_query_args(client_slug='', id=0, slug=''):
 def rezepte(request, client_slug='', id=0, slug='', edit=False):
     if not (id or slug):
         # deliver all recipes
-        recipes = Rezept.objects.filter(client__slug=client_slug)
+        recipes = Rezept.objects.filter(client__slug=client_slug).order_by('slug')
         client = get_object_or_404(Client, slug=client_slug)
         gaenge = client.gaenge.split()
-        for r in recipes:
-            if not r.gang:
-                r.gang = 'Unsortiert'
-        def sortkey(rezept):
-            return rezept.gang + rezept.slug
-        return render(request, 'rezepte/rezepte.html',
-                      {'recipes': sorted(recipes, key=sortkey)})
+        data = [(g, [r for r in recipes if g in r.gang]) for g in gaenge]
+        return render(request, 'rezepte/rezepte.html', {'recipes': data})
 
     if edit:
         return rezept_edit(request, client_slug, id, slug)
@@ -94,8 +89,9 @@ def rezept_edit(request, client_slug, id, slug):
         rezept = get_object_or_404(Rezept, **get_query_args(client_slug, id, slug))
     else:
         rezept = None
+    gaenge_tuple = [(g, g) for g in request.session['gaenge']]
     if request.method == 'POST':
-        form = RezeptForm(request.POST, instance=rezept)
+        form = RezeptForm(request.POST, instance=rezept, gaenge=gaenge_tuple)
         # import pdb; pdb.set_trace()
         if form.is_valid():
             form.save()
@@ -109,7 +105,7 @@ def rezept_edit(request, client_slug, id, slug):
             RezeptZutat.objects.bulk_create(rezeptzutaten)
             return HttpResponseRedirect('/rezepte/' + rezept.slug)
     else:
-        form = RezeptForm(instance=rezept)
+        form = RezeptForm(instance=rezept, gaenge=gaenge_tuple)
     zutaten = Zutat.objects.filter(client__slug=client_slug)
     return render(request, 'rezepte/rezept-edit.html', 
                   {'form': form,

@@ -25,7 +25,7 @@
         <h2>Anmerkungen</h2>
         <p>{{ recipe.anmerkungen|safe }}</p>
       {% endif %}
-      <p>Geeignet als {{ recipe.gang }} </p>
+      <p>Geeignet als {{ recipe.gang_list|join:", " }} </p>
       <p>Kategorie {{ recipe.kategorie.names|join:", " }} </p>
 
       {% if user.is_authenticated %}

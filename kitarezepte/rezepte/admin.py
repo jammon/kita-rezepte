@@ -25,7 +25,7 @@ class RezeptZutatInline(admin.TabularInline):
 class RezeptAdmin(admin.ModelAdmin, KategorienMixin):
     inlines = [RezeptZutatInline, ]
     list_display = ('titel', 'kategorien')
-    list_filter = ('kategorie', )
+    list_filter = ('kategorie', 'gang')
 
 
 class GangPlanAdmin(admin.ModelAdmin):

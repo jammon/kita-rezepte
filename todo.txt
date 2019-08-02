@@ -17,6 +17,4 @@
 (C) Wenn ein Rezept nicht gefunden wird, auf die Rezepte-Seite weiterleiten +rezept
 (A) Kategorien bei Rezepte anzeigen und bearbeitbar machen +rezept
 (D) Meta-Description und Title für die einzelnen Seiten anpassen
-Ein Gericht kann für mehrere Gänge geeignet sein
-Fabric nutzen
 In /zutaten ist der Preis pro Einheit mit -1 vorbelegt

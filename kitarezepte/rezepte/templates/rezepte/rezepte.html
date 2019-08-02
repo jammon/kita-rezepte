@@ -5,16 +5,16 @@
     <div class="col">
       <h1>Rezepte</h1>
       <table class="table">
-      {% for r in recipes  %}
-        {% ifchanged %}
+      {% for g, rs in recipes  %}
         <tr>
-          <td colspan="2"><h2>{{ r.gang }}</h2></td>
+          <td colspan="2"><h2>{{ g }}</h2></td>
         </tr>
-        {% endifchanged %}
-        <tr>
-          <td><a href="{{ r.slug }}">{{ r.titel }}</a></td>
-          <td>{% if user.is_authenticated %}{{ r.preisToStr|safe }}{% endif %}</td>
-        </tr>
+        {% for r in rs  %}
+          <tr>
+            <td><a href="{{ r.slug }}">{{ r.titel }}</a></td>
+            <td>{% if user.is_authenticated %}{{ r.preisToStr|safe }}{% endif %}</td>
+          </tr>
+        {% endfor %}
       {% empty %}
         <tr>
           <td>Es sind noch keine Rezepte eingegeben.</td>

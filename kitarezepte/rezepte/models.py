@@ -62,6 +62,9 @@ class Client(models.Model):
     def get_domain(self):
         return get_client_domain(self.slug)
 
+    def get_gaenge(self):
+        return self.gaenge.split()
+
 
 class Editor(models.Model):
     user = models.OneToOneField(
@@ -167,7 +170,8 @@ class Rezept(models.Model):
     anmerkungen = models.TextField(null=True, blank=True)
     eingegeben_von = models.ForeignKey(User, on_delete=models.SET_NULL,
                                        null=True, blank=True)
-    gang = models.CharField(max_length=10)
+    gang = models.CharField(max_length=40, help_text='Der Gang, für den das Rezept '
+        'geeignet ist, ggf. eine Komma-getrennte Liste mehrerer Gänge')
     kategorie = TaggableManager(verbose_name='Kategorie',
                                 help_text="Art des Essens",
                                 through=RezeptKategorie)
@@ -176,9 +180,19 @@ class Rezept(models.Model):
         default=KEIN_PREIS,
         help_text='kann leer sein, wird dann automatisch berechnet')
 
+
     class Meta:
         verbose_name = "Rezept"
         verbose_name_plural = "Rezepte"
+
+    @property
+    def gang_list(self):
+        """ Mögliche Gänge als Liste """
+        return [g.strip() for g in self.gang.split(',')]
+
+    @gang_list.setter
+    def gang_list(self, values):
+        self.gang = ','.join(values)
 
     def __str__(self):
         return self.titel
