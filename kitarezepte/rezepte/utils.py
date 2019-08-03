@@ -104,5 +104,6 @@ TEST_REZEPT = dict(
             fuer_erwachsene = 5,
             zubereitung = '',
             anmerkungen = '',
+            gang = 'Hauptgang',
             kategorie = '')
 

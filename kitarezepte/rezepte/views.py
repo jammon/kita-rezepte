@@ -71,6 +71,7 @@ def rezepte(request, client_slug='', id=0, slug='', edit=False):
         client = get_object_or_404(Client, slug=client_slug)
         gaenge = client.gaenge.split()
         data = [(g, [r for r in recipes if g in r.gang]) for g in gaenge]
+        data.append(("unsortiert", [r for r in recipes if r.gang.strip()=='']))
         return render(request, 'rezepte/rezepte.html', {'recipes': data})
 
     if edit:

@@ -59,8 +59,12 @@ class RezepteTestcase(TestCase):
     def test_alle_rezepte(self):
         response = self.client.get('/rezepte/')
         self.assertTemplateUsed(response, 'rezepte/rezepte.html')
-        self.assertIn(self.rezept1, response.context['recipes'])
-        self.assertIn(self.rezept2, response.context['recipes'])
+        recipes = response.context['recipes']
+        self.assertEqual(
+            [gang for gang, rezepte in recipes], 
+            ["Vorspeise", "Hauptgang", "Nachtisch", "unsortiert"])
+        self.assertIn(self.rezept1, recipes[1][1])
+        self.assertIn(self.rezept2, recipes[1][1])
 
     def test_wrong_rezept_id(self):
         response = self.client.get('/rezepte/1000')

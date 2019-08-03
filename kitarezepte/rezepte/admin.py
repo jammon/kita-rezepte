@@ -23,6 +23,7 @@ class RezeptZutatInline(admin.TabularInline):
 
 
 class RezeptAdmin(admin.ModelAdmin, KategorienMixin):
+    exclude = ('_preis',)
     inlines = [RezeptZutatInline, ]
     list_display = ('titel', 'kategorien')
     list_filter = ('kategorie', 'gang')

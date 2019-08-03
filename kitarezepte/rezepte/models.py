@@ -148,7 +148,9 @@ class RezeptKategorie(TaggedItemBase):
 TRANSTABLE = {'ä': 'ae', 'ö': 'oe', 'ü': 'ue', 
               'Ä': 'ae', 'Ö': 'oe', 'Ü': 'ue', 
               'ß': 'ss', 
-              'é': 'e', 'è': 'e', 'à': 'a', }
+              'é': 'e', 'è': 'e', 'à': 'a', 
+              'É': 'e', 'È': 'e', 'À': 'a', 
+              }
 translate_specials = str.maketrans(TRANSTABLE)
 
 class Rezept(models.Model):
@@ -161,7 +163,7 @@ class Rezept(models.Model):
     client = models.ForeignKey(
         Client, on_delete=models.CASCADE, related_name="rezepte")
     slug = models.SlugField(
-        max_length=30, blank=True, help_text='wird i.d.R. aus titel berechnet')
+        max_length=60, blank=True, help_text='wird i.d.R. aus titel berechnet')
     fuer_kinder = models.IntegerField(help_text="Anzahl der Kinder")
     fuer_erwachsene = models.IntegerField(help_text="Anzahl der Erwachsenen")
     # zutaten = models.ManyToManyField(
@@ -261,15 +263,14 @@ class RezeptZutat(models.Model):
 
     def __str__(self):
         if self.menge_qualitativ:
-            elements = [self.menge_qualitativ, self.zutat.name]
-        else:
-            menge = prettyFloat(self.menge)
-            einheit = self.zutat.get_einheit()
-            if einheit:
-                elements = [menge, einheit, self.zutat.name]
-            else:
-                elements = [menge, self.zutat.name]
-        return " ".join(elements)
+            return f"{self.menge_qualitativ} {self.zutat.name}"
+        if self.menge == 0:
+            return f"{self.zutat.name}"
+        menge = prettyFloat(self.menge)
+        einheit = self.zutat.get_einheit()
+        if einheit:
+            return f"{menge} {einheit} {self.zutat.name}"
+        return f"{menge} {self.zutat.name}"
 
     def toJson(self):
         res = {

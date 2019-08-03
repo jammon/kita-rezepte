@@ -18,3 +18,4 @@
 (A) Kategorien bei Rezepte anzeigen und bearbeitbar machen +rezept
 (D) Meta-Description und Title für die einzelnen Seiten anpassen
 In /zutaten ist der Preis pro Einheit mit -1 vorbelegt
+in Rezept 1314 steht im Rezept 0 Pckg. Gekörnte Brühe und in edit undefined Pckg. Gekörnte Brühe
