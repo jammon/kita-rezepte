@@ -72,9 +72,8 @@ class Editor(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
 
     def __str__(self):
-        return "{} ist Editor für {}".format(
-            self.user.get_full_name() or self.user.get_username(),
-            self.client.name)
+        name = self.user.get_full_name() or self.user.get_username()
+        return f"{name} ist Editor für {self.client.name}"
 
 
 class Zutat(models.Model):
@@ -314,7 +313,7 @@ class GangPlan(models.Model):
         verbose_name_plural = "Gangpläne"
 
     def __str__(self):
-        return "Am {0.datum} als {0.gang} {0.rezept.titel}".format(self)
+        return f"Am {self.datum} als {self.gang} {self.rezept.titel}"
 
 
 def get_einkaufsliste(client_slug, start, dauer):

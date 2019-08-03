@@ -159,7 +159,7 @@ def zutaten_delete(request, client_slug=''):
     Zutat.objects.filter(client__slug=client_slug, id=id).delete()
     return redirect("/zutaten/", 
                     client_slug=client_slug,
-                    msg='Zutat {} wurde gelöscht'.format(zutat.name))
+                    msg=f'Zutat {zutat.name} wurde gelöscht')
 
 
 # Monat ------------------------------------------------------------------

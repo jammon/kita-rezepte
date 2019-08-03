@@ -42,11 +42,12 @@ class Command(BaseCommand):
         self.read_monatsplaene()
 
         self.stdout.write(self.style.SUCCESS('Einlesen erfolgreich.'))
-        self.stdout.write('{} Zutaten, {} Rezepte, {} Pläne eingelesen.'.format(
-            len(zutaten), len(rezepte), len(gangplaene)))
+        self.stdout.write(
+            f'{len(zutaten)} Zutaten, {len(rezepte)} Rezepte, '
+            f'{len(gangplaene)} Pläne eingelesen.')
         self.stdout.write('Gelesen:')
         for k, v in gelesen.items():
-            self.stdout.write('{}: {}'.format(k, v))
+            self.stdout.write(f'{k}: {v}')
         GangPlan.objects.bulk_create(gangplaene)
 
 # zutaten ------------------------------------------------------------------
@@ -153,8 +154,7 @@ class Command(BaseCommand):
             tokens = string.split(maxsplit=maxsplit)
             if len(tokens) < maxsplit+1:
                 self.stdout.write(
-                    'Zutat "{}" konnte bei Rezept-Id {} nicht gelesen werden'.format(
-                        string, rezept_id))
+                    f'Zutat "{string}" konnte bei Rezept-Id {rezept_id} nicht gelesen werden')
                 return None
             name = tokens[-1]
             if name in zutat_dict:
@@ -180,7 +180,7 @@ class Command(BaseCommand):
         monat = 8
         jahr = 2019
         while True:
-            url = 'https://kita-rezepte.appspot.com/monatsplan/{}/{}'.format(jahr, monat)
+            url = f'https://kita-rezepte.appspot.com/monatsplan/{jahr}/{monat}'
             print('lies', url)
             r = requests.get(url)
             if r.status_code != requests.codes.ok:
@@ -201,7 +201,7 @@ class Command(BaseCommand):
 
     def read_gangplan(self, datum, gang, rezept_titel):
         if rezept_titel not in rezept_dict:
-            self.stdout.write('Rezept nicht gefunden "%s"' % rezept_titel)
+            self.stdout.write(f'Rezept nicht gefunden "{rezept_titel}"')
             return
         gangplan = GangPlan(
             client_id = self.client_id,

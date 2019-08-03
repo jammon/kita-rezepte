@@ -55,8 +55,7 @@ def prettyFloat(f):
     return s[:-2] if s.endswith(u'.0') else s
 
 def cent2euro(cent):
-    res = "{:.2f}".format(cent / 100.0)
-    return res.replace('.', ',')
+    return f"{cent / 100.0:.2f}".replace('.', ',')
 
 def euro2cent(euro):
     """ Calculates the Cents from an Euro string. 
@@ -85,8 +84,8 @@ def next_month(year, month, offset=1):
         newmonth += -12
         newyear += 1
     return {
-        'name': "{} {}".format(MONATSNAMEN[newmonth], newyear),
-        'link': "/monat/{}/{}".format(newyear, newmonth),
+        'name': f"{MONATSNAMEN[newmonth]} {newyear}",
+        'link': f"/monat/{newyear}/{newmonth}",
     }
 
 

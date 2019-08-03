@@ -8,7 +8,7 @@ import invoke
 
 @task
 def test(ctx, verbosity='1'):
-    invoke.run("python ./manage.py test rezepte -v %s" % verbosity)
+    invoke.run(f"python ./manage.py test rezepte -v {verbosity}")
 
 
 @task

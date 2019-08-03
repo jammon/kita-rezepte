@@ -122,8 +122,7 @@ def getRezepte():
                     rezept['zutaten'].append(rz)
                     break
             else:
-                print("Unlesbare Zutat: {:<25} in Rezept: {}".format(
-                    zstring, rezept['titel']))
+                print(f"Unlesbare Zutat: {zstring:<25} in Rezept: {rezept['titel']}")
         if rezept['slug'] in rezepte:
             print("Doppeltes Rezept:", rezept['slug'])
         rezepte[rezept['slug']] = rezept
