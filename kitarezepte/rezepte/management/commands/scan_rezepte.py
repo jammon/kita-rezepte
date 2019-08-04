@@ -29,13 +29,20 @@ mengeprog = re.compile(
     '(?P<einheit>.*\s*)(\((?P<menge_pro_einheit>.*) (?P<masseinheit>.*)\))?')
 
 class Command(BaseCommand):
-    help = 'Importiert die Inhalte von kita-rezepte.de'
+    help = ('Baut die Grundstruktur der Kita Pusteblume und '
+            'importiert die Inhalte von kita-rezepte.de')
 
     def add_arguments(self, parser):
         parser.add_argument('client_id', type=int)
 
     def handle(self, *args, **options):
-        self.client_id = options['client_id']
+        client = Client.objects.create(name="Kita Pusteblume Kempen", 
+            slug="pusteblume", 
+            gaenge="Vorspeise Hauptgang Nachtisch",
+            kategorien="Reis Teigwaren Getreide Kartoffeln Gemüse "
+                "Suppe Fischgericht Lieblingsgericht")
+
+        self.client_id = client.id
         self.read_zutaten()
         self.read_rezepte()
         RezeptZutat.objects.bulk_create(rezept_zutaten)
@@ -131,16 +138,14 @@ class Command(BaseCommand):
             'fuer_erwachsene': soup.find(id='erwachsene').string,
             'zubereitung': ''.join(map(str, soup.find(id='zubereitung').contents)),
             'gang': soup.find(id='rezept_gang').string,
+            'kategorien': soup.find(id='kategorie').string,
         }
         div = self.rezeptbuch.find('h4', string=rezept_dict['titel'])
         rezept_dict['anmerkungen'] = div.parent.find(class_="anmerkungen").string or ''
         if rezept_dict['anmerkungen']:
             gelesen['Anmerkungen'] +=1
         rezept = Rezept.objects.create(**rezept_dict)
-        kategorie = soup.find(id='kategorie').string
-        if kategorie:
-            rezept.kategorie.add(kategorie)
-
+        
         for nr, tr in enumerate(soup.find(id='zutatenliste').find_all('tr')):
             rz = self.read_rezeptzutat(tr.td.string, rezept.id, nr+1)
             if rz is not None:

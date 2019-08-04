@@ -95,7 +95,7 @@ TEST_REIS = dict(name="Reis",
             preis_pro_einheit=189,
             menge_pro_einheit=1000,
             masseinheit="g",
-            kategorie="Grund.")
+            kategorien="Grund.")
 
 TEST_REZEPT = dict(
             client_id = 1,
@@ -104,5 +104,5 @@ TEST_REZEPT = dict(
             zubereitung = '',
             anmerkungen = '',
             gang = 'Hauptgang',
-            kategorie = '')
+            kategorien = '')
 

@@ -31,15 +31,18 @@ class RezeptForm(forms.ModelForm):
         widget=forms.CheckboxSelectMultiple,
         label='Gang',
     )
+    kategorie_list = forms.MultipleChoiceField(
+        widget=forms.CheckboxSelectMultiple,
+        label='Kategorie',
+    )
 
     class Meta:
         model = Rezept
         fields = ('titel', 'untertitel', 'fuer_kinder', 'fuer_erwachsene',
-                  'zubereitung', 'anmerkungen', 'kategorie', 'gang_list')
+                  'zubereitung', 'anmerkungen', 'kategorie_list', 'gang_list')
         labels = {
             'fuer_kinder': 'Anzahl Kinder', 
             'fuer_erwachsene': 'Anzahl Erwachsene', 
-            'kategorie': 'Kategorie',
         }
         widgets = {
             'zubereitung': TinyMCE(attrs={'cols': 50, 'rows': 12}),
@@ -47,17 +50,20 @@ class RezeptForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        default_gaenge = [(g, g) for g in ['Vorspeise', 'Hauptgang', 'Nachtisch']]
-        gaenge = kwargs.pop('gaenge', default_gaenge)
+        session = kwargs.pop('session')
         super().__init__(*args, **kwargs)
-        self.fields['gang_list'].choices = gaenge
+        self.fields['gang_list'].choices = [(g, g) for g in session['gaenge']]
+        self.fields['kategorie_list'].choices = [(k, k) for k in session['kategorien']]
 
     def get_initial_for_field(self, field, field_name):
         if field_name=='gang_list':
             return self.instance.gang_list
+        if field_name=='kategorie_list':
+            return self.instance.kategorie_list
         return super().get_initial_for_field(field, field_name)
 
     def clean(self):
         cleaned_data = super().clean()
         self.instance.gang_list = cleaned_data['gang_list']
+        self.instance.kategorie_list = cleaned_data['kategorie_list']
         return cleaned_data

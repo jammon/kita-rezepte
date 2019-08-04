@@ -6,8 +6,6 @@ from datetime import timedelta
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.text import slugify
-from taggit.managers import TaggableManager
-from taggit.models import TaggedItemBase
 
 from .utils import prettyFloat, cent2euro, get_client_domain
 
@@ -47,6 +45,11 @@ class Client(models.Model):
     gaenge = models.CharField(
         max_length=50, help_text='z.B. "Vorspeise Hauptgang Nachtisch"',
         default="Vorspeise Hauptgang Nachtisch")
+    kategorien = models.CharField(
+        max_length=100, 
+        help_text='z.B. "Reis Teigwaren Getreide Kartoffeln Gemüse '
+            'Suppe Fischgericht Lieblingsgericht"',
+        default="")
 
     class Meta:
         verbose_name = "Mandant"
@@ -64,6 +67,9 @@ class Client(models.Model):
 
     def get_gaenge(self):
         return self.gaenge.split()
+
+    def get_kategorien(self):
+        return self.kategorien.split()
 
 
 class Editor(models.Model):
@@ -141,9 +147,6 @@ class Zutat(models.Model):
             'kategorie': self.kategorie,
         })
 
-class RezeptKategorie(TaggedItemBase):
-    content_object = models.ForeignKey('Rezept', on_delete=models.CASCADE)
-
 TRANSTABLE = {'ä': 'ae', 'ö': 'oe', 'ü': 'ue', 
               'Ä': 'ae', 'Ö': 'oe', 'Ü': 'ue', 
               'ß': 'ss', 
@@ -172,10 +175,12 @@ class Rezept(models.Model):
     eingegeben_von = models.ForeignKey(User, on_delete=models.SET_NULL,
                                        null=True, blank=True)
     gang = models.CharField(max_length=40, help_text='Der Gang, für den das Rezept '
-        'geeignet ist, ggf. eine Komma-getrennte Liste mehrerer Gänge')
-    kategorie = TaggableManager(verbose_name='Kategorie',
-                                help_text="Art des Essens",
-                                through=RezeptKategorie)
+        'geeignet ist, ggf. eine Leerzeichen-getrennte Liste mehrerer Gänge')
+    kategorien = models.CharField(
+        max_length=60,
+        help_text='Die Kategorie, zu der das Rezept gehört, '
+        'ggf. eine Leerzeichen-getrennte Liste mehrerer Kategorien',
+        default='')
     # z.B. Gemüse, Teigwaren, Suppe, Getreide, Reis usw.
     _preis = models.IntegerField(
         default=KEIN_PREIS,
@@ -188,12 +193,21 @@ class Rezept(models.Model):
 
     @property
     def gang_list(self):
-        """ Mögliche Gänge als Liste """
-        return [g.strip() for g in self.gang.split(',')]
+        """ Gänge als Liste """
+        return self.gang.split()
 
     @gang_list.setter
     def gang_list(self, values):
-        self.gang = ','.join(values)
+        self.gang = ' '.join(values)
+
+    @property
+    def kategorie_list(self):
+        """ Gänge als Liste """
+        return self.kategorien.split()
+
+    @kategorie_list.setter
+    def kategorie_list(self, values):
+        self.kategorien = ' '.join(values)
 
     def __str__(self):
         return self.titel

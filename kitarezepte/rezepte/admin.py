@@ -4,15 +4,6 @@ from django.contrib import admin
 from .models import Zutat, Rezept, RezeptZutat, GangPlan, Client, Editor
 
 
-class KategorienMixin(object):
-
-    def get_queryset(self, request):
-        return super().get_queryset(request).prefetch_related('kategorie')
-
-    def kategorien(self, obj):
-        return ", ".join(o.name for o in obj.kategorie.all())
-
-
 class ZutatAdmin(admin.ModelAdmin):
     list_display = ('name', 'kategorie')
     list_filter = ('kategorie', )
@@ -21,12 +12,38 @@ class ZutatAdmin(admin.ModelAdmin):
 class RezeptZutatInline(admin.TabularInline):
     model = RezeptZutat
 
+class KategorieListFilter(admin.SimpleListFilter):
+    title ='Kategorien'
+    parameter_name = 'kategorien'
 
-class RezeptAdmin(admin.ModelAdmin, KategorienMixin):
+    def lookups(self, request, model_admin):
+        return ((k, k) for k in request.session['kategorien'])
+
+    def queryset(self, request, queryset):
+        value = self.value()
+        if value:
+            return queryset.filter(kategorien__contains=value)
+        return queryset
+
+class GangListFilter(admin.SimpleListFilter):
+    title ='Gänge'
+    parameter_name = 'gaenge'
+
+    def lookups(self, request, model_admin):
+        return ((g, g) for g in request.session['gaenge'])
+
+    def queryset(self, request, queryset):
+        value = self.value()
+        if value:
+            return queryset.filter(gang__contains=value)
+        return queryset
+
+class RezeptAdmin(admin.ModelAdmin):
     exclude = ('_preis',)
     inlines = [RezeptZutatInline, ]
     list_display = ('titel', 'kategorien')
-    list_filter = ('kategorie', 'gang')
+    list_filter = (GangListFilter, KategorieListFilter)
+    ordering = ('slug',)
 
 
 class GangPlanAdmin(admin.ModelAdmin):

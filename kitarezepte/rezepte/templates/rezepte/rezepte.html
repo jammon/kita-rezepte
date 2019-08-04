@@ -13,6 +13,7 @@
           {% for r in rs  %}
             <tr>
               <td><a href="{{ r.slug }}">{{ r.titel }}</a></td>
+              <td>{{ r.kategorie_list|join:", " }}</td>
               <td>{% if user.is_authenticated %}{{ r.preisToStr|safe }}{% endif %}</td>
             </tr>
           {% endfor %}

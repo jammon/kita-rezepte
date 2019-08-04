@@ -52,14 +52,16 @@ def write_client_id_to_session(session, user):
         session['client_id'] = client.id
         session['client_slug'] = client.slug
         session['gaenge'] = client.get_gaenge()
+        session['kategorien'] = client.get_kategorien()
 
 
 def get_query_args(client_slug='', id=0, slug=''):
+    res =  {'client__slug': client_slug}
     if id:
-        return {'client__slug': client_slug, 'id': int(id)}
-    if slug:
-        return {'client__slug': client_slug, 'slug': slug}
-    return {'client__slug': client_slug}
+        res['id'] = int(id)
+    elif slug:
+        res['slug'] = slug
+    return res
 
 
 # Rezepte ------------------------------------------------------------------
@@ -90,9 +92,8 @@ def rezept_edit(request, client_slug, id, slug):
         rezept = get_object_or_404(Rezept, **get_query_args(client_slug, id, slug))
     else:
         rezept = None
-    gaenge_tuple = [(g, g) for g in request.session['gaenge']]
     if request.method == 'POST':
-        form = RezeptForm(request.POST, instance=rezept, gaenge=gaenge_tuple)
+        form = RezeptForm(request.POST, instance=rezept, session=request.session)
         # import pdb; pdb.set_trace()
         if form.is_valid():
             form.save()
@@ -106,7 +107,7 @@ def rezept_edit(request, client_slug, id, slug):
             RezeptZutat.objects.bulk_create(rezeptzutaten)
             return HttpResponseRedirect('/rezepte/' + rezept.slug)
     else:
-        form = RezeptForm(instance=rezept, gaenge=gaenge_tuple)
+        form = RezeptForm(instance=rezept, session=request.session)
     zutaten = Zutat.objects.filter(client__slug=client_slug)
     return render(request, 'rezepte/rezept-edit.html', 
                   {'form': form,
@@ -186,7 +187,7 @@ def monat(request, client_slug, year=0, month=0):
         {'id': r.id, 
          'titel': r.titel,
          'gang': r.gang,
-         'kategorien': list(r.kategorie.names()),
+         'kategorien': r.kategorie_list,
          'preis': '--' if r._preis==KEIN_PREIS else r._preis}
         for r in Rezept.objects.filter(client__slug=client_slug)]
     client = get_object_or_404(Client, slug=client_slug)

@@ -78,6 +78,6 @@ class RezepteTestcase(TestCase):
         client = Client.objects.create(name='Other-Client')
         rezept = Rezept.objects.create(
             titel="Not my Testrezept", client=client, fuer_kinder = 20,
-            fuer_erwachsene = 5, zubereitung = '', anmerkungen = '', kategorie = '')
+            fuer_erwachsene = 5, zubereitung = '', anmerkungen = '', kategorien = '')
         response = self.client.get('/rezepte/' + str(rezept.id))
         self.assertEqual(response.status_code, 404)

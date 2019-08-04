@@ -19,3 +19,4 @@ x 2019-06-20 Gang als eigenes Field bei +Rezept
 x 2019-06-20 Die Kategorien der Rezepte werden beim Scan nicht übernommen +Inhalte
 x 2019-08-02 Ein Gericht kann für mehrere Gänge geeignet sein
 x 2019-08-02 Fabric nutzen
+x 2019-08-04 Kategorien bei Rezepte anzeigen und bearbeitbar machen +rezept
