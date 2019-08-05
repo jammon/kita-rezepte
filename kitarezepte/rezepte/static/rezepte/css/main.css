@@ -36,3 +36,13 @@
 .editorwindow {
 	margin-bottom: 1em;
 }
+.tag-row {
+	margin-top: 1ex;
+}
+.monat-kategorien {
+	float: left;
+	color: #888;
+}
+.monat-preis {
+	float: right;
+}

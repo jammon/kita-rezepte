@@ -3,7 +3,8 @@ describe("Rezept", function() {
         models.data.gangfolge = ['Vorspeise', 'Hauptgang', 'Nachtisch'];
         let r = new models.Rezept({
             name: 'Spaghetti',
-            kategorien: ['Hauptgang', 'Nudelgericht'],
+            gang: ['Hauptgang',],
+            kategorien: ['Nudelgericht',],
         });
         expect(models.gangkategorien.Hauptgang.length).toBe(1);
         expect(models.gangkategorien.Hauptgang.at(0).get('name')).toBe('Spaghetti');
@@ -42,5 +43,16 @@ describe("RezeptZutat", function() {
             menge: 3,
         });
         expect(rz.toString()).toBe("3 Eier");
+    });
+});
+describe("preis_in_euro", function() {
+    it("should represent ints as amount of Euros", function(){
+        expect(models.preis_in_euro('--')).toEqual('--');
+        expect(models.preis_in_euro(0)).toEqual('0,00 €');
+        expect(models.preis_in_euro(1)).toEqual('0,01 €');
+        expect(models.preis_in_euro(90)).toEqual('0,90 €');
+        expect(models.preis_in_euro(99)).toEqual('0,99 €');
+        expect(models.preis_in_euro(100)).toEqual('1,00 €');
+        expect(models.preis_in_euro(589)).toEqual('5,89 €');
     });
 });

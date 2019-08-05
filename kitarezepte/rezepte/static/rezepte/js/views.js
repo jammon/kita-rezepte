@@ -8,17 +8,20 @@ var PlanungView = Backbone.View.extend({
     events: {
         'click': 'edit_gang',
     },
-    tagName: 'td',
+    className: 'col col-md-4',
+    template: _.template($('#gang-cell').html()),
+    auth_template: _.template($('#gang-cell-auth').html()),
     initialize: function(options) {
         this.className = this.model.get('gang');
         this.id = this.model.get('gang') + this.model.get('day');
         this.listenTo(this.model, "change", this.render);
     },
     render: function() {
-        const rezept = this.model.get('rezept');
-        this.$el.text(models.data.is_authenticated ? 
-            rezept.titel_mit_preis() : 
-            rezept.get('titel'));
+        const data = {rezept: this.model.get('rezept')};
+        this.$el.empty().append(
+            models.data.is_authenticated ?
+                this.auth_template(data) :
+                this.template(data));
         return this;
     },
     edit_gang: function() {
@@ -28,42 +31,47 @@ var PlanungView = Backbone.View.extend({
 });
 
 const Tagnamen = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"]
-var MonatView = Backbone.View.extend({
-    id: 'monat-table',
+var TagView = Backbone.View.extend({
+    className: 'row tag-row',
+    template: _.template($('#day-table').html()),
+    initialize: function(options) {
+        this.day = options.day;
+    },
     render: function() {
-        for (let i = 1; i <= models.data.days_in_month; i++) {
-            let day = new Date(models.data.year, models.data.month-1, i);
-            let row = $("<tr>", {"class": 'day-row'});
-            row.append(this.day_title(day));
-            if ([0, 6].indexOf(day.getDay())>-1){
-                row.append($("<td>").attr('colspan', models.data.gangfolge.length));
-            } else {
-                models.data.gangfolge.forEach(function(g) {
-                    let planung = models.planungen.findWhere({day: i, gang:g});
-                    if (!planung) {
-                        planung = models.planungen.add({
-                            day: i,
-                            datum: [models.data.year, models.data.month, i],
-                            gang: g,
-                            rezept: models.rezepte.get(-1),
-                        });
-                    }
-                    let pv = new PlanungView({model: planung});
-                    row.append(pv.render().$el);
-                });
-            }
-            this.$el.append(row);
+        let day = this.day.getDate();
+        this.$el.append(this.template({
+            dayname: Tagnamen[this.day.getDay()],
+            day: day,
+            month: models.data.month,
+            year: models.data.year,
+        }));
+        if ([0, 6].indexOf(this.day.getDay())==-1){
+            let gaenge = this.$(".gaenge");
+            models.data.gangfolge.forEach(function(g) {
+                let planung = 
+                    models.planungen.findWhere({day: day, gang:g}) ||
+                    models.planungen.add({
+                        day: day, 
+                        gang: g,
+                        datum: [models.data.year, models.data.month, day],
+                        rezept: models.rezepte.get(-1),
+                    });
+                let pv = new PlanungView({model: planung});
+                gaenge.append(pv.render().$el);
+            });
         }
         return this;
     },
-    day_title: function(day) {
-        return $("<th>")
-            .append($("<a>")
-                .text(Tagnamen[day.getDay()] + '. ' + 
-                      day.getDate() + '.' + models.data.month + '.')
-                .attr('href', ['/tag', models.data.year, models.data.month, 
-                               day.getDate()].join('/'))
-            );
+});
+var MonatView = Backbone.View.extend({
+    render: function() {
+        for (let i = 1; i <= models.data.days_in_month; i++) {
+            let dayview = new TagView({
+                day: new Date(models.data.year, models.data.month-1, i)
+            });
+            this.$el.append(dayview.render().el);
+        }
+        return this;
     },
 });
 

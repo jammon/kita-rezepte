@@ -16,6 +16,9 @@
 </head>
 
 <body>
+{% include "rezepte/monat-templates.html" %}
+  <div id="changestaff"></div>
+
   <!-- include source files here... -->
   <script src="{% static 'vendor/jquery-3.3.1.js' %}"></script>
   <script src="{% static 'vendor/underscore.js' %}"></script>
@@ -28,6 +31,5 @@
   <!-- include spec files here... -->
   <script src="{% static 'tests/spec/models.js' %}"></script>
 
-  <div id="changestaff"></div>
 </body>
 </html>

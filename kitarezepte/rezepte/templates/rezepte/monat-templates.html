@@ -1,0 +1,20 @@
+<!-- Template für einen Tag -->
+<script type="text/template" id="day-table">
+  <div class="col col-sm-2 col-md-1">
+    <a href="/tag/<%= year %>/<%= month %>"><%= dayname %>. <%= day %>.<%= month %>.</a>
+  </div>
+  <div class="col col-sm-10 col-md-11">
+    <div class="row gaenge"></div>
+  </div>
+</script>
+
+<!-- Template für einen Gang -->
+<script type="text/template" id="gang-cell">
+  <a href="/rezept/<%= rezept.get('slug') %>"><%= rezept.get('titel') %></a>
+</script>
+<script type="text/template" id="gang-cell-auth">
+  <div><%= rezept.get('titel') %></div>
+  <div class="monat-kategorien"><%= rezept.get('kategorien') %></div>
+  <div class="monat-preis"><%= rezept.preis_in_euro() %></div>
+</script>
+

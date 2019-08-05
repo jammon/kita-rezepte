@@ -38,23 +38,25 @@ var Rezept = Backbone.Model.extend({
     initialize: function() {
         // für jede Kategorie eine eigene Collection
         this.get('kategorien').forEach(function(kategorie) {
-            var kategorie_obj = kategorien;
-            if (data.gangfolge.indexOf(kategorie)>-1)
-                kategorie_obj = gangkategorien;
-            if (!kategorie_obj[kategorie]) {
-                kategorie_obj[kategorie] = new Rezepte();
+            if (!kategorien[kategorie]) {
+                kategorien[kategorie] = new Rezepte();
             }
-            kategorie_obj[kategorie].add(this);
+            kategorien[kategorie].add(this);
+        }, this);
+        this.get('gang').forEach(function(gang) {
+            if (!gangkategorien[gang]) {
+                gangkategorien[gang] = new Rezepte();
+            }
+            gangkategorien[gang].add(this);
         }, this);
     },
     titel_mit_preis: function() {
         if (this.get('id')==-1)
             return 'nicht geplant'
-        let preis = this.get('preis');
-        if (preis != '--') {
-            preis = ((preis / 100) + '').replace('.', ',');
-        }
-        return this.get('titel') + '  ' + preis + ' €';
+        return this.get('titel') + '  ' + this.preis_in_euro();
+    },
+    preis_in_euro: function() {
+        return preis_in_euro(this.get('preis'));
     },
 });
 
@@ -105,6 +107,18 @@ var zutaten = new Zutaten();
 var rezeptzutaten = new RezeptZutaten();
 
 
+function preis_in_euro(preis) {
+    if (preis == '--') 
+        return preis;
+    if (preis>99) {
+        preis = preis + '';
+        return preis.slice(0, -2) + ',' + preis.slice(-2) + ' €';
+    }
+    preis = (preis + 100) + '';
+    return '0,' + preis.slice(-2) + ' €';
+}
+
+
 return {
     planungen: planungen,
     rezepte: rezepte,
@@ -116,5 +130,6 @@ return {
     kategorien: kategorien,
     gangkategorien: gangkategorien,
     data: data,
+    preis_in_euro: preis_in_euro,
 };
 })($, _, Backbone);

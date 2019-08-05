@@ -46,7 +46,8 @@ function initialize_monat(initdata) {
     models.rezepte.add({
         id: -1,
         titel: "nicht geplant",
-        kategorien: models.data.gangfolge,
+        kategorien: [],
+        gang: models.data.gangfolge,
     });
     models.planungen.reset(initdata.planungen);
     // Backbone.history.start({ pushState: true });

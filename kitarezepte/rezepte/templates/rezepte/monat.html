@@ -4,19 +4,23 @@
   <div class="row">
     <div class="col col-md-8"><h1>Planung für {{ month_name }} {{ year}} </h1></div>
     <div class="col col-md-4">
-      <a href="{{ prev.link }}">< {{ prev.name }} </a>
+      <a href="{{ prev.link }}">&lt; {{ prev.name }} </a>
       -
-      <a href="{{ next.link }}">{{ next.name }} ></a>
+      <a href="{{ next.link }}">{{ next.name }} &gt;</a>
     </div>
   </div>
-  <div class="row">
-    <div class="col">
-      <table class="table" id="monat_table">
-        <th>Tag</th>
-        <th>Vorspeise</th>
-        <th>Hauptgang</th>
-        <th>Nachtisch</th>
-      </table>
+  <div id="monat_table">
+    <div class="row">
+      <div class="col col-sm-2 col-md-1">
+        Tag
+      </div>
+      <div class="col col-sm-10 col-md-11">
+        <div class="row">
+          <div class="col col-md-4">Vorspeise</div>
+          <div class="col col-md-4">Hauptgang</div>
+          <div class="col col-md-4">Nachtisch</div>
+        </div>
+      </div>
     </div>
   </div>
 {% comment "ChangePlanungView" %}{% endcomment %}
@@ -69,6 +73,9 @@
     </div>
   </div>
 </div>
+
+{% include "rezepte/monat-templates.html" %}
+
 {% endblock content %}
 
 {% block extrascripts %}
@@ -81,7 +88,6 @@
 <script src="{% static 'rezepte/js/main.js' %}"></script>
 <script>
   main.initialize_monat({{ data|safe }});
-  let table = $("table#monat_table");
-  (new views.MonatView({el: table[0]})).render();
+  (new views.MonatView({el: $("#monat_table")[0]})).render();
 </script>
 {% endblock extrascripts %}

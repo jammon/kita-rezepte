@@ -186,10 +186,12 @@ def monat(request, client_slug, year=0, month=0):
     rezepte = [
         {'id': r.id, 
          'titel': r.titel,
-         'gang': r.gang,
+         'gang': r.gang.split(),
          'kategorien': r.kategorie_list,
          'preis': '--' if r._preis==KEIN_PREIS else r._preis}
-        for r in Rezept.objects.filter(client__slug=client_slug)]
+        for r in Rezept.objects
+            .filter(client__slug=client_slug)
+            .order_by('slug')]
     client = get_object_or_404(Client, slug=client_slug)
     data = {'planungen': planungen_js,
             'rezepte': rezepte,
