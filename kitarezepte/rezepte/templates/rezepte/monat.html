@@ -26,7 +26,7 @@
 {% comment "ChangePlanungView" %}{% endcomment %}
 <div class="modal fade" id="gangModal" tabindex="-1" role="dialog" 
      aria-labelledby="gangModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="gangModalLabel">Planung für …</h5>
@@ -39,11 +39,11 @@
         <div class="container-fluid">
           <div class="row">
             <div class="col col-md-8">
-              <label for="cpv-rezept">Gericht</label><br>
+              <h4><label for="cpv-rezept">Gericht</label></h4>
               <input type="text" id="cpv-rezept" name="cpv-rezept" required
                      size="30"><br>
-              <label for="cpv-rezepte">Rezepte</label><br>
-              <select name="cpv-rezepte" id="cpv-rezepte" size="3">
+              <h4><label for="cpv-rezepte">Rezepte</label></h4>
+              <select name="cpv-rezepte" id="cpv-rezepte" size="10">
                 <option value="1">Reis</option>
                 <option value="2">Grießschnittchen</option>
                 <option value="3">Eintopf</option>
@@ -51,13 +51,9 @@
               </select>
             </div>
             <div class="col col-md-4">
-              <label for="cpv-kategorien">Kategorien</label><br>
-              <select name="cpv-kategorien" id="cpv-kategorien" size="5">
-                <option value="Vorspeise">Vorspeise</option>
-                <option value="Hauptgang">Hauptgang</option>
-                <option value="Kartoffelgericht">Kartoffelgericht</option>
-                <option value="Süßspeise">Süßspeise</option>
-              </select>
+              <h4>Kategorien</h4>
+              <div id="cpv-kategorien">
+              </div>
             </div>
           </div>
           <div class="row">

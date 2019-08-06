@@ -46,3 +46,9 @@
 .monat-preis {
 	float: right;
 }
+#cpv-rezepte {
+	width: 400px;
+}
+#cpv-rezept {
+	margin-bottom: 18px;
+}

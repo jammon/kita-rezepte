@@ -19,6 +19,7 @@ var ChangePlanungView = Backbone.View.extend({
         'input #cpv-kategorien': 'filter_rezepte',
         'input #cpv-rezept': 'filter_rezepte',
         'click .submit': 'submit',
+        'dblclick #cpv-rezepte': 'submit',
         'keydown': 'keyAction'
     },
     initialize: function(options) {
@@ -26,6 +27,7 @@ var ChangePlanungView = Backbone.View.extend({
     },
     titel_template: _.template(
         "Planung für <%= gang %> am <%=day%>.<%=month%>.<%=year%>"),
+    kat_input_template: _.template($("#kat-input").html()),
     render: function() {
         const datum = this.planung.get('datum');
         this.$("#gangModalLabel").text(this.titel_template({
@@ -39,21 +41,24 @@ var ChangePlanungView = Backbone.View.extend({
         // Rezeptbox
         this.$("#cpv-rezepte").html(
             this.rezepte.map(function(rezept) {
-                return $("<option>").val(rezept.id).text(rezept.get("titel"));
-            })
+                let opt = $("<option>").val(rezept.id).text(rezept.get("titel"));
+                if (rezept==this.current_rezept)
+                    opt.attr("selected", "selected");
+                return opt;
+            }, this)
         );
         // Kategoriebox
         var kategorien = Object.keys(models.kategorien).sort();
         kategorien.unshift(allerezepte_string);
-        this.$("#cpv-kategorien").html(_.map(kategorien, function(kategorie) {
-            return $("<option>").val(kategorie).text(kategorie)
-                                .addClass('kategorie-option');
+        let templ = this.kat_input_template
+        this.$("#cpv-kategorien").html(_.map(kategorien, function(kategorie, i) {
+            return templ({kategorie: kategorie, i: i});
         }));
         this.$(".error").empty();
         return this;
     },
     filter_rezepte: function(kategorie_changed) {
-        let kat_string = this.$("#cpv-kategorien").val();
+        let kat_string = this.$('input[name=inp-kat]:checked').val();
         let kategorie;
         if (kat_string && kat_string!=allerezepte_string)
             kategorie = models.kategorien[kat_string];
@@ -103,7 +108,8 @@ var ChangePlanungView = Backbone.View.extend({
     },
     edit_gang: function(planung) {
         this.planung = planung;
-        this.gang_kategorie = this.planung.get('gang');
+        this.current_rezept = planung.get('rezept')
+        this.gang_kategorie = planung.get('gang');
         this.rezepte = models.gangkategorien[this.gang_kategorie];
         this.render().$el.modal();
     },

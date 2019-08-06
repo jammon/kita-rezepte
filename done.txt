@@ -20,3 +20,7 @@ x 2019-06-20 Die Kategorien der Rezepte werden beim Scan nicht übernommen +Inha
 x 2019-08-02 Ein Gericht kann für mehrere Gänge geeignet sein
 x 2019-08-02 Fabric nutzen
 x 2019-08-04 Kategorien bei Rezepte anzeigen und bearbeitbar machen +rezept
+x 2019-08-06 In ChangePlanungView soll Doppelklick das Rezept planen
+x 2019-08-06 In ChangePlanungView sollen die Kategorien Radiobuttons haben
+x 2019-08-06 ChangePlanungView soll größer sein
+x 2019-08-06 Monatsplan bearbeiten funktioniert nicht

@@ -18,3 +18,10 @@
   <div class="monat-preis"><%= rezept.preis_in_euro() %></div>
 </script>
 
+<!-- Template für einen Kategorie-Input -->
+<script type="text/template" id="kat-input">
+  <div>
+  	<input type="radio" id="inp-kat-<%= i %>" name="inp-kat" value="<%= kategorie %>">
+  	<label for="inp-kat-<%= i %>"><%= kategorie %></label>
+  </div>
+</script>
