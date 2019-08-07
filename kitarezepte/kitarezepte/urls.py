@@ -26,6 +26,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index, name='index'),
     path('login/', views.login, name='login'),
+    path('logout/', views.logout, name='logout'),
     path('rezepte/', views.rezepte),
     path('rezepte/<int:id>', views.rezepte),
     path('rezepte/<int:id>/edit/', views.rezepte, {'edit': True}),

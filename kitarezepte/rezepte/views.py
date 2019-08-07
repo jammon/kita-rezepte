@@ -45,6 +45,10 @@ def login(request):
     return render(request, 'rezepte/login.html', {'form': form})
 
 
+def logout(request):
+    auth.logout(request)
+    return HttpResponseRedirect('/')
+
 def write_client_id_to_session(session, user):
     session['user_name'] = user.get_full_name() or user.get_username()
     if user.editor:

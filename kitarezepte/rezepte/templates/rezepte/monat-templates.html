@@ -10,7 +10,7 @@
 
 <!-- Template für einen Gang -->
 <script type="text/template" id="gang-cell">
-  <a href="/rezept/<%= rezept.get('slug') %>"><%= rezept.get('titel') %></a>
+  <a href="/rezepte/<%= rezept.id %>"><%= rezept.get('titel') %></a>
 </script>
 <script type="text/template" id="gang-cell-auth">
   <div><%= rezept.get('titel') %></div>

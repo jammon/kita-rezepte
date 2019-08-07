@@ -24,10 +24,10 @@ var ChangePlanungView = Backbone.View.extend({
     },
     initialize: function(options) {
         views.dispatcher.on('edit_gang', this.edit_gang, this);
+        this.kat_input_template = this.kat_input_template || _.template($("#kat-input").html());
     },
     titel_template: _.template(
         "Planung für <%= gang %> am <%=day%>.<%=month%>.<%=year%>"),
-    kat_input_template: _.template($("#kat-input").html()),
     render: function() {
         const datum = this.planung.get('datum');
         this.$("#gangModalLabel").text(this.titel_template({
@@ -138,7 +138,6 @@ var ChangePlanungView = Backbone.View.extend({
     },
 
 });
-var changeplanungview = new ChangePlanungView({el: $("#gangModal")});
 
 function date_str(date) {
     function twodigits(nr) {

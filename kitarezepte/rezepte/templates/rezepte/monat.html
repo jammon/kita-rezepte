@@ -85,5 +85,6 @@
 <script>
   main.initialize_monat({{ data|safe }});
   (new views.MonatView({el: $("#monat_table")[0]})).render();
+  new changeviews.ChangePlanungView({el: $("#gangModal")});
 </script>
 {% endblock extrascripts %}
