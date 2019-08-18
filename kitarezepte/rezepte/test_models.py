@@ -89,21 +89,21 @@ class Get_Einkaufsliste_TestCase(TestCase):
             preis_pro_einheit=189,
             menge_pro_einheit=1000,
             masseinheit="g",
-            kategorien="Grund.")
+            kategorie="Grundnahrungsmittel")
         wasser = Zutat.objects.create(name="Wasser", 
             client = client,
             einheit="1 l",
             preis_pro_einheit=10,
             menge_pro_einheit=1000,
             masseinheit="ml",
-            kategorien="Grund.")
+            kategorie="Grundnahrungsmittel")
         milch = Zutat.objects.create(name="Milch", 
             client = client,
             einheit="1 l",
             preis_pro_einheit=129,
             menge_pro_einheit=1000,
             masseinheit="ml",
-            kategorien="Milchprodukte")
+            kategorie="Milchprodukte")
         
         args = dict(client = client, fuer_kinder=20, fuer_erwachsene=5, zubereitung='')
         wasserreis = Rezept.objects.create(titel="Wasserreis", **args)

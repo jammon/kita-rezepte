@@ -1,0 +1,63 @@
+<table class="zutat-form">
+  <tr>
+    <td>{{ form.name.label_tag }}</td>
+    <td>
+      {{ form.name }}
+      <div  class="text-danger errorlist">{{ form.name.errors }}</div>
+      <div class="help_text">{{ form.name.help_text }}</div>
+    </td>
+  </tr>
+  <tr>
+    <td>{{ form.einheit.label_tag }}</td>
+    <td>
+      {{ form.einheit }}
+      <div>
+        <button type="button" class="btn btn-sm" id="ein_kg">1 kg</button>
+        <button type="button" class="btn btn-sm" id="ein_pfd">1 Pfd.</button>
+        <button type="button" class="btn btn-sm" id="ein_l">1 l</button>
+        <button type="button" class="btn btn-sm" id="ein_st">1 Stck.</button>
+      </div>
+      <div  class="text-danger errorlist">{{ form.einheit.errors }}</div>
+      <div class="help_text">{{ form.einheit.help_text }}</div>
+    </td>
+  </tr>
+  <tr>
+    <td>{{ form.menge_pro_einheit.label_tag }}</td>
+    <td>
+      <div class="menge_pro_einheit inline-list">
+        {{ form.menge_pro_einheit }}
+        {{ form.masseinheit }}
+      </div>
+      <div  class="text-danger errorlist">{{ form.menge_pro_einheit.errors }}</div>
+      <div class="help_text">{{ form.menge_pro_einheit.help_text }}</div>
+    </td>
+  </tr>
+  <tr>
+    <td>{{ form.kategorie.label_tag }}</td>
+    <td class="inline-list">
+      {{ form.kategorie }}
+      <div  class="text-danger errorlist">{{ form.kategorie.errors }}</div>
+      <div class="help_text">{{ form.kategorie.help_text }}</div>
+    </td>
+  </tr>
+  <tr>
+    <td>{{ form.preis_pro_einheit.label_tag }}</td>
+    <td>
+      {{ form.preis_pro_einheit }}
+      <div  class="text-danger errorlist">{{ form.preis_pro_einheit.errors }}</div>
+      <div class="help_text">{{ form.preis_pro_einheit.help_text }}</div>
+    </td>
+  </tr>
+</table>
+
+<script>
+function einheit(bez, menge, einh){
+    document.getElementById('id_einheit').value = bez;
+    document.getElementById('id_menge_pro_einheit').value = menge;
+    document.getElementById('id_masseinheit_'+einh).click();
+}
+document.getElementById('ein_kg').onclick = function () {einheit('1 kg', 1000, '0')};
+document.getElementById('ein_pfd').onclick = function () {einheit('1 Pfd.', 500, '0')};
+document.getElementById('ein_l').onclick = function () {einheit('1 l', 1000, '1')};
+document.getElementById('ein_st').onclick = function () {einheit('1 Stck.', 1, '2')};
+</script>

@@ -28,6 +28,7 @@
 }
 .errorlist li {
 	list-style: none;
+	background-color: #FAA;
 }
 #id_menge_pro_einheit,
 #id_preis_pro_einheit {

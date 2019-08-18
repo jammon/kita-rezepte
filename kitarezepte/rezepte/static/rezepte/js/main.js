@@ -57,7 +57,7 @@ function initialize_rezept_edit(initdata) {
     models.zutaten.reset(initdata.zutaten);
     models.rezeptzutaten.reset(initdata.rezeptzutaten);
     let zutatenview = (new views.ZutatenView({el: $("#zutaten")})).render();
-    $(".submit").click(function() {
+    $(".submit-rezept").click(function() {
         zutatenview.write_rz_inputs();
         $("#rezept-edit-form").submit();
     });

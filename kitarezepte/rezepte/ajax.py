@@ -3,16 +3,18 @@ from datetime import date
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.http import require_POST
+from django.shortcuts import get_object_or_404
 
 import json
 
-from .models import Client, Rezept, GangPlan
-from .utils import day_fromJson, get_client
+from .forms import ZutatForm
+from .models import Client, Rezept, Zutat, GangPlan
+from .utils import day_fromJson, get_client, client_param
 
 @login_required
 @require_POST
-def set_gangplan(request):
-    client_slug = get_client(request)
+@client_param
+def set_gangplan(request, client_slug=''):
     if client_slug != request.session['client_slug']:
         return HttpResponse(status=403, reason="Falscher Client.")
     client = Client.objects.get(slug=client_slug)
@@ -38,4 +40,23 @@ def set_gangplan(request):
         'rezept': {'id': rezept.id, 'titel':rezept.titel},
         'datum': str(datum),
         'gang': gang,
-        })
+    })
+
+
+@login_required
+@require_POST
+@client_param
+def add_zutat(request, client_slug=''):
+    if client_slug != request.session['client_slug']:
+        return JsonResponse({'error': "Falscher Client."}, status=403)
+    client = get_object_or_404(Client, slug=client_slug)
+    form = ZutatForm(request.POST, instance=Zutat(client=client))
+    if form.is_valid():
+        if form.cleaned_data['name']=='ERROR':
+            return JsonResponse({'error': "Error requested."}, status=400)
+        zutat = form.save()
+        resp = JsonResponse({
+            'success': 'xxx', 
+            'zutat': zutat.toJson()})
+        return resp
+    return JsonResponse({'error': 'Form is not valid'}, status=400)

@@ -34,6 +34,7 @@ class RezeptForm(forms.ModelForm):
     kategorie_list = forms.MultipleChoiceField(
         widget=forms.CheckboxSelectMultiple,
         label='Kategorie',
+        required=False,
     )
 
     class Meta:
@@ -64,6 +65,6 @@ class RezeptForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        self.instance.gang_list = cleaned_data['gang_list']
-        self.instance.kategorie_list = cleaned_data['kategorie_list']
+        self.instance.gang_list = cleaned_data.get('gang_list', [])
+        self.instance.kategorie_list = cleaned_data.get('kategorie_list', [])
         return cleaned_data

@@ -32,58 +32,7 @@
     <div class="col col-lg-6">
       <h2>{% if zutat_id %}Zutat bearbeiten {% else %}Neue Zutat {% endif %}</h2>
       <form action="{{ zutat_id }}" method="post">{% csrf_token %}
-        <table class="zutat-form">
-          <tr>
-            <td>{{ form.name.label_tag }}</td>
-            <td>
-              {{ form.name }}
-              <div  class="text-danger errorlist">{{ form.name.errors }}</div>
-              <div class="help_text">{{ form.name.help_text }}</div>
-            </td>
-          </tr>
-          <tr>
-            <td>{{ form.einheit.label_tag }}</td>
-            <td>
-              {{ form.einheit }}
-              <div>
-                <button type="button" class="btn btn-sm" id="ein_kg">1 kg</button>
-                <button type="button" class="btn btn-sm" id="ein_pfd">1 Pfd.</button>
-                <button type="button" class="btn btn-sm" id="ein_l">1 l</button>
-                <button type="button" class="btn btn-sm" id="ein_st">1 Stck.</button>
-              </div>
-              <div  class="text-danger errorlist">{{ form.einheit.errors }}</div>
-              <div class="help_text">{{ form.einheit.help_text }}</div>
-            </td>
-          </tr>
-          <tr>
-            <td>{{ form.menge_pro_einheit.label_tag }}</td>
-            <td>
-              <div class="menge_pro_einheit inline-list">
-                {{ form.menge_pro_einheit }}
-                {{ form.masseinheit }}
-              </div>
-              <div  class="text-danger errorlist">{{ form.menge_pro_einheit.errors }}</div>
-              <div class="help_text">{{ form.menge_pro_einheit.help_text }}</div>
-            </td>
-          </tr>
-          <tr>
-            <td>{{ form.kategorie.label_tag }}</td>
-            <td class="inline-list">
-              {{ form.kategorie }}
-              <div  class="text-danger errorlist">{{ form.kategorie.errors }}</div>
-              <div class="help_text">{{ form.kategorie.help_text }}</div>
-            </td>
-          </tr>
-          <tr>
-            <td>{{ form.preis_pro_einheit.label_tag }}</td>
-            <td>
-              {{ form.preis_pro_einheit }}
-              <div  class="text-danger errorlist">{{ form.preis_pro_einheit.errors }}</div>
-              <div class="help_text">{{ form.preis_pro_einheit.help_text }}</div>
-            </td>
-          </tr>
-        </table>
-
+        {% include "rezepte/zutat-form.html" %}
         <button type="submit" value="Speichern" class="btn btn-default">Speichern</button>
       </form>
       {% if rezepte %}
@@ -108,18 +57,3 @@
     </div>
   </div>
 {% endblock content %}
-{% block extrascripts %}
-<script>
-function einheit(bez, menge, einh){
-    $('#id_einheit').val(bez);
-    $('#id_menge_pro_einheit').val(menge);
-    $('#id_masseinheit_'+einh).click();
-}
-$(function() {
-  $('#ein_kg').click(function () {einheit('1 kg', 1000, '0')});
-  $('#ein_pfd').click(function () {einheit('1 Pfd.', 500, '0')});
-  $('#ein_l').click(function () {einheit('1 l', 1000, '1')});
-  $('#ein_st').click(function () {einheit('1 Stck.', 1, '2')});
-});
-</script>
-{% endblock extrascripts %}

@@ -5,9 +5,6 @@ Eine Internetapplikation, um Rezepte, Kochpläne und Einkaufslisten für eine Ki
 
 - Alle Rezepte sind Public Domain. Sie dürfen frei verwendet werden. Jeder, der ein Rezept einstellt, muss gewährleisten, dass es frei von Rechten anderer ist und erteilt eine bedingungslose Nutzungslizenz für andere Nutzer.
 
-## Nutzerverwaltung
-Auf [www.kita-rezepte.de/auth/users](http://www.kita-rezepte.de/auth/users) kann man Nutzer eintragen und löschen.
-
 ## Visuelle Tests:
 * Hauptseite aufrufen
 * Zutatenliste anzeigen
@@ -26,12 +23,7 @@ Auf [www.kita-rezepte.de/auth/users](http://www.kita-rezepte.de/auth/users) kann
     * einen Koch ändern
 * Einkaufsliste aufrufen 
 
-## Erweiterung 
-- Man soll Rezepte von anderen Kitas übernehmen können
-- Bei Eingabe neuer Zutaten evtl. die Zutaten anderer Kitas zur Auswahl anbieten.
-
 ## User Stories
-
 Zutaten einpflegen              ok
     mit Einheit                 ok
     Menge pro Einheit           ok
@@ -95,4 +87,18 @@ Mengenangaben:                                                     ok
 Standard-Mengenangaben (für Einkauf) in Zutateneingabe vorsehen
     z.B. 1 kg, 500 g, 1 l
     mit jQuery die Felder ausfüllen
-    
+
+## Detail-Beschreibung
+### Rezepteingabe
+Zutaten:
+- Man kann durch Eingabe die Auswahl der Zutaten einengen.
+- Jeweils die erste Zutat ist ausgewählt.
+- Mit Up/Down kann man andere Zutaten auswählen.
+- Wenn man das Eingabefeld verlässt, wird die ausgewählte Zutat und ihre Einheit übernommen.
+- Wenn die Eingabe keiner bekannten Zutat entspricht, dann öffnet sich ein Dialog zur Eingabe der Zutat. Diese wird nach Erfolg ins Eingabefeld und mit ihrer Einheit übernommen. TODO
+
+
+## Erweiterung 
+- Man soll Rezepte von anderen Kitas übernehmen können
+- Bei Eingabe neuer Zutaten evtl. die Zutaten anderer Kitas zur Auswahl anbieten.
+

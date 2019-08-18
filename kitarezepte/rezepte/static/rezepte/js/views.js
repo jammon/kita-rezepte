@@ -122,27 +122,67 @@ var ZutatenListeView = Backbone.View.extend({
 
 var ZutatenEingabeView = Backbone.View.extend({
     initialize: function() {
-        var that = this;
-        this.$el.autocomplete({
+        let that = this;
+        let el = this.$el;
+        el.autocomplete({
             source: models.zutaten.pluck('name'),
-            change: function(event, ui) {
-                that.check_zutat(ui.item.value, true);
-            },
+            autoFocus: true,
+            change: function(event, ui) { that.check_zutat(ui.item, true); },
         });
+        this.listenTo(models.zutaten, "update", function(zutaten) {
+            el.autocomplete("option", "source", zutaten.pluck('name'));
+        });
+        let neuezutatview = new NeueZutatView({el: $("#zutatModal")});
+        this.listenTo(neuezutatview, "NeueZutat", this.check_zutat)
     },
-    check_zutat: function(value, edited) {
-        let name = value || this.$el.val();
-        this.zutat = models.zutaten.findWhere({'name': name});
+    check_zutat: function(item, edited) {
+        if (item) {
+            this.zutat = models.zutaten.findWhere({'name': item.value});
+        } else {
+            let lower_name = this.$el.val().toLocaleLowerCase('de-DE');
+            this.zutat = models.zutaten.find(function(zutat) {
+                return zutat.get('name').toLocaleLowerCase('de-DE').indexOf(lower_name) > -1;
+            });
+        }
         if (this.zutat) {
+            if (edited) this.$el.val(this.zutat.get('name'));
             this.trigger("zutat-selected", this.zutat);
         } else if (edited) {
-            alert("Neue Zutat: " + name);
+            $('#add-zutat')[0].reset();
+            $('#zutatModal #id_name').val(this.$el.val());
+            $('#zutatModal').modal();
         }
     },
     empty: function(focus) {
         this.$el.val('');
         this.zutat = void 0;
         if (focus) this.$el.focus();
+    },
+});
+
+var NeueZutatView = Backbone.View.extend({
+    initialize: function() {
+        let that = this;
+        let zutatform = this.$('#add-zutat');
+        let el = this.$el;
+        zutatform.submit(function () {
+            $.ajax({
+                type: zutatform.attr('method'),
+                url: zutatform.attr('action'),
+                data: zutatform.serialize(),
+                success: function (data) {
+                    models.zutaten.add(JSON.parse(data.zutat));
+                    el.modal('hide');
+                    that.trigger("NeueZutat");
+                    $("#mengeneingabe").focus();
+                },
+                dataType: "json",
+                error: function(data) {
+                    el.$(".error").html(data.error || data.responseText.slice(0, 100));
+                }
+            });
+            return false;
+        });
     },
 });
 
@@ -230,6 +270,7 @@ return {
     RezeptZutatView: RezeptZutatView,
     ZutatenEingabeView: ZutatenEingabeView,
     MengenEingabeView: MengenEingabeView,
+    NeueZutatView: NeueZutatView,
     ZutatenListeView: ZutatenListeView,
     ZutatenView: ZutatenView,
     dispatcher: dispatcher,

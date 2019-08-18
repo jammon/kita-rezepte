@@ -56,29 +56,67 @@
     </div>
     <div class="col col-md-6">
       <div class="editorwindow">
-      {{ form.zubereitung.errors }}
       {{ form.zubereitung.label_tag }}
       {{ form.zubereitung }}
+      {{ form.zubereitung.errors }}
       </div>
       <div class="editorwindow">        
-      {{ form.anmerkungen.errors }}
       {{ form.anmerkungen.label_tag }}
       {{ form.anmerkungen }}
+      {{ form.anmerkungen.errors }}
       </div>
       <div class="inline-list">
-        {{ form.gang_list.errors }}
         {{ form.gang_list.label_tag }}
         {{ form.gang_list }}
+        {{ form.gang_list.errors }}
       </div>
       <div class="inline-list">
-        {{ form.kategorie_list.errors }}
         {{ form.kategorie_list.label_tag }}
         {{ form.kategorie_list }}
+        {{ form.kategorie_list.errors }}
       </div>
-      <div><button class="submit btn btn-default" type="button">Speichern</button></div>
+      <div><button class="submit-rezept btn btn-default" type="button">Speichern</button></div>
     </div>
   </div>
   </form>
+
+{% comment "ChangeZutatView" %}{% endcomment %}
+<div class="modal fade" id="zutatModal" tabindex="-1" role="dialog" 
+     aria-labelledby="zutatModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <form action="/ajax/add-zutat/" id="add-zutat" method="post">{% csrf_token %}
+      <div class="modal-header">
+        <h5 class="modal-title" id="zutatModalLabel">Neue Zutat</h5>
+        <button type="button" class="close" data-dismiss="modal"
+                aria-label="Abbrechen">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col">
+                {% with form=zutatenform  %}
+                  {% include "rezepte/zutat-form.html" %}
+                {% endwith %}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col error"></div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          Abbrechen</button>
+        <button type="submit" class="btn btn-primary submit-zutat">Speichern</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 {% endblock content %}
 {% block extrascripts %}
 <script src="{% static 'vendor/jquery-ui-1.12.1.custom/jquery-ui.js' %}"></script>

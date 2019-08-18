@@ -19,3 +19,7 @@
 In /zutaten ist der Preis pro Einheit mit -1 vorbelegt
 in Rezept 1314 steht im Rezept 0 Pckg. Gekörnte Brühe und in edit undefined Pckg. Gekörnte Brühe
 In /zutaten sollte der Preis als Kommazahl einzugeben sein
+Neues Rezept eingeben
+In der Zutateneingabe bei Rezeptedit sollen die Zutaten nach Länge sortiert sein
+Editier-Views sollten darauf achten, dass der richtige Client bearbeitet wird
+Edit-Forms sollten nur angezeigt werden, wenn es der richtige Client ist

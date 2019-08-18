@@ -18,7 +18,6 @@ from django.views.generic.list import ListView
 
 def index(request):
     client_slug = get_client(request)
-    print('client_slug:', client_slug)
     if client_slug:
         client = get_object_or_404(Client, slug=client_slug)
         return render(request, "rezepte/client-index.html", {'client': client})
@@ -70,7 +69,7 @@ def get_query_args(client_slug='', id=0, slug=''):
 
 # Rezepte ------------------------------------------------------------------
 @client_param
-def rezepte(request, client_slug='', id=0, slug='', edit=False):
+def rezepte(request, client_slug='', id=0, slug=''):
     if not (id or slug):
         # deliver all recipes
         recipes = Rezept.objects.filter(client__slug=client_slug).order_by('slug')
@@ -80,9 +79,6 @@ def rezepte(request, client_slug='', id=0, slug='', edit=False):
         data.append(("unsortiert", [r for r in recipes if r.gang.strip()=='']))
         return render(request, 'rezepte/rezepte.html', {'recipes': data})
 
-    if edit:
-        return rezept_edit(request, client_slug, id, slug)
-
     # show just one recipe
     rezept = get_object_or_404(Rezept, **get_query_args(client_slug, id, slug))
     return render(
@@ -91,7 +87,10 @@ def rezepte(request, client_slug='', id=0, slug='', edit=False):
         {'recipe': rezept,
          'zutaten': rezept.zutaten.all().select_related('zutat').order_by('nummer')})
 
-def rezept_edit(request, client_slug, id, slug):
+@client_param
+def rezept_edit(request, client_slug='', id=0, slug=''):
+    if client_slug != request.session['client_slug']:
+        return HttpResponse(status=403, reason="Falscher Client.")
     if id or slug:
         rezept = get_object_or_404(Rezept, **get_query_args(client_slug, id, slug))
     else:
@@ -100,7 +99,7 @@ def rezept_edit(request, client_slug, id, slug):
         form = RezeptForm(request.POST, instance=rezept, session=request.session)
         # import pdb; pdb.set_trace()
         if form.is_valid():
-            form.save()
+            rezept = form.save()
             # ditch old RezeptZutaten
             RezeptZutat.objects.filter(rezept=rezept).delete()
             # collect and save RezeptZutaten
@@ -113,10 +112,14 @@ def rezept_edit(request, client_slug, id, slug):
     else:
         form = RezeptForm(instance=rezept, session=request.session)
     zutaten = Zutat.objects.filter(client__slug=client_slug)
+    rezeptzutaten = (
+        rezept.zutaten.all().select_related('zutat') 
+        if rezept is not None else [])
     return render(request, 'rezepte/rezept-edit.html', 
                   {'form': form,
                    'zutaten': zutaten,
-                   'rezeptzutaten': rezept.zutaten.all().select_related('zutat')})
+                   'zutatenform': ZutatForm(),
+                   'rezeptzutaten': rezeptzutaten})
 
 
 # Zutaten ------------------------------------------------------------------
