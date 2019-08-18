@@ -94,7 +94,8 @@ def rezept_edit(request, client_slug='', id=0, slug=''):
     if id or slug:
         rezept = get_object_or_404(Rezept, **get_query_args(client_slug, id, slug))
     else:
-        rezept = None
+        # neues Rezept
+        rezept = Rezept(client=Client.objects.get(slug=client_slug))
     if request.method == 'POST':
         form = RezeptForm(request.POST, instance=rezept, session=request.session)
         # import pdb; pdb.set_trace()

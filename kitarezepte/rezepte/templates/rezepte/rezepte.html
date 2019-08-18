@@ -3,6 +3,11 @@
 {% block content %}
   <div class="row">
     <div class="col">
+      <div class="pull-right">
+        <a class="btn btn-primary" href="/rezepte/new" role="button">
+          Neues Rezept
+        </a>
+      </div>
       <h1>Rezepte</h1>
       <table class="table">
       {% for g, rs in recipes  %}

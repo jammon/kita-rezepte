@@ -178,7 +178,7 @@ var NeueZutatView = Backbone.View.extend({
                 },
                 dataType: "json",
                 error: function(data) {
-                    el.$(".error").html(data.error || data.responseText.slice(0, 100));
+                    that.$(".error").html(data.responseText.slice(0, 100));
                 }
             });
             return false;

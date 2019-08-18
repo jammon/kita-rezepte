@@ -1,6 +1,9 @@
 .hidden {
 	display: none;
 }
+.pull-right {
+    float: right !important;
+}
 /* Rezept-Eingabe */
 .delete {
 	font-size: larger;
@@ -28,6 +31,9 @@
 }
 .errorlist li {
 	list-style: none;
+}
+.errorlist li,
+#zutatModal .error {
 	background-color: #FAA;
 }
 #id_menge_pro_einheit,

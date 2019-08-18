@@ -48,15 +48,15 @@ def set_gangplan(request, client_slug=''):
 @client_param
 def add_zutat(request, client_slug=''):
     if client_slug != request.session['client_slug']:
-        return JsonResponse({'error': "Falscher Client."}, status=403)
+        return HttpResponse("Falscher Client.", status=403)
     client = get_object_or_404(Client, slug=client_slug)
     form = ZutatForm(request.POST, instance=Zutat(client=client))
     if form.is_valid():
         if form.cleaned_data['name']=='ERROR':
-            return JsonResponse({'error': "Error requested."}, status=400)
+            return HttpResponse("Error requested.", status=400)
         zutat = form.save()
         resp = JsonResponse({
             'success': 'xxx', 
             'zutat': zutat.toJson()})
         return resp
-    return JsonResponse({'error': 'Form is not valid'}, status=400)
+    return HttpResponse('Form is not valid', status=400)

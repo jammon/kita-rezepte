@@ -29,3 +29,5 @@ x 2019-08-06 In der Rezept-View sollte die Zeile für die Kategorie nur zu sehen
 x 2019-08-07 Rezepte-Edit funktioniert nicht: keine Zutaten, Submit zeigt keine Reaktion
 x 2019-08-07 Wenn man ein Rezept bearbeitet, kommt ein Fehler
 x 2019-08-15 Wenn man in rezept-edit den ganzen Namen einer Zutat eingibt und dann Tab drückt, gibt es einen Fehler
+x 2019-08-18 Edit-Forms sollten nur angezeigt werden, wenn es der richtige Client ist
+x 2019-08-18 Neues Rezept eingeben

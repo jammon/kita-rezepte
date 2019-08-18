@@ -29,7 +29,7 @@
     <div class="col col-sm-8 xs-12">
       {# <h3>Zubereitung</h3> #}
       {{ p.rezept.zubereitung|safe }}
-      {% if p.rezept.anmerkungen %}
+      {% if p.rezept.anmerkungen and user.is_authenticated %}
         <h3>Anmerkungen</h3>
         {{ p.rezept.anmerkungen|safe }}
       {% endif %}

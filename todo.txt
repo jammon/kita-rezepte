@@ -16,10 +16,10 @@
 (B) Wenn die Menge nicht angegeben ist, steht bei der Rezeptzutat undefined +rezept
 (C) Wenn ein Rezept nicht gefunden wird, auf die Rezepte-Seite weiterleiten +rezept
 (D) Meta-Description und Title für die einzelnen Seiten anpassen
-In /zutaten ist der Preis pro Einheit mit -1 vorbelegt
-in Rezept 1314 steht im Rezept 0 Pckg. Gekörnte Brühe und in edit undefined Pckg. Gekörnte Brühe
-In /zutaten sollte der Preis als Kommazahl einzugeben sein
-Neues Rezept eingeben
-In der Zutateneingabe bei Rezeptedit sollen die Zutaten nach Länge sortiert sein
-Editier-Views sollten darauf achten, dass der richtige Client bearbeitet wird
-Edit-Forms sollten nur angezeigt werden, wenn es der richtige Client ist
+(B) In /zutaten ist der Preis pro Einheit mit -1 vorbelegt
+(C) in Rezept 1314 steht im Rezept 0 Pckg. Gekörnte Brühe und in edit undefined Pckg. Gekörnte Brühe
+(B) In /zutaten sollte der Preis als Kommazahl einzugeben sein
+(B) In der Zutateneingabe bei Rezeptedit sollen die Zutaten nach Länge sortiert sein
+(A) Editier-Views sollten darauf achten, dass der richtige Client bearbeitet wird
+(C) Einkaufsliste auch für andere Zeiträume abrufen
+(A) Monat soll nur von angemeldeten Usern bearbeitet werden können

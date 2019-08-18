@@ -21,7 +21,7 @@
     <div class="col col-sm-8 col-md-9">
       <h2>Zubereitung</h2>
       <p>{{ recipe.zubereitung|safe }}</p>
-      {% if recipe.anmerkungen %}
+      {% if recipe.anmerkungen and user.is_authenticated %}
         <h2>Anmerkungen</h2>
         <p>{{ recipe.anmerkungen|safe }}</p>
       {% endif %}

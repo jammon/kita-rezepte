@@ -29,6 +29,7 @@
       {% endfor %}
       </table>
     </div>
+    {% if user.is_authenticated %}
     <div class="col col-lg-6">
       <h2>{% if zutat_id %}Zutat bearbeiten {% else %}Neue Zutat {% endif %}</h2>
       <form action="{{ zutat_id }}" method="post">{% csrf_token %}
@@ -55,5 +56,6 @@
       {% endif %}
       <div>{{ msg }}</div>
     </div>
+    {% endif %}
   </div>
 {% endblock content %}
