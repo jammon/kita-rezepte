@@ -2,9 +2,11 @@
 from fabric import Connection, task
 import invoke
 
-# env.user = 'kitarez'
-# env.hosts = ['kitarez.uber.space']
-# code_dir = '~/kita-rezepte'
+host = 'kitarez'
+
+def run(command):
+    Connection(host).run(command)
+
 
 @task
 def test(ctx, verbosity='1'):
@@ -49,28 +51,30 @@ def prepare_deploy(ctx):
     push()
 
 
-# # call with: `fab server_pull:my_branch`
-# def server_pull(branch='master'):
-#     with cd(code_dir):
-#         run("git pull origin " + branch)
+code_dir = "~/kita-rezepte"
+# call with: `fab server_pull:my_branch`
+@task
+def server_pull(ctx, branch='master'):
+    run(f"cd {code_dir} && git pull origin {branch}")
 
 
-# # def install_requirements():
-# #     run("pip3.6 install -r stationsplan/requirements.txt --user")
+@task
+def install_requirements(ctx):
+    run(f"cd {code_dir} && pip3.6 install -r requirements.txt --user")
 
 
-# def staticfiles():
-#     with cd(code_dir):
-#         run("python3.6 manage.py collectstatic --noinput")
+@task
+def staticfiles(ctx):
+    run(f"python3.6 {code_dir}/kitarezepte/manage.py collectstatic --noinput")
 
 
-# def migrate():
-#     with cd(code_dir):
-#         run("python3.6 manage.py migrate")
+@task
+def migrate(ctx):
+    run(f"python3.6 {code_dir}/kitarezepte/manage.py migrate")
 
 
-# # def restart_server():
-# #     run("touch ~/stationsplan/stationsplan/uberspace_wsgi.py")
+# def restart_server():
+#     run("touch ~/stationsplan/stationsplan/uberspace_wsgi.py")
 
 
 # # call with: `fab deploy:my_branch`

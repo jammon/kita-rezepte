@@ -4,6 +4,6 @@ content/*
 venv/*
 kitarezepte/kita-rezepte.cnf
 local/*
-pip.log
+*.log
 *.pyc
 *.bak
