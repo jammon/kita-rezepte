@@ -73,8 +73,9 @@ def migrate(ctx):
     run(f"python3.6 {code_dir}/kitarezepte/manage.py migrate")
 
 
-# def restart_server():
-#     run("touch ~/stationsplan/stationsplan/uberspace_wsgi.py")
+@task
+def restart_server(ctx):
+    run("touch ~/kita-rezepte/kitarezepte/kitarezepte/wsgi.py")
 
 
 # # call with: `fab deploy:my_branch`

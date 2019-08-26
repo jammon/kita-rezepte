@@ -31,9 +31,11 @@
           <a class="nav-item nav-link" href="/monat">Monatsplan</a>
           <a class="nav-item nav-link" href="/einkaufsliste">Einkaufsliste</a>
         </div>
-        <span class="navbar-text">
-          {{ request.user.get_full_name }} ({{ request.session.client_slug }})
-        </span>
+        {% if user.is_authenticated %}
+          <span class="navbar-text">
+            {{ request.user.get_full_name }} ({{ request.session.client_slug }})
+          </span>
+        {% endif %}
       </div>
     </nav>
     {% endblock navigation %}
