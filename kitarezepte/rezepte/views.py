@@ -33,7 +33,7 @@ def login(request):
             if user is not None:
                 auth.login(request, user)
                 write_client_id_to_session(request.session, user)
-                if request.session['client_slug']:
+                if request.session.get('client_slug'):
                     # TODO: change to client's domain
                     return HttpResponseRedirect('/monat')
                 return HttpResponseRedirect('/')
@@ -50,12 +50,14 @@ def logout(request):
 
 def write_client_id_to_session(session, user):
     session['user_name'] = user.get_full_name() or user.get_username()
-    if user.editor:
+    try:
         client = user.editor.client
         session['client_id'] = client.id
         session['client_slug'] = client.slug
         session['gaenge'] = client.get_gaenge()
         session['kategorien'] = client.get_kategorien()
+    except auth.models.User.editor.RelatedObjectDoesNotExist:
+        pass
 
 
 def get_query_args(client_slug='', id=0, slug=''):

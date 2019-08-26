@@ -35,6 +35,12 @@ class LoginTestcase(TestCase):
             '/login/', {'username': 'test', 'password': 'wrong'})
         self.assertEqual(response.context['form'].is_valid(), False)
 
+    def test_no_editor(self):
+        user = User.objects.create_user('test', 'test@test.tld', 'test')
+        response = self.client.post(
+            '/login/', {'username': 'test', 'password': 'test'})
+        self.assertEqual(self.client.session['user_name'], 'test')
+
 
 class RezepteTestcase(TestCase):
     """Test rezepte view"""
