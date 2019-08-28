@@ -23,70 +23,6 @@ Eine Internetapplikation, um Rezepte, Kochpläne und Einkaufslisten für eine Ki
     * einen Koch ändern
 * Einkaufsliste aufrufen 
 
-## User Stories
-Zutaten einpflegen              ok
-    mit Einheit                 ok
-    Menge pro Einheit           ok
-Zutaten wieder löschen
-  cave Referenzen, evtl. nur ersetzen, andere Packungsgröße angeben, 
-    als nicht mehr verfügbar markieren
-Preise für viele Zutaten aktualisieren                                   ok
-    für alle Zutaten oder nur für das, was nächste Woche gebraucht wird. ok
-Zeiträume festlegen (für Rezeptplan oder Einkaufsplan)
-    Freieingabe                                                          ok 
-    Standardzeiträume: nächste/r Woche/Monat, nächste Einkaufsperiode
-        evtl. als Vorbelegung per Javascript
-Rezept eingeben
-    Felder/Informationen:                                       ok
-        Titel
-        Untertitel/Kommentar
-        Auswahl von Zutaten mit Menge
-        Zubereitung (Text)
-        "Berechnet für" x Kinder und y Erwachsene
-        Anmerkungen (Spezialzubereitung für einzelne Kinder)
-        eingegeben von (User)
-        geeignet als: Vorspeise, Hauptgang, Nachtisch
-    Preis für Rezept anzeigen                                   ok
-    Spezialdarstellung der Zutaten mit Preisen                  ok
-    Versionen von Rezepten
-        Mengen, Zutaten oder Zubereitung können abweichen
-        sind unter dem gleichen Namen abgelegt.
-Menüplan für 1 Tag zusammenstellen
-    Kategorie: Suppe, Teigwaren, Gemüse, Getreide, Reis, Kartoffel, Lieblingsgerichte
-    Preis des Menüplans (aufgeschlüsselt nach Gängen)
-    Spezialdarstellung der Zutaten mit Preisen
-Menüplan für 1 Tag ausdrucken
-    mit Ankreuz-/Kommentarfeldern
-Rating für den Menüplan eingeben:
-    Datum, User
-    kam gut an? (durchgefallen, schmeckte nicht so, war ok, gut geschmeckt, Lieblingsgericht)
-    Menge ok? (viel zu wenig, knapp, richtig, reichlich, blieb viel übrig)
-    wieviele Erw./Kinder haben gegessen?
-    wurde die Menge angepasst?
-    Geburtstagsmuffins am Vormittag? einkalkuliert?
-Wochen- oder Monatsplan zusammenstellen
-    Feier-/Schließungstage angeben
-    für jeden Werktag:
-        Koch
-        Menüplan
-    anfangs ist Koch noch nicht bekannt
-Monatsplan ausdrucken
-Einkaufsplan für einen Zeitraum machen
-Text mit Detailanweisungen (z.B. bzgl. Hummus mit Brot) oder allgemeinen Festlegungen
-
-Anmeldung einrichten
-Berechtigungen vergeben
-
-Auf einer HTML-Seite den Inhalt eines Requests ausgeben lassen     ok
-
-Mengenangaben:                                                     ok
-    Packungseinheit (für Bestellung), ggf. umzurechnen in g/ml
-    in Gramm, ml oder andere Einheit wie bei der Zutat angegeben ('Tüte') - für Rezept
-    oder freie Angabe ('eine Prise') - für Rezept
-    
-Standard-Mengenangaben (für Einkauf) in Zutateneingabe vorsehen
-    z.B. 1 kg, 500 g, 1 l
-    mit jQuery die Felder ausfüllen
 
 ## Detail-Beschreibung
 ### Rezepteingabe
@@ -95,10 +31,6 @@ Zutaten:
 - Jeweils die erste Zutat ist ausgewählt.
 - Mit Up/Down kann man andere Zutaten auswählen.
 - Wenn man das Eingabefeld verlässt, wird die ausgewählte Zutat und ihre Einheit übernommen.
-- Wenn die Eingabe keiner bekannten Zutat entspricht, dann öffnet sich ein Dialog zur Eingabe der Zutat. Diese wird nach Erfolg ins Eingabefeld und mit ihrer Einheit übernommen. TODO
+- Wenn die Eingabe keiner bekannten Zutat entspricht, dann öffnet sich ein Dialog zur Eingabe der Zutat. Diese wird nach Erfolg ins Eingabefeld und mit ihrer Einheit übernommen. 
 
-
-## Erweiterung 
-- Man soll Rezepte von anderen Kitas übernehmen können
-- Bei Eingabe neuer Zutaten evtl. die Zutaten anderer Kitas zur Auswahl anbieten.
 

@@ -8,8 +8,11 @@
     + die Zutaten müssen eine Kategorie haben √
     + die Zutaten sollen einen Preis pro Menge haben √
     + Zutaten eingeben √
+    + Zutaten löschen, wenn sie nicht mehr benutzt werden √
 - Preis der Zutaten aktualisieren 
     + automatisch Preise der Rezepte aktualisieren √
+    + Preise für viele Zutaten aktualisieren 
+        * für alle Zutaten oder nur für das, was nächste Woche gebraucht wird.
 - Rezepte eingeben
     + die Rezepte müssen Kategorien haben √
     + der Titel soll die URL bestimmen (als Slug) √
@@ -18,16 +21,20 @@
     + Zutaten auswählen mit Mengenangaben √
     + Markieren nach Essen und Gang √
     + Preis errechnen √
+    + abweichende Versionen von Rezepten erstellen
 - Menüs für einen Tag eingeben/ändern. √
+    + Feier- und Schließungstage
 - Alle Menüs eines Zeitraums (Monat) anzeigen. √
     + Je nach Anmeldestatus auch Anzeige von Kosten und Bearbeitungsmöglichkeit √
 - Aus den geplanten Menüs eine Einkaufsliste erstellen. √
     + Auflistung der Zutaten getrennt nach quantitativen und qualitativen Angaben √
     + Auflistung der geplanten Rezepte √
+    + Zeiträume für die Einkaufsliste angeben
 
 ## Todos
 - Aus einem Rezept (evtl. eines anderen Mandanten) eine Kopie zum Editieren erstellen
     + Benachrichtigung des Rezeptspenders?
+- Bei Eingabe neuer Zutaten evtl. die Zutaten anderer Kitas zur Auswahl anbieten.
 
 ## Mechanismen
 ### Clients

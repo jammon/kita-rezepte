@@ -1,4 +1,4 @@
-<!-- Template für einen Tag -->
+{# Template für einen Tag #}
 <script type="text/template" id="day-table">
   <div class="col col-sm-2 col-md-1">
     <a href="/tag/<%= year %>/<%= month %>/<%= day %>"><%= dayname %>. <%= day %>.<%= month %>.</a>
@@ -8,7 +8,7 @@
   </div>
 </script>
 
-<!-- Template für einen Gang -->
+{# Template für einen Gang #}
 <script type="text/template" id="gang-cell">
   <a href="/rezepte/<%= rezept.id %>"><%= rezept.get('titel') %></a>
 </script>
@@ -18,7 +18,7 @@
   <div class="monat-preis"><%= rezept.preis_in_euro() %></div>
 </script>
 
-<!-- Template für einen Kategorie-Input -->
+{# Template für einen Kategorie-Input #}
 <script type="text/template" id="kat-input">
   <div>
   	<input type="radio" id="inp-kat-<%= i %>" name="inp-kat" value="<%= kategorie %>">

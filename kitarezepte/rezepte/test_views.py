@@ -6,6 +6,11 @@ from .models import Rezept, Client, Editor
 from .utils import TEST_REIS, TEST_REZEPT
 # from rezepte.views import 
 
+def create_user(name, client, email='test@test.tld', password='test'):
+    user = User.objects.create_user(name, email, password)
+    Editor.objects.create(user=user, client=client)
+    return user
+
 
 class LoginTestcase(TestCase):
     """Test login view"""
@@ -16,9 +21,8 @@ class LoginTestcase(TestCase):
         self.assertTemplateUsed(response, 'rezepte/login.html')
 
     def setup_user(self):
-        user = User.objects.create_user('test', 'test@test.tld', 'test')
         client = Client.objects.create(name='Test-Kita')
-        Editor.objects.create(user=user, client=client)
+        create_user('test', client)
 
     def test_post(self):
         self.setup_user()
@@ -41,6 +45,18 @@ class LoginTestcase(TestCase):
             '/login/', {'username': 'test', 'password': 'test'})
         self.assertEqual(self.client.session['user_name'], 'test')
 
+
+class WrongClientTestcase(TestCase):
+    """Try to edit wrong client"""
+
+    def setUp(self):
+        self.right_client = Client.objects.create(name='Test-Kita')
+        self.wrong_client = Client.objects.create(name='Wrong')
+        self.right_user = create_user('Test-Kita User', self.right_client)
+        self.wrong_user = create_user('Wrong User', self.wrong_client)
+        Editor.objects.create(user=self.right_user, client=self.right_client)
+        Editor.objects.create(user=self.wrong_user, client=self.wrong_client)
+        
 
 class RezepteTestcase(TestCase):
     """Test rezepte view"""
