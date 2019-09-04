@@ -3,6 +3,11 @@ var views = (function($, _, Backbone) {
 
 // Monat ---------------------------------------------------------
 //
+var planung_template;
+if ($('#gang-cell')) planung_template = _.template($('#gang-cell').html());
+var planung_auth_template;
+if ($('#gang-cell-auth')) planung_auth_template = _.template($('#gang-cell-auth').html());
+
 var PlanungView = Backbone.View.extend({
     // zeigt einen Gang an einem Tag
     events: {
@@ -13,15 +18,16 @@ var PlanungView = Backbone.View.extend({
         this.className = this.model.get('gang');
         this.id = this.model.get('gang') + this.model.get('day');
         this.listenTo(this.model, "change", this.render);
-        this.template = this.template || _.template($('#gang-cell').html());
-        this.auth_template = this.auth_template || _.template($('#gang-cell-auth').html());
     },
     render: function() {
-        const data = {rezept: this.model.get('rezept')};
-        this.$el.empty().append(
-            models.data.is_authenticated ?
-                this.auth_template(data) :
-                this.template(data));
+        const rezept = this.model.get('rezept');
+        let content;
+        if (rezept.id == -1) 
+            content = rezept.get('titel');
+        else if (models.data.is_authenticated)
+            content = planung_auth_template({rezept: rezept});
+        else content = planung_template({rezept: rezept});
+        this.$el.empty().append(content);
         return this;
     },
     edit_gang: function() {

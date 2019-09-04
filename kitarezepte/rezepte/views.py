@@ -150,7 +150,6 @@ def zutaten(request, client_slug='', id=0, msg=''):
             return HttpResponseRedirect('/zutaten/')
     else:
         form = ZutatForm(instance=zutat)
-    print('msg: ', msg)
     return render(request, 'rezepte/zutaten.html', 
                   {'form': form,
                    'zutaten': zutaten,
