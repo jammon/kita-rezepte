@@ -35,5 +35,9 @@
       {% endif %}
     </div>
   </div>
+  {% empty %}
+  <div class="row">
+    <div class="col">Für diesen Tag wurde noch nichts geplant.</div>
+  </div>
   {% endfor %}
 {% endblock content %}

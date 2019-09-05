@@ -33,3 +33,4 @@ x 2019-08-18 Edit-Forms sollten nur angezeigt werden, wenn es der richtige Clien
 x 2019-08-18 Neues Rezept eingeben
 x 2019-08-19 Monat soll nur von angemeldeten Usern bearbeitet werden können
 x 2019-09-04 Wenn nichts geplant ist, soll im Monatsplan kein Link dargestellt werden
+x 2019-09-05 Adäquate Fehlerbehandlung für /tag, wenn noch nichts geplant ist
