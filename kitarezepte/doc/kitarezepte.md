@@ -33,4 +33,15 @@ Zutaten:
 - Wenn man das Eingabefeld verlässt, wird die ausgewählte Zutat und ihre Einheit übernommen.
 - Wenn die Eingabe keiner bekannten Zutat entspricht, dann öffnet sich ein Dialog zur Eingabe der Zutat. Diese wird nach Erfolg ins Eingabefeld und mit ihrer Einheit übernommen. 
 
+## Clients
+- Jeder Client hat eine eigene Subdomain (`<client-slug>.kita-rezepte.de` oder `<client-slug>.kitarez.uber.space`).
+- Die Subdomain muss im SSL-Zertifikat berücksichtigt sein.
+- Der Verweis muss auf die Hauptseite (von Hand).
+
+### Einen neuen Client anlegen
+- Den Client in der Admin-Site anlegen.
+- Editor anlegen.
+- Die Subdomain im Webserver anlegen.
+- Die Subdomain im SSL-Zertifikat eintragen.
+- Verweis auf der Hauptseite eintragen.
 
