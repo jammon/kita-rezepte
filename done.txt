@@ -34,3 +34,5 @@ x 2019-08-18 Neues Rezept eingeben
 x 2019-08-19 Monat soll nur von angemeldeten Usern bearbeitet werden können
 x 2019-09-04 Wenn nichts geplant ist, soll im Monatsplan kein Link dargestellt werden
 x 2019-09-05 Adäquate Fehlerbehandlung für /tag, wenn noch nichts geplant ist
+x 2019-09-06 list_filter auf Kategorien spezifisch für Model machen +admin
+x 2019-09-07 Wenn ein Rezept nicht gefunden wird, auf die Rezepte-Seite weiterleiten +rezept

@@ -1,4 +1,3 @@
-(D) list_filter auf Kategorien spezifisch für Model machen +admin
 (B) zutat.name sollte unique sein +models
 (B) HSTS einschalten https://docs.djangoproject.com/en/2.2/ref/middleware/#http-strict-transport-security +deployment
 (B) HTTPS aktivieren, CSRF_COOKIE_SECURE und SESSION_COOKIE_SECURE setzen +deployment
@@ -14,7 +13,6 @@
 (B) memcache oder redis einsetzen für sessions +deployment
 (B) im +Monatsplan sind keine Rezepte auswählbar
 (B) Wenn die Menge nicht angegeben ist, steht bei der Rezeptzutat undefined +rezept
-(C) Wenn ein Rezept nicht gefunden wird, auf die Rezepte-Seite weiterleiten +rezept
 (D) Meta-Description und Title für die einzelnen Seiten anpassen
 (B) In /zutaten ist der Preis pro Einheit mit -1 vorbelegt
 (C) in Rezept 1314 steht im Rezept 0 Pckg. Gekörnte Brühe und in edit undefined Pckg. Gekörnte Brühe

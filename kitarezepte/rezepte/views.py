@@ -74,20 +74,28 @@ def get_query_args(client_slug='', id=0, slug=''):
 def rezepte(request, client_slug='', id=0, slug=''):
     if not (id or slug):
         # deliver all recipes
-        recipes = Rezept.objects.filter(client__slug=client_slug).order_by('slug')
-        client = get_object_or_404(Client, slug=client_slug)
-        gaenge = client.gaenge.split()
-        data = [(g, [r for r in recipes if g in r.gang]) for g in gaenge]
-        data.append(("unsortiert", [r for r in recipes if r.gang.strip()=='']))
-        return render(request, 'rezepte/rezepte.html', {'recipes': data})
+        return alle_rezepte(request, client_slug)
 
     # show just one recipe
-    rezept = get_object_or_404(Rezept, **get_query_args(client_slug, id, slug))
+    try:
+        rezept = Rezept.objects.get(**get_query_args(client_slug, id, slug))
+    except Rezept.DoesNotExist:
+        return alle_rezepte(
+            request, client_slug, 
+            msg=f"Rezept \"{slug or id}\" nicht gefunden")
     return render(
         request,
         'rezepte/rezept.html',
         {'recipe': rezept,
          'zutaten': rezept.zutaten.all().select_related('zutat').order_by('nummer')})
+
+def alle_rezepte(request, client_slug, msg=''):
+    recipes = Rezept.objects.filter(client__slug=client_slug).order_by('slug')
+    client = get_object_or_404(Client, slug=client_slug)
+    gaenge = client.gaenge.split()
+    data = [(g, [r for r in recipes if g in r.gang]) for g in gaenge]
+    data.append(("unsortiert", [r for r in recipes if r.gang.strip()=='']))
+    return render(request, 'rezepte/rezepte.html', {'recipes': data, 'msg': msg})
 
 @client_param
 def rezept_edit(request, client_slug='', id=0, slug=''):

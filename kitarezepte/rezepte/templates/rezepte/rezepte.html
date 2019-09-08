@@ -3,6 +3,9 @@
 {% block content %}
   <div class="row">
     <div class="col">
+      {% if msg %}
+        <p class="bg-danger">{{ msg }}</p>
+      {% endif %}
       {% if user.is_authenticated %}
         <div class="pull-right">
           <a class="btn btn-primary" href="/rezepte/new" role="button">
