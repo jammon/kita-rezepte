@@ -39,7 +39,7 @@ KEIN_PREIS = -1
 
 class Client(models.Model):
     """ Eine Kita, für die geplant wird """
-    name = models.CharField(max_length=25)
+    name = models.CharField(max_length=30)
     slug = models.SlugField(max_length=30, blank=True, unique=True,
                             help_text='wird i.d.R. aus titel berechnet')
     gaenge = models.CharField(
@@ -165,7 +165,7 @@ class Rezept(models.Model):
     client = models.ForeignKey(
         Client, on_delete=models.CASCADE, related_name="rezepte")
     slug = models.SlugField(
-        max_length=60, blank=True, help_text='wird i.d.R. aus titel berechnet')
+        max_length=100, blank=True, help_text='wird i.d.R. aus titel berechnet')
     fuer_kinder = models.IntegerField(help_text="Anzahl der Kinder")
     fuer_erwachsene = models.IntegerField(help_text="Anzahl der Erwachsenen")
     # zutaten = models.ManyToManyField(
