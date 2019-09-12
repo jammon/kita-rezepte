@@ -84,7 +84,7 @@ class Editor(models.Model):
 
 class Zutat(models.Model):
     """ Eine Zutat, die in den Rezepten verwandt werden kann """
-    name = models.CharField(max_length=25)
+    name = models.CharField(max_length=60)
     client = models.ForeignKey(
         Client, on_delete=models.CASCADE, related_name="zutaten")
     einheit = models.CharField(
