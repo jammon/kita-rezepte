@@ -88,7 +88,7 @@ class Zutat(models.Model):
     client = models.ForeignKey(
         Client, on_delete=models.CASCADE, related_name="zutaten")
     einheit = models.CharField(
-        max_length=10, default='', blank=True,
+        max_length=30, default='', blank=True,
         help_text='''Packungseinheit für den Einkauf meist 1 kg, 1 l,
              aber auch 2,5 kg-Sack.
              Fällt weg bei Dingen wie Eiern, die eine natürliche Einheit
@@ -160,7 +160,7 @@ class Rezept(models.Model):
        Die Zutaten werden getrennt davon mit dem Key des Rezepts gespeichert
        (Model RezeptZutat).
     '''
-    titel = models.CharField(max_length=60)
+    titel = models.CharField(max_length=100)
     untertitel = models.CharField(max_length=100, blank=True, null=True)
     client = models.ForeignKey(
         Client, on_delete=models.CASCADE, related_name="rezepte")
@@ -266,7 +266,7 @@ class RezeptZutat(models.Model):
     zutat = models.ForeignKey(
         Zutat, on_delete=models.CASCADE, related_name='rezepte')
     menge = models.FloatField(blank=True, null=True)
-    menge_qualitativ = models.CharField(max_length=15, blank=True, null=True)
+    menge_qualitativ = models.CharField(max_length=30, blank=True, null=True)
     nummer = models.IntegerField()
 
     class Meta:
@@ -319,7 +319,7 @@ class GangPlan(models.Model):
         Client, on_delete=models.CASCADE, related_name="menues")
     datum = models.DateField()
     rezept = models.ForeignKey(Rezept, on_delete=models.CASCADE)
-    gang = models.CharField(max_length=10)
+    gang = models.CharField(max_length=15)
 
 
     class Meta:
