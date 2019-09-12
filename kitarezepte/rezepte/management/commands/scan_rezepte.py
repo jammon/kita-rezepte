@@ -36,11 +36,13 @@ class Command(BaseCommand):
         parser.add_argument('client_id', type=int)
 
     def handle(self, *args, **options):
-        client = Client.objects.create(name="Kita Pusteblume Kempen", 
+        client, created = Client.objects.get_or_create( 
             slug="pusteblume", 
-            gaenge="Vorspeise Hauptgang Nachtisch",
-            kategorien="Reis Teigwaren Getreide Kartoffeln Gemüse "
-                "Suppe Fischgericht Lieblingsgericht")
+            defaults=dict(
+                name="Kita Pusteblume Kempen",
+                gaenge="Vorspeise Hauptgang Nachtisch",
+                kategorien="Reis Teigwaren Getreide Kartoffeln Gemüse "
+                           "Suppe Fischgericht Lieblingsgericht"))
 
         self.client_id = client.id
         self.read_zutaten()

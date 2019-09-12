@@ -41,7 +41,11 @@ Zutaten:
 ### Einen neuen Client anlegen
 - Den Client in der Admin-Site anlegen.
 - Editor anlegen.
-- Die Subdomain im Webserver anlegen.
-- Die Subdomain im SSL-Zertifikat eintragen.
+- Die Subdomain im Webserver anlegen. 
+    + `uberspace web domain add <slug>.kita-rezepte.de`
+    + `uberspace web domain add <slug>.kitarez.uber.space`
+- Die Subdomain beim Domainhoster anlegen. 
 - Verweis auf der Hauptseite eintragen.
+
+## Konfigurations-Dateien
 
