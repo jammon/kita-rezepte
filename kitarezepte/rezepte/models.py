@@ -49,7 +49,7 @@ class Client(models.Model):
         max_length=100, 
         help_text='z.B. "Reis Teigwaren Getreide Kartoffeln Gemüse '
             'Suppe Fischgericht Lieblingsgericht"',
-        default="", blank=True, null=True)
+        default="", blank=True)
 
     class Meta:
         verbose_name = "Mandant"
@@ -178,7 +178,7 @@ class Rezept(models.Model):
         max_length=60,
         help_text='Die Kategorie, zu der das Rezept gehört, '
         'ggf. eine Leerzeichen-getrennte Liste mehrerer Kategorien',
-        default='', blank=True, null=True)
+        default='', blank=True)
     # z.B. Gemüse, Teigwaren, Suppe, Getreide, Reis usw.
     _preis = models.IntegerField(
         default=KEIN_PREIS,

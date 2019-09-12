@@ -85,7 +85,7 @@ class Command(BaseCommand):
             'kategorie': (zutatenkategorien[kategorie] 
                           if kategorie in zutatenkategorien else 'Sonst.'),
             'client_id': self.client_id,
-            # 'id': len(zutaten) + 1,
+            'id': len(zutaten) + 1,
         }
         menge = self.get_menge(cols[1].string)
         if menge:
