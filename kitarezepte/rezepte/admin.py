@@ -17,7 +17,7 @@ class KategorieListFilter(admin.SimpleListFilter):
     parameter_name = 'kategorien'
 
     def lookups(self, request, model_admin):
-        return ((k, k) for k in request.session['kategorien'])
+        return ((k, k) for k in request.session.get('kategorien', []))
 
     def queryset(self, request, queryset):
         value = self.value()
