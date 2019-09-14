@@ -33,9 +33,10 @@ def login(request):
             if user is not None:
                 auth.login(request, user)
                 write_client_id_to_session(request.session, user)
-                if request.session.get('client_slug'):
-                    # TODO: change to client's domain
-                    return HttpResponseRedirect('/monat')
+                client_slug = request.session.get('client_slug')
+                if client_slug:
+                    return HttpResponseRedirect(
+                        f'https://{client_slug}.kita-rezepte.de/monat')
                 return HttpResponseRedirect('/')
             else:
                 form.add_error(None, "Fehler bei der Anmeldung!")

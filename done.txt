@@ -36,3 +36,5 @@ x 2019-09-04 Wenn nichts geplant ist, soll im Monatsplan kein Link dargestellt w
 x 2019-09-05 Adäquate Fehlerbehandlung für /tag, wenn noch nichts geplant ist
 x 2019-09-06 list_filter auf Kategorien spezifisch für Model machen +admin
 x 2019-09-07 Wenn ein Rezept nicht gefunden wird, auf die Rezepte-Seite weiterleiten +rezept
+x 2019-09-14 Nach Login auf den richtigen Client redirecten
+x 2019-09-14 Bei Aufruf von Admin-Rezepte entsteht ein Server-Error in ./rezepte/admin.py, line 33: KeyError: gaenge
