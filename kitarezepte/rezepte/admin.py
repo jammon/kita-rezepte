@@ -30,7 +30,7 @@ class GangListFilter(admin.SimpleListFilter):
     parameter_name = 'gaenge'
 
     def lookups(self, request, model_admin):
-        return ((g, g) for g in request.session['gaenge'])
+        return ((g, g) for g in request.session.get('gaenge', []))
 
     def queryset(self, request, queryset):
         value = self.value()
