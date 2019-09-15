@@ -41,6 +41,7 @@ Zutaten:
 ### Einen neuen Client anlegen
 - Den Client in der Admin-Site anlegen.
 - Editor anlegen.
+- Admin anlegen.
 - Die Subdomain im Webserver anlegen. 
     + `uberspace web domain add <slug>.kita-rezepte.de`
     + `uberspace web domain add <slug>.kitarez.uber.space`

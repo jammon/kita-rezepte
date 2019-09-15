@@ -1,17 +1,12 @@
 (B) zutat.name sollte unique sein +models
-(B) HSTS einschalten https://docs.djangoproject.com/en/2.2/ref/middleware/#http-strict-transport-security +deployment
-(B) HTTPS aktivieren, CSRF_COOKIE_SECURE und SESSION_COOKIE_SECURE setzen +deployment
 (C) CONN_MAX_AGE setzen +deployment
 (C) Cached templates aktivieren https://docs.djangoproject.com/en/2.2/ref/templates/api/#template-loaders +deployment
-(B) Logging einbauen +deployment
-(B) ADMINS einstellen für Fehlerbenachrichtigungen +deployment
 (A) Link zur Hauptseite in die navbar
 (B) Hauptseite der Kitas mit TinyMCE editierbar machen
 (B) Deployment checklist durcharbeiten +deployment
 (B) Rezeptzutaten mit gleichem Namen durcharbeiten +Inhalte
 (B) Planungen für Rezepte mit gleichem Namen durcharbeiten +Inhalte
 (B) memcache oder redis einsetzen für sessions +deployment
-(B) im +Monatsplan sind keine Rezepte auswählbar
 (B) Wenn die Menge nicht angegeben ist, steht bei der Rezeptzutat undefined +rezept
 (D) Meta-Description und Title für die einzelnen Seiten anpassen
 (B) In /zutaten ist der Preis pro Einheit mit -1 vorbelegt

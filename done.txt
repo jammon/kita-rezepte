@@ -38,3 +38,8 @@ x 2019-09-06 list_filter auf Kategorien spezifisch für Model machen +admin
 x 2019-09-07 Wenn ein Rezept nicht gefunden wird, auf die Rezepte-Seite weiterleiten +rezept
 x 2019-09-14 Nach Login auf den richtigen Client redirecten
 x 2019-09-14 Bei Aufruf von Admin-Rezepte entsteht ein Server-Error in ./rezepte/admin.py, line 33: KeyError: gaenge
+x 2019-09-15 ADMINS einstellen für Fehlerbenachrichtigungen +deployment
+x 2019-09-15 HSTS einschalten https://docs.djangoproject.com/en/2.2/ref/middleware/#http-strict-transport-security +deployment
+x 2019-09-15 HTTPS aktivieren, CSRF_COOKIE_SECURE und SESSION_COOKIE_SECURE setzen +deployment
+x 2019-09-15 im +Monatsplan sind keine Rezepte auswählbar
+x 2019-09-15 Logging einbauen +deployment

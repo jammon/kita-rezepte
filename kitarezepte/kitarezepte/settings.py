@@ -87,6 +87,7 @@ ALLOWED_HOSTS = (
     [] if DEBUG else 
     ['.kita-rezepte.de', '.kitarez.uber.space'])
 
+ADMINS = [("Johannes Ammon", "j.ammon@dr-ammon.de")]
 
 # Application definition
 
@@ -174,6 +175,8 @@ if servermode=='production':
 LOGIN_URL = '/login/'
 
 SECURE_CONTENT_TYPE_NOSNIFF = True
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
 
 LOGGING = {
     'version': 1,

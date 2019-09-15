@@ -4,9 +4,12 @@ var views = (function($, _, Backbone) {
 // Monat ---------------------------------------------------------
 //
 var planung_template;
-if ($('#gang-cell')) planung_template = _.template($('#gang-cell').html());
 var planung_auth_template;
-if ($('#gang-cell-auth')) planung_auth_template = _.template($('#gang-cell-auth').html());
+function init_monat_templates() {
+    if ($('#gang-cell').length>0) 
+        planung_template = _.template($('#gang-cell').html());
+        planung_auth_template = _.template($('#gang-cell-auth').html());
+}
 
 var PlanungView = Backbone.View.extend({
     // zeigt einen Gang an einem Tag
@@ -273,6 +276,7 @@ var dispatcher = _.clone(Backbone.Events)
 return {
     PlanungView: PlanungView,
     MonatView: MonatView,
+    init_monat_templates: init_monat_templates,
     RezeptZutatView: RezeptZutatView,
     ZutatenEingabeView: ZutatenEingabeView,
     MengenEingabeView: MengenEingabeView,

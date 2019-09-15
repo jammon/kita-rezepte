@@ -50,6 +50,7 @@ function initialize_monat(initdata) {
         gang: models.data.gangfolge,
     });
     models.planungen.reset(initdata.planungen);
+    views.init_monat_templates();
     // Backbone.history.start({ pushState: true });
 }
 
