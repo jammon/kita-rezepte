@@ -100,7 +100,7 @@ def alle_rezepte(request, client_slug, msg=''):
 
 @client_param
 def rezept_edit(request, client_slug='', id=0, slug=''):
-    if client_slug != request.session['client_slug']:
+    if client_slug != request.session.get('client_slug'):
         return HttpResponse(status=403, reason="Falscher Client.")
     if id or slug:
         rezept = get_object_or_404(Rezept, **get_query_args(client_slug, id, slug))

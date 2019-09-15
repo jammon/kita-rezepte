@@ -15,7 +15,7 @@ from .utils import day_fromJson, get_client, client_param
 @require_POST
 @client_param
 def set_gangplan(request, client_slug=''):
-    if client_slug != request.session['client_slug']:
+    if client_slug != request.session.get('client_slug'):
         return HttpResponse(status=403, reason="Falscher Client.")
     client = Client.objects.get(slug=client_slug)
     data = json.loads(request.body)
@@ -47,7 +47,7 @@ def set_gangplan(request, client_slug=''):
 @require_POST
 @client_param
 def add_zutat(request, client_slug=''):
-    if client_slug != request.session['client_slug']:
+    if client_slug != request.session.get('client_slug'):
         return HttpResponse("Falscher Client.", status=403)
     client = get_object_or_404(Client, slug=client_slug)
     form = ZutatForm(request.POST, instance=Zutat(client=client))

@@ -53,8 +53,8 @@ class RezeptForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         session = kwargs.pop('session')
         super().__init__(*args, **kwargs)
-        self.fields['gang_list'].choices = [(g, g) for g in session['gaenge']]
-        self.fields['kategorie_list'].choices = [(k, k) for k in session['kategorien']]
+        self.fields['gang_list'].choices = [(g, g) for g in session.get('gaenge', [])]
+        self.fields['kategorie_list'].choices = [(k, k) for k in session.get('kategorien', [])]
 
     def get_initial_for_field(self, field, field_name):
         if field_name=='gang_list':

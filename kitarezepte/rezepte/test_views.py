@@ -29,7 +29,8 @@ class LoginTestcase(TestCase):
         response = self.client.post(
             '/login/', {'username': 'test', 'password': 'test'})
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, '/monat')
+        self.assertRedirects(response, 'https://test-kita.kita-rezepte.de/monat', 
+                             fetch_redirect_response=False)
         self.assertEqual(self.client.session['user_name'], 'test')
         self.assertEqual(self.client.session['client_slug'], 'test-kita')
 
@@ -90,11 +91,17 @@ class RezepteTestcase(TestCase):
 
     def test_wrong_rezept_id(self):
         response = self.client.get('/rezepte/1000')
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'rezepte/rezepte.html')
+        self.assertEqual(response.context.get('msg'), 
+            f'Rezept "1000" nicht gefunden')
 
     def test_wrong_rezept_slug(self):
         response = self.client.get('/rezepte/not-there')
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'rezepte/rezepte.html')
+        self.assertEqual(response.context.get('msg'), 
+            f'Rezept "not-there" nicht gefunden')
 
     def test_other_clients_rezept_id(self):
         client = Client.objects.create(name='Other-Client')
@@ -102,4 +109,7 @@ class RezepteTestcase(TestCase):
             titel="Not my Testrezept", client=client, fuer_kinder = 20,
             fuer_erwachsene = 5, zubereitung = '', anmerkungen = '', kategorien = '')
         response = self.client.get('/rezepte/' + str(rezept.id))
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'rezepte/rezepte.html')
+        self.assertEqual(response.context.get('msg'), 
+            f'Rezept "{rezept.id}" nicht gefunden')
