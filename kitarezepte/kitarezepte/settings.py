@@ -171,6 +171,7 @@ STATIC_URL = '/static/'
 
 if servermode=='production':
     STATIC_ROOT = "/var/www/virtual/kitarez/html/static/"
+    STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 
 LOGIN_URL = '/login/'
 
