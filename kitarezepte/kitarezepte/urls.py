@@ -40,6 +40,7 @@ urlpatterns = [
     path('monat', views.monat),
     path('tag/<int:year>/<int:month>/<int:day>', views.tag),
     path('tag', views.tag),
+    path('einkaufsliste/<int:year>/<int:month>/<int:day>/<int:dauer>', views.einkaufsliste),
     path('einkaufsliste', views.einkaufsliste),
     path('ajax/set-gang/', ajax.set_gangplan),
     path('ajax/add-zutat/', ajax.add_zutat),
@@ -52,8 +53,4 @@ if settings.DEBUG:
     import debug_toolbar
     urlpatterns = [
         path('__debug__/', include(debug_toolbar.urls)),
-
-        # For django versions before 2.0:
-        # url(r'^__debug__/', include(debug_toolbar.urls)),
-
     ] + urlpatterns

@@ -329,6 +329,8 @@ class GangPlan(models.Model):
 
 
 def get_einkaufsliste(client_slug, start, dauer):
+    """ liefert die Daten für /einkaufsliste
+    """
     rezept_plaene = GangPlan.objects.filter(  # Für "Folgende Rezepte wurden geplant"
         client__slug=client_slug,
         datum__gte=start,

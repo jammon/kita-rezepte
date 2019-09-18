@@ -59,3 +59,10 @@
 #cpv-rezept {
 	margin-bottom: 18px;
 }
+/* Einkaufsliste */
+#ekl-start {
+	width: 100px;
+}
+#ekl-dauer {
+	width: 50px;
+}

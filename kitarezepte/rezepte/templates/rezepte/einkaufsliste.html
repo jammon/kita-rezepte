@@ -1,8 +1,15 @@
 {% extends "base.html" %}
 {% load static %}
+{% block extrahead %}
+  {# <link rel="stylesheet" href="{ % static 'vendor/jquery-ui-1.12.1.custom/jquery-ui.css' %}"> #}
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+{% endblock extrahead %}
 {% block content %}
   <div class="row">
     <div class="col">
+      {% if msg %}
+        <p class="bg-danger">{{ msg }}</p>
+      {% endif %}
       <h1>Einkaufliste</h1>
       <p>ab {{ start }} für {{ dauer }} Tage</p>
     </div>
@@ -56,8 +63,43 @@
       {% endif %}
     </div>
   </div>
+  <div class="row">
+    <div class="col">
+      <h2>Anderer Zeitraum</h2>
+      <form action="javascript:input_changed()">
+        <label for="ekl-start">Beginn:</label>
+        <input type="text" id="ekl-start" name="ekl-start"value="{{ start|date:"j.n.Y" }}">
+        <input type="hidden" id="ekl-helper" name="ekl-helper"value="{{ start|date:"Y/n/j" }}">
+        <label for="ekl-dauer">Dauer:</label> 
+        <input type="number" id="ekl-dauer" name="ekl-dauer" min="1" value="{{ dauer }}"
+          size="3"> Tage
+        <button type="submit">Laden</button>
+      </form>
+    </div>
+  </div>
 {% endblock content %}
 {% block extrascripts %}
+{# <script src="{% static 'vendor/jquery-ui-1.12.1.custom/jquery-ui.js' %}"></script> #}
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+{# <script src="i18n/datepicker-de.js"></script> #}
 <script>
+  var nextstart = new Date({{ start.year }}, {{ start.month }} - 1, {{ start.day }});
+  function input_changed() {
+    window.location.href = "/einkaufsliste/" + 
+      $("#ekl-helper").val() + "/" + $("#ekl-dauer").val();
+  }
+  $(function() {
+    // der Datepicker soll bei Auswahl eine neue Seite aufrufen
+    $("#ekl-start").datepicker({
+      dateFormat: "d.m.yy",
+      altField: "#ekl-helper",
+      altFormat: "yy/m/d",
+      firstDay: 1,
+      onSelect: function(date) { 
+        nextstart = date; 
+      },
+    });
+
+  });
 </script>
 {% endblock extrascripts %}

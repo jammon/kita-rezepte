@@ -246,8 +246,14 @@ def tag(request, client_slug, year=0, month=0, day=0):
 
 # Einkaufsliste ------------------------------------------------------------------
 @client_param
-def einkaufsliste(request, client_slug, start=None, dauer=0):
-    start = start or next_dow(1)  # TODO: auf den einzelnen Client anpassen
-    dauer = dauer or 7
-    return render(request, 'rezepte/einkaufsliste.html',
-                  get_einkaufsliste(client_slug, start, dauer))
+def einkaufsliste(request, client_slug, year=0, month=0, day=0, dauer=7):
+    msg = ""
+    try:
+        start = date(year, month, day)
+    except ValueError:
+        if year != 0:
+            msg = f'"{day}.{month}.{year}" ist keine Datumsangabe.'
+        start = next_dow(0)
+    data = get_einkaufsliste(client_slug, start, dauer)
+    data["msg"] = msg
+    return render(request, 'rezepte/einkaufsliste.html', data)
