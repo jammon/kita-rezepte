@@ -486,6 +486,9 @@ class Command(BaseCommand):
                     self.stdout.write(f'    Untertitel alt: {rezept.untertitel}.')
                     self.stdout.write(f'    Untertitel neu: {untertitel}.')
                 continue
+            if len(untertitel)>=100:
+                self.stdout.write(f'Too long - Bei "{titel}" ist der Untertitel zu lang: "{untertitel}".')
+                continue
             rezept.untertitel = untertitel
             rezept.anmerkungen = anmerkungen
             rezept.save()
