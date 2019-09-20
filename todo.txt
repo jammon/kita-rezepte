@@ -14,5 +14,6 @@
 (B) In /zutaten sollte der Preis als Kommazahl einzugeben sein
 (B) In der Zutateneingabe bei Rezeptedit sollen die Zutaten nach Länge sortiert sein
 (A) Editier-Views sollten darauf achten, dass der richtige Client bearbeitet wird
-(C) Einkaufsliste auch für andere Zeiträume abrufen
-Sortieren der Zutaten funktioniert nicht
+(A) Sortieren der Zutaten funktioniert nicht
+(A) Logout-View und -Link
+Was passiert, wenn im Rezept bei Menge gar nichts eingegeben wird?
