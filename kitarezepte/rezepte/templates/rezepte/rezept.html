@@ -3,7 +3,9 @@
   <div class="row">
     <div class="col">
       <h1>{{ recipe.titel }}</h1>
-      <h3>{{ recipe.untertitel }}</h3>
+      {% if recipe.untertitel %}
+        <p>{{ recipe.untertitel }}</p>
+      {% endif %}
     </div>
   </div>
   <div class="row">

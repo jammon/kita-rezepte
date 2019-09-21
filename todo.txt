@@ -13,7 +13,7 @@
 (C) in Rezept 1314 steht im Rezept 0 Pckg. Gekörnte Brühe und in edit undefined Pckg. Gekörnte Brühe
 (B) In /zutaten sollte der Preis als Kommazahl einzugeben sein
 (B) In der Zutateneingabe bei Rezeptedit sollen die Zutaten nach Länge sortiert sein
-(A) Editier-Views sollten darauf achten, dass der richtige Client bearbeitet wird
+(B) Editier-Views sollten darauf achten, dass der richtige Client bearbeitet wird
 (A) Sortieren der Zutaten funktioniert nicht
 (A) Logout-View und -Link
-Was passiert, wenn im Rezept bei Menge gar nichts eingegeben wird?
+(B) Was passiert, wenn im Rezept bei Menge gar nichts eingegeben wird?

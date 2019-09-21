@@ -7,7 +7,7 @@
 {% block content %}
   <form action="" id="rezept-edit-form" method="post">{% csrf_token %}
   <div class="row">
-    <div class="col col-md-6">
+    <div class="col">
       <table>
         <tr>
           <td colspan="2">{{ form.titel.errors }}</td>
@@ -23,19 +23,22 @@
           <td>{{ form.untertitel.label_tag }}</td>
           <td>{{ form.untertitel }}</td>
         </tr>
+      </table>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col col-md-6">
+      <table>
         <tr>
           <td colspan="2">{{ form.fuer_kinder.errors }}</td>
-        </tr>
-        <tr>
-          <td>{{ form.fuer_kinder.label_tag }}</td>
-          <td>{{ form.fuer_kinder }}</td>
         </tr>
         <tr>
           <td colspan="2">{{ form.fuer_erwachsene.errors }}</td>
         </tr>
         <tr>
-          <td>{{ form.fuer_erwachsene.label_tag }}</td>
-          <td>{{ form.fuer_erwachsene }}</td>
+          <td>
+            Für {{ form.fuer_kinder }} Kinder und {{ form.fuer_erwachsene }} Erwachsene.
+          </td>
         </tr>
       </table>
       <div id="zutaten">
