@@ -4,8 +4,8 @@
 (A) Link zur Hauptseite in die navbar
 (B) Hauptseite der Kitas mit TinyMCE editierbar machen
 (B) Deployment checklist durcharbeiten +deployment
-(B) Rezeptzutaten mit gleichem Namen durcharbeiten +Inhalte
-(B) Planungen für Rezepte mit gleichem Namen durcharbeiten +Inhalte
+
+
 (B) memcache oder redis einsetzen für sessions +deployment
 (B) Wenn die Menge nicht angegeben ist, steht bei der Rezeptzutat undefined +rezept
 (D) Meta-Description und Title für die einzelnen Seiten anpassen

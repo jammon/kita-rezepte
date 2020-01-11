@@ -37,6 +37,7 @@ ZUTATENKATEGORIEN = (
 
 KEIN_PREIS = -1
 
+
 class Client(models.Model):
     """ Eine Kita, für die geplant wird """
     name = models.CharField(max_length=30)
@@ -46,9 +47,9 @@ class Client(models.Model):
         max_length=50, help_text='z.B. "Vorspeise Hauptgang Nachtisch"',
         default="Vorspeise Hauptgang Nachtisch")
     kategorien = models.CharField(
-        max_length=100, 
+        max_length=100,
         help_text='z.B. "Reis Teigwaren Getreide Kartoffeln Gemüse '
-            'Suppe Fischgericht Lieblingsgericht"',
+                  'Suppe Fischgericht Lieblingsgericht"',
         default="", blank=True)
 
     class Meta:
@@ -115,7 +116,7 @@ class Zutat(models.Model):
 
         z.B. "3,59"
         """
-        if self.preis_pro_einheit==KEIN_PREIS:
+        if self.preis_pro_einheit == KEIN_PREIS:
             return "--"
         return cent2euro(self.preis_pro_einheit)
 
@@ -129,8 +130,8 @@ class Zutat(models.Model):
         """ Wenn der Preis einer Zutat geändert wurde,
         müssen die Rezeptpreise entsprechend angepasst werden.
 
-        TODO: Dies macht für jedes Rezept 
-        - eine Abfrage nach den Zutaten und 
+        TODO: Dies macht für jedes Rezept
+        - eine Abfrage nach den Zutaten und
         - ein save
         """
         for rz in self.rezepte.all():
@@ -147,13 +148,14 @@ class Zutat(models.Model):
             'kategorie': self.kategorie,
         })
 
-TRANSTABLE = {'ä': 'ae', 'ö': 'oe', 'ü': 'ue', 
-              'Ä': 'ae', 'Ö': 'oe', 'Ü': 'ue', 
-              'ß': 'ss', 
-              'é': 'e', 'è': 'e', 'à': 'a', 
-              'É': 'e', 'È': 'e', 'À': 'a', 
+TRANSTABLE = {'ä': 'ae', 'ö': 'oe', 'ü': 'ue',
+              'Ä': 'ae', 'Ö': 'oe', 'Ü': 'ue',
+              'ß': 'ss',
+              'é': 'e', 'è': 'e', 'à': 'a',
+              'É': 'e', 'È': 'e', 'À': 'a',
               }
 translate_specials = str.maketrans(TRANSTABLE)
+
 
 class Rezept(models.Model):
     '''Enthält ein Rezept mit Titel, Kochanweisung usw.
@@ -165,15 +167,18 @@ class Rezept(models.Model):
     client = models.ForeignKey(
         Client, on_delete=models.CASCADE, related_name="rezepte")
     slug = models.SlugField(
-        max_length=100, blank=True, help_text='wird i.d.R. aus titel berechnet')
+        max_length=100, blank=True,
+        help_text='wird i.d.R. aus titel berechnet')
     fuer_kinder = models.IntegerField(help_text="Anzahl der Kinder")
     fuer_erwachsene = models.IntegerField(help_text="Anzahl der Erwachsenen")
     zubereitung = models.TextField()
     anmerkungen = models.TextField(null=True, blank=True)
     eingegeben_von = models.ForeignKey(User, on_delete=models.SET_NULL,
                                        null=True, blank=True)
-    gang = models.CharField(max_length=40, help_text='Der Gang, für den das Rezept '
-        'geeignet ist, ggf. eine Leerzeichen-getrennte Liste mehrerer Gänge')
+    gang = models.CharField(
+        max_length=40,
+        help_text='Der Gang, für den das Rezept geeignet ist, '
+        'ggf. eine Leerzeichen-getrennte Liste mehrerer Gänge')
     kategorien = models.CharField(
         max_length=60,
         help_text='Die Kategorie, zu der das Rezept gehört, '
@@ -183,7 +188,6 @@ class Rezept(models.Model):
     _preis = models.IntegerField(
         default=KEIN_PREIS,
         help_text='kann leer sein, wird dann automatisch berechnet')
-
 
     class Meta:
         verbose_name = "Rezept"
@@ -300,7 +304,7 @@ class RezeptZutat(models.Model):
         if self.menge_qualitativ or not self.menge:
             return 0
         z = self.zutat
-        if z.preis_pro_einheit==KEIN_PREIS:
+        if z.preis_pro_einheit == KEIN_PREIS:
             return 0
         return int(self.menge * z.preis_pro_einheit //
                    (z.menge_pro_einheit or 1))
@@ -319,7 +323,6 @@ class GangPlan(models.Model):
     rezept = models.ForeignKey(Rezept, on_delete=models.CASCADE)
     gang = models.CharField(max_length=15)
 
-
     class Meta:
         verbose_name = "Gangplan"
         verbose_name_plural = "Gangpläne"
@@ -331,7 +334,8 @@ class GangPlan(models.Model):
 def get_einkaufsliste(client_slug, start, dauer):
     """ liefert die Daten für /einkaufsliste
     """
-    rezept_plaene = GangPlan.objects.filter(  # Für "Folgende Rezepte wurden geplant"
+    # Für "Folgende Rezepte wurden geplant"
+    rezept_plaene = GangPlan.objects.filter(
         client__slug=client_slug,
         datum__gte=start,
         datum__lt=start+timedelta(dauer)
@@ -339,9 +343,10 @@ def get_einkaufsliste(client_slug, start, dauer):
     messbar = defaultdict(float)  # Die Zutaten mit quantitativer Mengenangabe
     qualitativ = defaultdict(list)  # Die Zutaten mit qualitativer Mengenangabe
     rezeptcounts = Counter([p[1] for p in rezept_plaene])
-    rezeptzutaten = RezeptZutat.objects.filter(rezept_id__in=rezeptcounts.keys()
-        ).select_related('zutat')
-    
+    rezeptzutaten = RezeptZutat.objects.filter(
+        rezept_id__in=rezeptcounts.keys()
+    ).select_related('zutat')
+
     for rz in rezeptzutaten:
         # Wenn messbar:
         if rz.menge:
@@ -350,7 +355,8 @@ def get_einkaufsliste(client_slug, start, dauer):
         # sonst:
         else:
             # Zutat mit qualitativer Mengenangabe abspeichern
-            qualitativ[rz.zutat].extend([rz.menge_qualitativ] * rezeptcounts[rz.rezept_id])
+            qualitativ[rz.zutat].extend(
+                [rz.menge_qualitativ] * rezeptcounts[rz.rezept_id])
 
     def key(item):
         zutat = item[0]
@@ -360,7 +366,8 @@ def get_einkaufsliste(client_slug, start, dauer):
         'start': start,
         'dauer': dauer,
         'rezepte': sorted(set(rezept_plaene)),
-        'messbar': sorted(((zutat, prettyFloat(menge)) for zutat, menge in messbar.items()),
+        'messbar': sorted(((zutat, prettyFloat(menge))
+                           for zutat, menge in messbar.items()),
                           key=key),
         'qualitativ': sorted(qualitativ.items(), key=key)
     }

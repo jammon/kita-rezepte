@@ -11,3 +11,4 @@ Kommentare:
 - In "Zucchinipuffer mit Kräuterquark" steht bei den Zutaten "Kartoffeln", ich habe "Kartoffeln, mehlig" daraus gemacht.
 - In "Kartoffel-Möhren-Gratin" steht bei den Zutaten "Kartoffeln", ich habe "Kartoffeln, festkochend" daraus gemacht.
 - In "Nudel-Spinat-Auflauf" steht bei den Zutaten "TK Spinat", ich habe "TK Spinat (Blatt)" daraus gemacht.
+- Es gibt zwei Rezepte namens "Gegrillte Maiskolben"
