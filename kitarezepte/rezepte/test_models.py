@@ -71,7 +71,7 @@ class RezeptZutat_TestCase(TestCase):
 
         rz = RezeptZutat(zutat=reis, menge_qualitativ="etwas")
         self.assertEqual(str(rz), "etwas Reis")
-        
+       
         eier = Zutat(name="Eier", client_id=1, einheit="")
         rz = RezeptZutat(zutat=eier, menge=3)
         self.assertEqual(str(rz), "3 Eier")
@@ -82,33 +82,34 @@ class Get_Einkaufsliste_TestCase(TestCase):
     def test_get_einkaufsliste(self):
         client = Client.objects.create(
             name="Test", slug="test", gaenge="Vorspeise Hauptgang Nachtisch")
-        
-        reis = Zutat.objects.create(name="Reis", 
-            client = client,
-            einheit="1 kg",
-            preis_pro_einheit=189,
-            menge_pro_einheit=1000,
-            masseinheit="g",
-            kategorie="Grundnahrungsmittel")
-        wasser = Zutat.objects.create(name="Wasser", 
-            client = client,
-            einheit="1 l",
-            preis_pro_einheit=10,
-            menge_pro_einheit=1000,
-            masseinheit="ml",
-            kategorie="Grundnahrungsmittel")
-        milch = Zutat.objects.create(name="Milch", 
-            client = client,
-            einheit="1 l",
-            preis_pro_einheit=129,
-            menge_pro_einheit=1000,
-            masseinheit="ml",
-            kategorie="Milchprodukte")
-        
-        args = dict(client = client, fuer_kinder=20, fuer_erwachsene=5, zubereitung='')
+
+        reis = Zutat.objects.create(name="Reis",
+                                    client=client,
+                                    einheit="1 kg",
+                                    preis_pro_einheit=189,
+                                    menge_pro_einheit=1000,
+                                    masseinheit="g",
+                                    kategorie="Grundnahrungsmittel")
+        wasser = Zutat.objects.create(name="Wasser",
+                                      client=client,
+                                      einheit="1 l",
+                                      preis_pro_einheit=10,
+                                      menge_pro_einheit=1000,
+                                      masseinheit="ml",
+                                      kategorie="Grundnahrungsmittel")
+        milch = Zutat.objects.create(name="Milch",
+                                     client=client,
+                                     einheit="1 l",
+                                     preis_pro_einheit=129,
+                                     menge_pro_einheit=1000,
+                                     masseinheit="ml",
+                                     kategorie="Milchprodukte")
+
+        args = dict(
+            client=client, fuer_kinder=20, fuer_erwachsene=5, zubereitung='')
         wasserreis = Rezept.objects.create(titel="Wasserreis", **args)
         milchreis = Rezept.objects.create(titel="Milchreis", **args)
-        
+
         RezeptZutat.objects.bulk_create([
             RezeptZutat(rezept=wasserreis, zutat=reis, menge=500.0, nummer=1),
             RezeptZutat(rezept=wasserreis, zutat=wasser, menge=2000.0, nummer=2),
@@ -134,5 +135,3 @@ class Get_Einkaufsliste_TestCase(TestCase):
         self.assertEqual(
             el['qualitativ'],
             [(wasser, ['etwas', 'etwas'])])
-
-

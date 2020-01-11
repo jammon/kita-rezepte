@@ -6,17 +6,17 @@ from django.test.client import RequestFactory
 from rezepte.utils import (day_fromJson, prettyFloat, days_in_month,
                            euro2cent, next_dow, host2client)
 
+
 class Host2ClientTestCase(TestCase):
- 
 
     def test_host2client(self):
-        
+
         def do_test(domain, expected):
             self.assertEqual(
                 host2client(domain), 
                 expected,
                 f"host2client liefert für {domain} {host2client(domain)} statt {expected}")
-        
+
         do_test('localhost', 'dev')
         do_test('localhost:8000', 'dev')
         do_test('127.0.0.1', 'dev')
@@ -30,7 +30,7 @@ class Host2ClientTestCase(TestCase):
 
 
 class Day_fromJsonTestCase(TestCase):
- 
+
     def test_day_fromJson(self):
         """ Strings are translated to Dates """
         self.assertEqual(day_fromJson("2019-03-22"), date(2019, 3, 22))
@@ -39,7 +39,7 @@ class Day_fromJsonTestCase(TestCase):
 
 
 class PrettyFloatTestCase(TestCase):
- 
+
     def test_prettyFloat(self):
         """ stringified floats are pretty """
         self.assertEqual(prettyFloat(3.0), "3")
@@ -47,7 +47,7 @@ class PrettyFloatTestCase(TestCase):
 
 
 class Days_in_MonthTestCase(TestCase):
- 
+
     def test_days_in_month(self):
         """ correct day count """
         self.assertEqual(days_in_month(2019, 1), 31)
@@ -59,7 +59,7 @@ class Days_in_MonthTestCase(TestCase):
 
 
 class Euro2CentTestCase(TestCase):
- 
+
     def test_euro2cent(self):
         """ Calculates the Cents from an Euro string """
         self.assertEqual(euro2cent("15"), 1500)
@@ -70,7 +70,7 @@ class Euro2CentTestCase(TestCase):
 
 
 class Next_DowTestCase(TestCase):
- 
+
     def test_next_dow(self):
         """ Calculates the next occurence of a certain day of week """
         today = date(2019, 5, 30)  # Thursday = 3

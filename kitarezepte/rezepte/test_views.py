@@ -4,7 +4,7 @@ from django.http import Http404
 from django.test import TestCase
 from .models import Rezept, Client, Editor
 from .utils import TEST_REIS, TEST_REZEPT
-# from rezepte.views import 
+
 
 def create_user(name, client, email='test@test.tld', password='test'):
     user = User.objects.create_user(name, email, password)
@@ -29,7 +29,8 @@ class LoginTestcase(TestCase):
         response = self.client.post(
             '/login/', {'username': 'test', 'password': 'test'})
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, 'https://test-kita.kita-rezepte.de/monat', 
+        self.assertRedirects(response,
+                             'https://test-kita.kita-rezepte.de/monat',
                              fetch_redirect_response=False)
         self.assertEqual(self.client.session['user_name'], 'test')
         self.assertEqual(self.client.session['client_slug'], 'test-kita')
@@ -57,7 +58,7 @@ class WrongClientTestcase(TestCase):
         self.wrong_user = create_user('Wrong User', self.wrong_client)
         Editor.objects.create(user=self.right_user, client=self.right_client)
         Editor.objects.create(user=self.wrong_user, client=self.wrong_client)
-        
+
 
 class RezepteTestcase(TestCase):
     """Test rezepte view"""
@@ -84,7 +85,7 @@ class RezepteTestcase(TestCase):
         self.assertTemplateUsed(response, 'rezepte/rezepte.html')
         recipes = response.context['recipes']
         self.assertEqual(
-            [gang for gang, rezepte in recipes], 
+            [gang for gang, rezepte in recipes],
             ["Vorspeise", "Hauptgang", "Nachtisch", "unsortiert"])
         self.assertIn(self.rezept1, recipes[1][1])
         self.assertIn(self.rezept2, recipes[1][1])
@@ -93,23 +94,23 @@ class RezepteTestcase(TestCase):
         response = self.client.get('/rezepte/1000')
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'rezepte/rezepte.html')
-        self.assertEqual(response.context.get('msg'), 
-            f'Rezept "1000" nicht gefunden')
+        self.assertEqual(response.context.get('msg'),
+                         'Rezept "1000" nicht gefunden')
 
     def test_wrong_rezept_slug(self):
         response = self.client.get('/rezepte/not-there')
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'rezepte/rezepte.html')
-        self.assertEqual(response.context.get('msg'), 
-            f'Rezept "not-there" nicht gefunden')
+        self.assertEqual(response.context.get('msg'),
+                         'Rezept "not-there" nicht gefunden')
 
     def test_other_clients_rezept_id(self):
         client = Client.objects.create(name='Other-Client')
         rezept = Rezept.objects.create(
-            titel="Not my Testrezept", client=client, fuer_kinder = 20,
-            fuer_erwachsene = 5, zubereitung = '', anmerkungen = '', kategorien = '')
+            titel="Not my Testrezept", client=client, fuer_kinder=20,
+            fuer_erwachsene=5, zubereitung='', anmerkungen='', kategorien='')
         response = self.client.get('/rezepte/' + str(rezept.id))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'rezepte/rezepte.html')
         self.assertEqual(response.context.get('msg'), 
-            f'Rezept "{rezept.id}" nicht gefunden')
+                         f'Rezept "{rezept.id}" nicht gefunden')

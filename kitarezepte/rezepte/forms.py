@@ -15,7 +15,7 @@ class ZutatForm(forms.ModelForm):
 
     class Meta:
         model = Zutat
-        fields = ('name', 'einheit', 'preis_pro_einheit', 'menge_pro_einheit', 
+        fields = ('name', 'einheit', 'preis_pro_einheit', 'menge_pro_einheit',
                   'masseinheit', 'kategorie')
         labels = {
             'name': 'Zutat',
@@ -42,8 +42,8 @@ class RezeptForm(forms.ModelForm):
         fields = ('titel', 'untertitel', 'fuer_kinder', 'fuer_erwachsene',
                   'zubereitung', 'anmerkungen', 'kategorie_list', 'gang_list')
         labels = {
-            'fuer_kinder': 'Anzahl Kinder', 
-            'fuer_erwachsene': 'Anzahl Erwachsene', 
+            'fuer_kinder': 'Anzahl Kinder',
+            'fuer_erwachsene': 'Anzahl Erwachsene',
         }
         widgets = {
             'zubereitung': TinyMCE(attrs={'cols': 50, 'rows': 12}),
@@ -53,13 +53,15 @@ class RezeptForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         session = kwargs.pop('session')
         super().__init__(*args, **kwargs)
-        self.fields['gang_list'].choices = [(g, g) for g in session.get('gaenge', [])]
-        self.fields['kategorie_list'].choices = [(k, k) for k in session.get('kategorien', [])]
+        self.fields['gang_list'].choices = [
+            (g, g) for g in session.get('gaenge', [])]
+        self.fields['kategorie_list'].choices = [
+            (k, k) for k in session.get('kategorien', [])]
 
     def get_initial_for_field(self, field, field_name):
-        if field_name=='gang_list':
+        if field_name == 'gang_list':
             return self.instance.gang_list
-        if field_name=='kategorie_list':
+        if field_name == 'kategorie_list':
             return self.instance.kategorie_list
         return super().get_initial_for_field(field, field_name)
 

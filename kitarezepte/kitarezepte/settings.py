@@ -12,12 +12,13 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 
 import os
 import string
-from configparser import ConfigParser, NoSectionError
+from configparser import ConfigParser
 from random import choice
 
 
 def random_string(length=50):
-    return ''.join([choice(string.digits + string.ascii_letters) for i in range(length)])
+    return ''.join(
+        [choice(string.digits + string.ascii_letters) for i in range(length)])
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -46,14 +47,14 @@ KITAREZEPTE_FULL_DOMAIN = config['server']['fulldomain']
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 servermode = config['server']['mode']
-if servermode=='development':
+if servermode == 'development':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         }
     }
-elif servermode=='production':
+elif servermode == 'production':
     DB_CONFIG_FILE = os.path.expanduser('~/.my.cnf')
     db_config = ConfigParser()
     with open(DB_CONFIG_FILE) as db_conf_file:
@@ -81,10 +82,10 @@ elif servermode=='production':
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = servermode=='development'
+DEBUG = servermode == 'development'
 
 ALLOWED_HOSTS = (
-    [] if DEBUG else 
+    [] if DEBUG else
     ['.kita-rezepte.de', '.kitarez.uber.space'])
 
 ADMINS = [("Johannes Ammon", "j.ammon@dr-ammon.de")]
@@ -138,7 +139,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'kitarezepte.wsgi.application'
 
 
-
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
 
@@ -169,7 +169,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-if servermode=='production':
+if servermode == 'production':
     STATIC_ROOT = "/var/www/virtual/kitarez/html/static/"
     STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 
@@ -197,4 +197,3 @@ LOGGING = {
         },
     },
 }
-

@@ -23,14 +23,15 @@ class Set_GangplanTestcase(TestCase):
     def test_post(self):
         response = self.client.post(
             '/ajax/set-gang/',
-            {'rezept_id': str(self.rezept.id), 
+            {'rezept_id': str(self.rezept.id),
              'datum': '2019-04-23',
              'gang': 'Vorspeise'},
             content_type='application/json')
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.content)
         self.assertEqual(data['success'], 'Planung erstellt')
-        self.assertEqual(data['rezept'], {'id': self.rezept.id, 'titel': self.rezept.titel})
+        self.assertEqual(
+            data['rezept'], {'id': self.rezept.id, 'titel': self.rezept.titel})
 
         gang = GangPlan.objects.get(
             client=self.rez_client,
@@ -44,7 +45,7 @@ class Set_GangplanTestcase(TestCase):
         session.save()
         response = self.client.post(
             '/ajax/set-gang/',
-            {'rezept_id': str(self.rezept.id), 
+            {'rezept_id': str(self.rezept.id),
              'datum': '2019-04-23',
              'gang': 'Vorspeise'},
             content_type='application/json')
@@ -62,10 +63,8 @@ class Set_GangplanTestcase(TestCase):
     def test_post_rezept_not_found(self):
         response = self.client.post(
             '/ajax/set-gang/',
-            {'rezept_id': 2342, 
+            {'rezept_id': 2342,
              'datum': '2019-04-23',
              'gang': 'Vorspeise'},
             content_type='application/json')
         self.assertEqual(response.status_code, 404)
-
-

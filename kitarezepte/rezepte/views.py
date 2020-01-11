@@ -3,8 +3,8 @@ import json
 from .models import (Client, Rezept, Zutat, RezeptZutat, GangPlan, KEIN_PREIS,
                      get_einkaufsliste)
 from .forms import ZutatForm, RezeptForm
-from .utils import (days_in_month, get_client, client_param, next_dow, MONATSNAMEN, 
-                    next_month)
+from .utils import (days_in_month, get_client, client_param, next_dow,
+                    MONATSNAMEN, next_month)
 from datetime import date, timedelta
 from django.contrib import auth
 from django.contrib.auth.forms import AuthenticationForm
@@ -49,6 +49,7 @@ def logout(request):
     auth.logout(request)
     return HttpResponseRedirect('/')
 
+
 def write_client_id_to_session(session, user):
     session['user_name'] = user.get_full_name() or user.get_username()
     try:
@@ -62,7 +63,7 @@ def write_client_id_to_session(session, user):
 
 
 def get_query_args(client_slug='', id=0, slug=''):
-    res =  {'client__slug': client_slug}
+    res = {'client__slug': client_slug}
     if id:
         res['id'] = int(id)
     elif slug:
@@ -82,33 +83,40 @@ def rezepte(request, client_slug='', id=0, slug=''):
         rezept = Rezept.objects.get(**get_query_args(client_slug, id, slug))
     except Rezept.DoesNotExist:
         return alle_rezepte(
-            request, client_slug, 
+            request, client_slug,
             msg=f"Rezept \"{slug or id}\" nicht gefunden")
     return render(
         request,
         'rezepte/rezept.html',
         {'recipe': rezept,
-         'zutaten': rezept.zutaten.all().select_related('zutat').order_by('nummer')})
+         'zutaten': rezept.zutaten.all().select_related('zutat').order_by(
+            'nummer')})
+
 
 def alle_rezepte(request, client_slug, msg=''):
     recipes = Rezept.objects.filter(client__slug=client_slug).order_by('slug')
     client = get_object_or_404(Client, slug=client_slug)
     gaenge = client.gaenge.split()
     data = [(g, [r for r in recipes if g in r.gang]) for g in gaenge]
-    data.append(("unsortiert", [r for r in recipes if r.gang.strip()=='']))
-    return render(request, 'rezepte/rezepte.html', {'recipes': data, 'msg': msg})
+    data.append(
+        ("unsortiert", [r for r in recipes if r.gang.strip() == '']))
+    return render(
+        request, 'rezepte/rezepte.html', {'recipes': data, 'msg': msg})
+
 
 @client_param
 def rezept_edit(request, client_slug='', id=0, slug=''):
     if client_slug != request.session.get('client_slug'):
         return HttpResponse(status=403, reason="Falscher Client.")
     if id or slug:
-        rezept = get_object_or_404(Rezept, **get_query_args(client_slug, id, slug))
+        rezept = get_object_or_404(
+            Rezept, **get_query_args(client_slug, id, slug))
     else:
         # neues Rezept
         rezept = Rezept(client=Client.objects.get(slug=client_slug))
     if request.method == 'POST':
-        form = RezeptForm(request.POST, instance=rezept, session=request.session)
+        form = RezeptForm(
+            request.POST, instance=rezept, session=request.session)
         # import pdb; pdb.set_trace()
         if form.is_valid():
             rezept = form.save()
@@ -118,16 +126,17 @@ def rezept_edit(request, client_slug='', id=0, slug=''):
             rezeptzutaten = []
             for k, v in request.POST.items():
                 if k.startswith('rz'):
-                    rezeptzutaten.append(RezeptZutat(rezept=rezept, **json.loads(v)))
+                    rezeptzutaten.append(
+                        RezeptZutat(rezept=rezept, **json.loads(v)))
             RezeptZutat.objects.bulk_create(rezeptzutaten)
             return HttpResponseRedirect('/rezepte/' + rezept.slug)
     else:
         form = RezeptForm(instance=rezept, session=request.session)
     zutaten = Zutat.objects.filter(client__slug=client_slug)
     rezeptzutaten = (
-        rezept.zutaten.all().select_related('zutat') 
+        rezept.zutaten.all().select_related('zutat')
         if rezept is not None else [])
-    return render(request, 'rezepte/rezept-edit.html', 
+    return render(request, 'rezepte/rezept-edit.html',
                   {'form': form,
                    'zutaten': zutaten,
                    'zutatenform': ZutatForm(),
@@ -138,15 +147,17 @@ def rezept_edit(request, client_slug='', id=0, slug=''):
 @login_required
 @client_param
 def zutaten(request, client_slug='', id=0, msg=''):
-    zutaten = Zutat.objects.filter(client__slug=client_slug
-        ).order_by('kategorie', 'name')
+    zutaten = Zutat.objects.filter(
+        client__slug=client_slug
+    ).order_by('kategorie', 'name')
     if id:
         try:
             zutat = zutaten.get(id=id)
         except Zutat.DoesNotExist:
             raise Http404
-        rezepte = Rezept.objects.filter(zutaten__zutat=zutat
-            ).order_by('titel')
+        rezepte = Rezept.objects.filter(
+            zutaten__zutat=zutat
+        ).order_by('titel')
     else:
         # neue Zutat
         zutat = Zutat(client=Client.objects.get(slug=client_slug))
@@ -159,14 +170,14 @@ def zutaten(request, client_slug='', id=0, msg=''):
             return HttpResponseRedirect('/zutaten/')
     else:
         form = ZutatForm(instance=zutat)
-    return render(request, 'rezepte/zutaten.html', 
+    return render(request, 'rezepte/zutaten.html',
                   {'form': form,
                    'zutaten': zutaten,
                    'zutat_id': id or '',
                    'zutat': zutat,
                    'rezepte': rezepte,
                    'msg': msg,
-                   'is_authenticated': request.user.is_authenticated })
+                   'is_authenticated': request.user.is_authenticated})
 
 
 @client_param
@@ -176,7 +187,7 @@ def zutaten_delete(request, client_slug=''):
     id = request.POST['zutat_id']
     zutat = get_object_or_404(Zutat, client__slug=client_slug, id=id)
     Zutat.objects.filter(client__slug=client_slug, id=id).delete()
-    return redirect("/zutaten/", 
+    return redirect("/zutaten/",
                     client_slug=client_slug,
                     msg=f'Zutat {zutat.name} wurde gelöscht')
 
@@ -187,7 +198,7 @@ def monat(request, client_slug, year=0, month=0):
     today = date.today()
     year = int(year) or today.year
     month = int(month) or today.month
-    if month==12:
+    if month == 12:
         naechster_erster = date(year+1, 1, 1)
     else:
         naechster_erster = date(year, month+1, 1)
@@ -198,18 +209,18 @@ def monat(request, client_slug, year=0, month=0):
     ).select_related('rezept')
     planungen_js = [
         {'datum': [g.datum.year, g.datum.month, g.datum.day],
-         'gang': g.gang, 
-         'rezept_id': g.rezept.id, 
+         'gang': g.gang,
+         'rezept_id': g.rezept.id,
          'rezept_titel': g.rezept.titel} for g in planungen]
     rezepte = [
-        {'id': r.id, 
+        {'id': r.id,
          'titel': r.titel,
          'gang': r.gang.split(),
          'kategorien': r.kategorie_list,
-         'preis': '--' if r._preis==KEIN_PREIS else r._preis}
-        for r in Rezept.objects
-            .filter(client__slug=client_slug)
-            .order_by('slug')]
+         'preis': '--' if r._preis == KEIN_PREIS else r._preis}
+        for r in Rezept.objects.filter(
+                client__slug=client_slug
+            ).order_by('slug')]
     client = get_object_or_404(Client, slug=client_slug)
     data = {'planungen': planungen_js,
             'rezepte': rezepte,
@@ -217,7 +228,7 @@ def monat(request, client_slug, year=0, month=0):
             'year': year,
             'gangfolge': client.gaenge,
             'days_in_month': days_in_month(year, month),
-            'is_authenticated': request.user.is_authenticated }
+            'is_authenticated': request.user.is_authenticated}
     return render(request, 'rezepte/monat.html', {
         'data': json.dumps(data),
         'month_name': MONATSNAMEN[month],
@@ -236,15 +247,17 @@ def tag(request, client_slug, year=0, month=0, day=0):
         client__slug=client_slug,
     ).select_related('rezept')
     client = get_object_or_404(Client, slug=client_slug)
+
     def sortkey(planung):
         return client.gaenge.find(planung.gang)
+
     data = {'planungen': sorted(planungen, key=sortkey),
             'day': day,
-            'is_authenticated': request.user.is_authenticated }
+            'is_authenticated': request.user.is_authenticated}
     return render(request, 'rezepte/tag.html', data)
 
 
-# Einkaufsliste ------------------------------------------------------------------
+# Einkaufsliste ---------------------------------------------------------------
 @client_param
 def einkaufsliste(request, client_slug, year=0, month=0, day=0, dauer=7):
     msg = ""

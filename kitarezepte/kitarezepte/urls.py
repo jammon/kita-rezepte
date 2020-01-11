@@ -14,7 +14,6 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.conf import settings
-from django.conf.urls import url
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path, re_path
@@ -40,7 +39,8 @@ urlpatterns = [
     path('monat', views.monat),
     path('tag/<int:year>/<int:month>/<int:day>', views.tag),
     path('tag', views.tag),
-    path('einkaufsliste/<int:year>/<int:month>/<int:day>/<int:dauer>', views.einkaufsliste),
+    path('einkaufsliste/<int:year>/<int:month>/<int:day>/<int:dauer>',
+         views.einkaufsliste),
     path('einkaufsliste', views.einkaufsliste),
     path('ajax/set-gang/', ajax.set_gangplan),
     path('ajax/add-zutat/', ajax.add_zutat),

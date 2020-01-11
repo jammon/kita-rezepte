@@ -12,8 +12,9 @@ class ZutatAdmin(admin.ModelAdmin):
 class RezeptZutatInline(admin.TabularInline):
     model = RezeptZutat
 
+
 class KategorieListFilter(admin.SimpleListFilter):
-    title ='Kategorien'
+    title = 'Kategorien'
     parameter_name = 'kategorien'
 
     def lookups(self, request, model_admin):
@@ -25,8 +26,9 @@ class KategorieListFilter(admin.SimpleListFilter):
             return queryset.filter(kategorien__contains=value)
         return queryset
 
+
 class GangListFilter(admin.SimpleListFilter):
-    title ='Gänge'
+    title = 'Gänge'
     parameter_name = 'gaenge'
 
     def lookups(self, request, model_admin):
@@ -37,6 +39,7 @@ class GangListFilter(admin.SimpleListFilter):
         if value:
             return queryset.filter(gang__contains=value)
         return queryset
+
 
 class RezeptAdmin(admin.ModelAdmin):
     exclude = ('_preis',)

@@ -9,7 +9,8 @@ import json
 
 from .forms import ZutatForm
 from .models import Client, Rezept, Zutat, GangPlan
-from .utils import day_fromJson, get_client, client_param
+from .utils import day_fromJson, client_param
+
 
 @login_required
 @require_POST
@@ -29,7 +30,8 @@ def set_gangplan(request, client_slug=''):
         rezept = Rezept.objects.get(id=rezept_id, client__slug=client_slug)
     except Rezept.DoesNotExist:
         return HttpResponse(
-            status=404, reason="Rezept nicht gefunden. Rezept Id: " + str(rezept_id))
+            status=404,
+            reason="Rezept nicht gefunden. Rezept Id: " + str(rezept_id))
     gangplan, created = GangPlan.objects.update_or_create(
         client=client,
         datum=datum,
@@ -37,7 +39,7 @@ def set_gangplan(request, client_slug=''):
         defaults={'rezept': rezept})
     return JsonResponse({
         'success': 'Planung erstellt' if created else 'Planung aktualisiert',
-        'rezept': {'id': rezept.id, 'titel':rezept.titel},
+        'rezept': {'id': rezept.id, 'titel': rezept.titel},
         'datum': str(datum),
         'gang': gang,
     })
@@ -52,11 +54,11 @@ def add_zutat(request, client_slug=''):
     client = get_object_or_404(Client, slug=client_slug)
     form = ZutatForm(request.POST, instance=Zutat(client=client))
     if form.is_valid():
-        if form.cleaned_data['name']=='ERROR':
+        if form.cleaned_data['name'] == 'ERROR':
             return HttpResponse("Error requested.", status=400)
         zutat = form.save()
         resp = JsonResponse({
-            'success': 'xxx', 
+            'success': 'xxx',
             'zutat': zutat.toJson()})
         return resp
     return HttpResponse('Form is not valid', status=400)
