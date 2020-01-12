@@ -9,7 +9,7 @@ from datetime import date, timedelta
 from django.contrib import auth
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect, Http404
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render, redirect
 from django.views.generic.detail import DetailView
