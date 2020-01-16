@@ -86,7 +86,8 @@ DEBUG = servermode == 'development'
 
 ALLOWED_HOSTS = (
     [] if DEBUG else
-    ['.kita-rezepte.de', '.kitarez.uber.space'])
+    ['.kita-rezepte.de',
+    '.' + KITAREZEPTE_FULL_DOMAIN])
 
 ADMINS = [("Johannes Ammon", "j.ammon@dr-ammon.de")]
 
