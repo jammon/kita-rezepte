@@ -103,7 +103,7 @@ class Zutat(models.Model):
         help_text='Anzahl der Maßeinheiten pro Packungseinheit; '
         'bei 1 kg: 1000')
     masseinheit = models.CharField(max_length=5, choices=MASSEINHEITEN)
-    kategorie = models.CharField(max_length=15, choices=ZUTATENKATEGORIEN)
+    kategorie = models.CharField(max_length=30, choices=ZUTATENKATEGORIEN)
 
     class Meta:
         verbose_name = "Zutat"
