@@ -60,7 +60,8 @@ class Client(models.Model):
         return self.name
 
     def save(self, *args, **kwargs):
-        self.slug = slug = slugify(self.name, allow_unicode=True)
+        if not self.slug:
+            self.slug = slugify(self.name, allow_unicode=True)
         super().save(*args, **kwargs)
 
     def get_domain(self):
