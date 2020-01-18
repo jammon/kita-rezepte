@@ -100,7 +100,6 @@ def next_month(year, month, offset=1):
 
 
 TEST_REIS = dict(name="Reis",
-                 client_id=1,
                  einheit="1 kg",
                  preis_pro_einheit=189,
                  menge_pro_einheit=1000,
@@ -108,7 +107,6 @@ TEST_REIS = dict(name="Reis",
                  kategorie="Grundnahrungsmittel")
 
 TEST_REZEPT = dict(
-            client_id=1,
             fuer_kinder=20,
             fuer_erwachsene=5,
             zubereitung='',

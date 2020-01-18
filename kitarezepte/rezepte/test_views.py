@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.http import Http404
 from django.test import TestCase
 from .models import Rezept, Client, Editor
-from .utils import TEST_REIS, TEST_REZEPT
+from .utils import TEST_REZEPT
 
 
 def create_user(name, client, email='test@test.tld', password='test'):

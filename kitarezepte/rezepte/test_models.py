@@ -24,8 +24,9 @@ class Zutat_TestCase(TestCase):
 
     def test_updateRezeptpreise(self):
         """ The price of the recipes is updated """
-        reis = Zutat.objects.create(**TEST_REIS)
-        rezept = Rezept.objects.create(titel="Reis", **TEST_REZEPT)
+        client = Client.objects.create(name='Test-Kita')
+        reis = Zutat.objects.create(client=client, **TEST_REIS)
+        rezept = Rezept.objects.create(titel="Reis", client=client, **TEST_REZEPT)
         rz = RezeptZutat.objects.create(
             rezept=rezept,
             zutat=reis,
@@ -41,38 +42,45 @@ class Zutat_TestCase(TestCase):
 
 
 class Rezept_TestCase(TestCase):
+    def setUp(self):
+        client = Client.objects.create(name='Test-Kita')
+        self.REZEPT = TEST_REZEPT
+        TEST_REZEPT["client_id"] = client.id
 
     def test_calculate_slug(self):
         """ The slug is derived from the title """
-        ms0 = Rezept.objects.create(titel="Möhren-Salat süß", **TEST_REZEPT)
-        ms1 = Rezept.objects.create(titel="Möhren-Salat", **TEST_REZEPT)
-        ms2 = Rezept.objects.create(titel="Möhren-Salat", **TEST_REZEPT)
+        ms0 = Rezept.objects.create(titel="Möhren-Salat süß", **self.REZEPT)
+        ms1 = Rezept.objects.create(titel="Möhren-Salat", **self.REZEPT)
+        ms2 = Rezept.objects.create(titel="Möhren-Salat", **self.REZEPT)
         self.assertEqual(ms0.slug, "moehren-salat-suess")
         self.assertEqual(ms1.slug, "moehren-salat")
         self.assertEqual(ms2.slug, "moehren-salat1")
 
 
 class RezeptZutat_TestCase(TestCase):
+    def setUp(self):
+        self.kitaclient = Client.objects.create(name='Test-Kita')
+        self.REIS = TEST_REIS
+        TEST_REIS["client_id"] = self.kitaclient.id
+        self.reis = Zutat.objects.create(client=self.kitaclient, **TEST_REIS)
 
     def test_preis(self):
-        reis = Zutat.objects.create(**TEST_REIS)
-        rz = RezeptZutat(zutat=reis, menge=500)
+        rz = RezeptZutat(zutat=self.reis, menge=500)
         self.assertEqual(rz.preis(), 94)
         self.assertEqual(rz.preisToStr(), "0,94 €")
 
-        rz = RezeptZutat(zutat=reis, menge_qualitativ="etwas")
+        rz = RezeptZutat(zutat=self.reis, menge_qualitativ="etwas")
         self.assertEqual(rz.preis(), 0)
         self.assertEqual(rz.preisToStr(), "0,00 €")
 
     def test_str(self):
-        reis = Zutat.objects.create(**TEST_REIS)
-        rz = RezeptZutat(zutat=reis, menge=500)
+        rz = RezeptZutat(zutat=self.reis, menge=500)
         self.assertEqual(str(rz), "500 g Reis")
 
-        rz = RezeptZutat(zutat=reis, menge_qualitativ="etwas")
+        rz = RezeptZutat(zutat=self.reis, menge_qualitativ="etwas")
         self.assertEqual(str(rz), "etwas Reis")
-       
-        eier = Zutat(name="Eier", client_id=1, einheit="")
+
+        eier = Zutat(name="Eier", client=self.kitaclient, einheit="")
         rz = RezeptZutat(zutat=eier, menge=3)
         self.assertEqual(str(rz), "3 Eier")
 
@@ -117,7 +125,7 @@ class Get_Einkaufsliste_TestCase(TestCase):
             RezeptZutat(rezept=milchreis, zutat=milch, menge=2000.0, nummer=2),
             RezeptZutat(rezept=milchreis, zutat=wasser, menge_qualitativ="etwas", nummer=3),
         ])
-        args = dict(client = client, gang="Hauptgang")
+        args = dict(client=client, gang="Hauptgang")
         GangPlan.objects.bulk_create([
             GangPlan(datum=date(2019, 5, 31), rezept=milchreis, **args),
             GangPlan(datum=date(2019, 6, 1), rezept=wasserreis, **args),

@@ -45,3 +45,4 @@ x 2019-09-15 im +Monatsplan sind keine Rezepte auswählbar
 x 2019-09-15 Logging einbauen +deployment
 x 2019-09-20 Einkaufsliste auch für andere Zeiträume abrufen
 x 2019-09-21 Anmerkungen zu anmerkunen bearbeiten
+x 2020-01-18 Client.slug soll nicht neu berechnet werden, wenn er eingegeben wurde
