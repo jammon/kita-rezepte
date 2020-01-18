@@ -42,27 +42,23 @@ class Zutat_TestCase(TestCase):
 
 
 class Rezept_TestCase(TestCase):
-    def setUp(self):
-        client = Client.objects.create(name='Test-Kita')
-        self.REZEPT = TEST_REZEPT
-        TEST_REZEPT["client_id"] = client.id
-
     def test_calculate_slug(self):
         """ The slug is derived from the title """
-        ms0 = Rezept.objects.create(titel="Möhren-Salat süß", **self.REZEPT)
-        ms1 = Rezept.objects.create(titel="Möhren-Salat", **self.REZEPT)
-        ms2 = Rezept.objects.create(titel="Möhren-Salat", **self.REZEPT)
-        self.assertEqual(ms0.slug, "moehren-salat-suess")
-        self.assertEqual(ms1.slug, "moehren-salat")
-        self.assertEqual(ms2.slug, "moehren-salat1")
+        client = Client.objects.create(name='Test-Kita')
+        for titel, slug in (
+                ("Möhren-Salat süß", "moehren-salat-suess"),
+                ("Möhren-Salat", "moehren-salat"),
+                ("Möhren-Salat", "moehren-salat1"),
+        ):
+            rezept = Rezept.objects.create(
+                titel=titel, client=client, **TEST_REZEPT)
+            self.assertEqual(rezept.slug, slug)
 
 
 class RezeptZutat_TestCase(TestCase):
     def setUp(self):
         self.kitaclient = Client.objects.create(name='Test-Kita')
-        self.REIS = TEST_REIS
-        TEST_REIS["client_id"] = self.kitaclient.id
-        self.reis = Zutat.objects.create(client=self.kitaclient, **TEST_REIS)
+        self.reis = Zutat(client=self.kitaclient, **TEST_REIS)
 
     def test_preis(self):
         rz = RezeptZutat(zutat=self.reis, menge=500)
