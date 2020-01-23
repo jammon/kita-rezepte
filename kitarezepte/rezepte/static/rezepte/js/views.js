@@ -16,9 +16,9 @@ var PlanungView = Backbone.View.extend({
     events: {
         'click': 'edit_gang',
     },
-    className: 'col col-md-4',
+    className: 'col',
     initialize: function(options) {
-        this.className = this.model.get('gang');
+        this.gangbreite = options.gangbreite;
         this.id = this.model.get('gang') + this.model.get('day');
         this.listenTo(this.model, "change", this.render);
     },
@@ -30,7 +30,8 @@ var PlanungView = Backbone.View.extend({
         else if (models.data.is_authenticated)
             content = planung_auth_template({rezept: rezept});
         else content = planung_template({rezept: rezept});
-        this.$el.empty().append(content);
+        this.$el.empty().append(content).addClass(
+            this.model.get('gang') + ' col-md-' + this.gangbreite);
         return this;
     },
     edit_gang: function() {
@@ -48,6 +49,7 @@ var TagView = Backbone.View.extend({
     },
     render: function() {
         let day = this.day.getDate();
+        let gangbreite = Math.floor(12 / models.data.gangfolge.length);
         this.$el.append(this.template({
             dayname: Tagnamen[this.day.getDay()],
             day: day,
@@ -65,7 +67,7 @@ var TagView = Backbone.View.extend({
                         datum: [models.data.year, models.data.month, day],
                         rezept: models.rezepte.get(-1),
                     });
-                let pv = new PlanungView({model: planung});
+                let pv = new PlanungView({model: planung, gangbreite: gangbreite});
                 gaenge.append(pv.render().$el);
             });
         }

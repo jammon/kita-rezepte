@@ -11,14 +11,14 @@
   </div>
   <div id="monat_table">
     <div class="row">
-      <div class="col col-sm-2 col-md-1">
+      <div class="col col-sm-3 col-md-2">
         Tag
       </div>
-      <div class="col col-sm-10 col-md-11">
+      <div class="col col-sm-9 col-md-10">
         <div class="row">
-          <div class="col col-md-4">Vorspeise</div>
-          <div class="col col-md-4">Hauptgang</div>
-          <div class="col col-md-4">Nachtisch</div>
+          {% for gang in gaenge %}
+            <div class="col col-md-{{ gangbreite }}">{{ gang }}</div>
+          {% endfor %}
         </div>
       </div>
     </div>

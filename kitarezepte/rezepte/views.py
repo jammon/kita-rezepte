@@ -229,12 +229,15 @@ def monat(request, client_slug, year=0, month=0):
             'gangfolge': client.gaenge,
             'days_in_month': days_in_month(year, month),
             'is_authenticated': request.user.is_authenticated}
+    gaenge = client.gaenge.split()
     return render(request, 'rezepte/monat.html', {
         'data': json.dumps(data),
         'month_name': MONATSNAMEN[month],
         'year': year,
         'next': next_month(year, month, 1),
         'prev': next_month(year, month, -1),
+        'gaenge': gaenge,
+        'gangbreite': 12 // len(gaenge),
     })
 
 
