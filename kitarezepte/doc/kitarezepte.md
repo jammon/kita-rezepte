@@ -45,7 +45,8 @@ Zutaten:
 - Die Subdomain im Webserver anlegen. 
     + `uberspace web domain add <slug>.kita-rezepte.de`
     + `uberspace web domain add <slug>.kitarez.uber.space`
-- Die Subdomain beim Domainhoster anlegen. 
+- Die Subdomain beim Domainhoster anlegen (kann dauern). 
+- 
 - Verweis auf der Hauptseite eintragen.
 
 ## Konfigurations-Dateien

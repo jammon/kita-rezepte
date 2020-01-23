@@ -87,7 +87,7 @@ DEBUG = servermode == 'development'
 ALLOWED_HOSTS = (
     [] if DEBUG else
     ['.kita-rezepte.de', '.kitarez.uber.space',
-    '.' + KITAREZEPTE_FULL_DOMAIN])
+     '.' + KITAREZEPTE_FULL_DOMAIN])
 
 ADMINS = [("Johannes Ammon", "j.ammon@dr-ammon.de")]
 
@@ -170,15 +170,19 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+<<<<<<< HEAD
 if servermode == 'production':
     STATIC_ROOT = f"/var/www/virtual/kitarez/html/static/"
+=======
+if not DEBUG:
+    STATIC_ROOT = f"/var/www/virtual/{KITAREZEPTE_DOMAIN}/html/static/"
+>>>>>>> d7661065bd6b76b0ed740f75cc397c98b9c80c1c
     STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
 
 LOGIN_URL = '/login/'
-
-SECURE_CONTENT_TYPE_NOSNIFF = True
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
 
 LOGGING = {
     'version': 1,

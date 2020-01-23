@@ -15,3 +15,7 @@
 (B) Sortieren der Zutaten funktioniert nicht
 (A) Logout-View und -Link
 (B) Was passiert, wenn im Rezept bei Menge gar nichts eingegeben wird?
+Bedeutung von KITAREZEPTE_DOMAIN und KITAREZEPTE_FULL_DOMAIN bei kitarez und kita-rezepte überdenken
+Wenn man sich bei slug.kitarez.uber.space anmeldet, wird man auf slug.kita-rezepte.de weitergeleitet
+(A) Logout implementieren
+(A) ChangePassword implementieren
