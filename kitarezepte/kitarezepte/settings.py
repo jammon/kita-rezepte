@@ -170,13 +170,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-<<<<<<< HEAD
-if servermode == 'production':
-    STATIC_ROOT = f"/var/www/virtual/kitarez/html/static/"
-=======
 if not DEBUG:
     STATIC_ROOT = f"/var/www/virtual/{KITAREZEPTE_DOMAIN}/html/static/"
->>>>>>> d7661065bd6b76b0ed740f75cc397c98b9c80c1c
     STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
     SECURE_CONTENT_TYPE_NOSNIFF = True
     CSRF_COOKIE_SECURE = True
