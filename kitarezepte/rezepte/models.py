@@ -332,6 +332,27 @@ class GangPlan(models.Model):
         return f"Am {self.datum} als {self.gang} {self.rezept.titel}"
 
 
+def beautify_amounts(messbar):
+    units = {'g': 'kg', 'ml': 'l'}
+    res = []
+    for zutat, menge in messbar.items():
+        if zutat.masseinheit in units and menge >= 1000:
+            res.append((
+                zutat.kategorie,
+                zutat.name,
+                zutat.id,
+                prettyFloat(menge/1000),
+                units[zutat.masseinheit]))
+        else:
+            res.append((
+                zutat.kategorie,
+                zutat.name,
+                zutat.id,
+                prettyFloat(menge),
+                zutat.masseinheit))
+    return sorted(res)
+
+
 def get_einkaufsliste(client_slug, start, dauer):
     """ liefert die Daten für /einkaufsliste
     """
@@ -367,8 +388,6 @@ def get_einkaufsliste(client_slug, start, dauer):
         'start': start,
         'dauer': dauer,
         'rezepte': sorted(set(rezept_plaene)),
-        'messbar': sorted(((zutat, prettyFloat(menge))
-                           for zutat, menge in messbar.items()),
-                          key=key),
+        'messbar': beautify_amounts(messbar),
         'qualitativ': sorted(qualitativ.items(), key=key)
     }

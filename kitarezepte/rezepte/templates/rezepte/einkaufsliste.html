@@ -25,16 +25,16 @@
       <h2>Benötigte Mengen:</h2>
       {% if messbar %}
       <table class="table">
-      {% for zutat, menge in messbar %}
+      {% for kategorie, zutat, id, menge, einheit in messbar %}
         {% ifchanged  %}
         <tr>
-          <td colspan="3"><h3>{{ zutat.kategorie }}</h3></td>
+          <td colspan="3"><h3>{{ kategorie }}</h3></td>
         </tr>
         {% endifchanged %}
         <tr>
-          <td><a href="/zutaten/{{ zutat.id }}">{{ zutat.name }}</a></td>
+          <td><a href="/zutaten/{{ id }}">{{ zutat }}</a></td>
           <td class="text-right">{{ menge }}</td>
-          <td>{{ zutat.masseinheit }}</td>
+          <td>{{ einheit }}</td>
         </tr>
       {% endfor %}
       </table>

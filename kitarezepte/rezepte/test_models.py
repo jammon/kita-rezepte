@@ -118,7 +118,7 @@ class Get_Einkaufsliste_TestCase(TestCase):
             RezeptZutat(rezept=wasserreis, zutat=reis, menge=500.0, nummer=1),
             RezeptZutat(rezept=wasserreis, zutat=wasser, menge=2000.0, nummer=2),
             RezeptZutat(rezept=milchreis, zutat=reis, menge=400.0, nummer=1),
-            RezeptZutat(rezept=milchreis, zutat=milch, menge=2000.0, nummer=2),
+            RezeptZutat(rezept=milchreis, zutat=milch, menge=400.0, nummer=2),
             RezeptZutat(rezept=milchreis, zutat=wasser, menge_qualitativ="etwas", nummer=3),
         ])
         args = dict(client=client, gang="Hauptgang")
@@ -135,7 +135,9 @@ class Get_Einkaufsliste_TestCase(TestCase):
             [("Milchreis", milchreis.id), ("Wasserreis", wasserreis.id)])
         self.assertEqual(
             el['messbar'],
-            [(reis, '1300'), (wasser, '2000'), (milch, '4000')])
+            [('Grundnahrungsmittel', 'Reis', reis.id, '1.3', 'kg'),
+             ('Grundnahrungsmittel', 'Wasser', wasser.id, '2', 'l'),
+             ('Milchprodukte', 'Milch', milch.id, '800', 'ml')])
         self.assertEqual(
             el['qualitativ'],
             [(wasser, ['etwas', 'etwas'])])
