@@ -16,6 +16,7 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.contrib.auth import views as auth_views
 from django.urls import include, path, re_path
 from django.views.generic import TemplateView
 
@@ -26,6 +27,12 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('login/', views.login, name='login'),
     path('logout/', views.logout, name='logout'),
+    path('change-password/',
+         auth_views.PasswordChangeView.as_view(
+            template_name='registration/password_change.html',
+            success_url="/password_change_done/")),
+    path('password_change_done/',
+         TemplateView.as_view(template_name="registration/password_changed.html")),
     path('rezepte/', views.rezepte),
     path('rezepte/new', views.rezept_edit),
     path('rezepte/<int:id>', views.rezepte),

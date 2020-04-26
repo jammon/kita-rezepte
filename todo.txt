@@ -18,4 +18,13 @@
 Bedeutung von KITAREZEPTE_DOMAIN und KITAREZEPTE_FULL_DOMAIN bei kitarez und kita-rezepte überdenken
 Wenn man sich bei slug.kitarez.uber.space anmeldet, wird man auf slug.kita-rezepte.de weitergeleitet
 (A) Logout implementieren
-(A) ChangePassword implementieren
+Nicht-öffentliche Rezepte
+Benutzerrollen für Lesen und Planen
+Allergene erfassen
+In der Einkaufsliste in kg und l umrechnen
+FAQ schreiben
+Wenn man nicht geplant einträgt, bekommt man einen Not Found Error
+Impressum verfassen
+Datenschutzerklärung verfassen
+Ist User und Editor eine 1:1-Beziehung? Kann man das sicherstellen?
+User-Eingabe-Maske bauen

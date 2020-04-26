@@ -6,6 +6,7 @@ from .forms import ZutatForm, RezeptForm
 from .utils import (days_in_month, get_client, client_param, next_dow,
                     MONATSNAMEN, next_month)
 from datetime import date, timedelta
+from django.conf import settings
 from django.contrib import auth
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
@@ -35,8 +36,10 @@ def login(request):
                 write_client_id_to_session(request.session, user)
                 client_slug = request.session.get('client_slug')
                 if client_slug:
+                    if client_slug == "dev":
+                        return HttpResponseRedirect('/monat')
                     return HttpResponseRedirect(
-                        f'https://{client_slug}.kita-rezepte.de/monat')
+                        f'https://{client_slug}.{settings.KITAREZEPTE_FULL_DOMAIN}/monat')
                 return HttpResponseRedirect('/')
             else:
                 form.add_error(None, "Fehler bei der Anmeldung!")

@@ -1,0 +1,35 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item" id="nav-rezepte">
+        <a class="nav-link" href="/rezepte">Rezepte</a>
+      </li>
+      {% if user.is_authenticated %}
+        <li class="nav-item" id="nav-zutaten">
+          <a class="nav-link" href="/zutaten">Zutaten</a>
+        </li>
+      {% endif %}
+      <li class="nav-item" id="nav-monat">
+        <a class="nav-link" href="/monat">Monatsplan</a>
+      </li>
+      <li class="nav-item" id="nav-einkaufsliste">
+        <a class="nav-link" href="/einkaufsliste">Einkaufsliste</a>
+      </li>
+    {% if user.is_authenticated %}
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          {{ request.user.get_full_name }} ({{ request.session.client_slug }})
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <li><a class="dropdown-item" href="/logout">Abmelden</a></li>
+          <li><a class="dropdown-item" href="/change-password">Passwort ändern</a></li>
+        </ul>
+      </li>
+    {% endif %}
+    </ul>
+  </div>
+</nav>
