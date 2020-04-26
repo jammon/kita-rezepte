@@ -26,6 +26,17 @@ def set_gangplan(request, client_slug=''):
         gang = data['gang']
     except KeyError:
         return HttpResponse(status=422, reason="Fehlerhafte Anfrage.")
+    if rezept_id == '-1':
+        count, _ = GangPlan.objects.filter(
+            client=client, datum=datum, gang=gang
+        ).delete()
+        return JsonResponse({
+            'success': 'Planung ' + ('gelöscht' if count else 'nicht gefunden'),
+            'rezept': {'id': -1, 'titel': 'nicht geplant'},
+            'datum': str(datum),
+            'gang': gang,
+        })
+
     try:
         rezept = Rezept.objects.get(id=rezept_id, client__slug=client_slug)
     except Rezept.DoesNotExist:

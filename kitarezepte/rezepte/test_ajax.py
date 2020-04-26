@@ -39,6 +39,45 @@ class Set_GangplanTestcase(TestCase):
             gang="Vorspeise")
         self.assertEqual(gang.rezept_id, self.rezept.id)
 
+    def test_delete(self):
+        self.client.post(
+            '/ajax/set-gang/',
+            {'rezept_id': str(self.rezept.id),
+             'datum': '2019-04-23',
+             'gang': 'Vorspeise'},
+            content_type='application/json')
+        nicht_geplant = {
+            'rezept_id': '-1',
+            'datum': '2019-04-23',
+            'gang': 'Vorspeise'}
+        response = self.client.post(
+            '/ajax/set-gang/',
+            nicht_geplant,
+            content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.content)
+        self.assertEqual(data['success'], 'Planung gelöscht')
+        self.assertEqual(
+            data['rezept'], {'id': -1, 'titel': 'nicht geplant'})
+
+        response = self.client.post(
+            '/ajax/set-gang/',
+            nicht_geplant,
+            content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.content)
+        self.assertEqual(data['success'], 'Planung nicht gefunden')
+        self.assertEqual(
+            data['rezept'], {'id': -1, 'titel': 'nicht geplant'})
+
+        with self.assertRaisesMessage(
+                GangPlan.DoesNotExist,
+                'GangPlan matching query does not exist.'):
+            GangPlan.objects.get(
+                client=self.rez_client,
+                datum=date(2019, 4, 23),
+                gang="Vorspeise")
+
     def test_post_wrong_client(self):
         session = self.client.session
         session['client_slug'] = 'otherclient'

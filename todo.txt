@@ -1,7 +1,7 @@
 (B) zutat.name sollte unique sein +models
 (C) CONN_MAX_AGE setzen +deployment
 (C) Cached templates aktivieren https://docs.djangoproject.com/en/2.2/ref/templates/api/#template-loaders +deployment
-(A) Link zur Hauptseite in die navbar
+(B) Link zur Hauptseite in die navbar
 (B) Hauptseite der Kitas mit TinyMCE editierbar machen
 (B) Deployment checklist durcharbeiten +deployment
 (B) memcache oder redis einsetzen für sessions +deployment
@@ -13,18 +13,14 @@
 (B) In der Zutateneingabe bei Rezeptedit sollen die Zutaten nach Länge sortiert sein
 (B) Editier-Views sollten darauf achten, dass der richtige Client bearbeitet wird
 (B) Sortieren der Zutaten funktioniert nicht
-(A) Logout-View und -Link
 (B) Was passiert, wenn im Rezept bei Menge gar nichts eingegeben wird?
-Bedeutung von KITAREZEPTE_DOMAIN und KITAREZEPTE_FULL_DOMAIN bei kitarez und kita-rezepte überdenken
-Wenn man sich bei slug.kitarez.uber.space anmeldet, wird man auf slug.kita-rezepte.de weitergeleitet
-(A) Logout implementieren
-Nicht-öffentliche Rezepte
-Benutzerrollen für Lesen und Planen
-Allergene erfassen
-In der Einkaufsliste in kg und l umrechnen
-FAQ schreiben
-Wenn man nicht geplant einträgt, bekommt man einen Not Found Error
-Impressum verfassen
-Datenschutzerklärung verfassen
-Ist User und Editor eine 1:1-Beziehung? Kann man das sicherstellen?
-User-Eingabe-Maske bauen
+(B) Bedeutung von KITAREZEPTE_DOMAIN und KITAREZEPTE_FULL_DOMAIN bei kitarez und kita-rezepte überdenken
+(B) Wenn man sich bei slug.kitarez.uber.space anmeldet, wird man auf slug.kita-rezepte.de weitergeleitet
+(C) Nicht-öffentliche Rezepte
+(C) Benutzerrollen für Lesen und Planen
+(C) Allergene erfassen
+(C) FAQ schreiben
+(C) Impressum verfassen
+(C) Datenschutzerklärung verfassen
+(C) Ist User und Editor eine 1:1-Beziehung? Kann man das sicherstellen?
+(C) User-Eingabe-Maske bauen
