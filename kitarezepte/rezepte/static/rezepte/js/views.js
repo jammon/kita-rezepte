@@ -265,8 +265,10 @@ var ZutatenView = Backbone.View.extend({
     },
     write_rz_inputs: function() {
         this.zutatenliste.zutaten_views.forEach(function(view, index) {
+            let nr = view.$el.index();
+            view.model.set('nummer', nr);
             this.$el.append($("<input>").attr({
-                name: "rz" + view.$el.index(),
+                name: "rz" + nr,
                 type: "hidden",
             }).val(view.model.toJson()));
         }, this);

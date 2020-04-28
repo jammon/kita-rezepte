@@ -11,8 +11,7 @@ from django.contrib import auth
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect, Http404
-from django.shortcuts import get_object_or_404
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 
@@ -126,11 +125,9 @@ def rezept_edit(request, client_slug='', id=0, slug=''):
             # ditch old RezeptZutaten
             RezeptZutat.objects.filter(rezept=rezept).delete()
             # collect and save RezeptZutaten
-            rezeptzutaten = []
-            for k, v in request.POST.items():
-                if k.startswith('rz'):
-                    rezeptzutaten.append(
-                        RezeptZutat(rezept=rezept, **json.loads(v)))
+            rezeptzutaten = [
+                RezeptZutat(rezept=rezept, **json.loads(v))
+                for k, v in request.POST.items() if k.startswith('rz')]
             RezeptZutat.objects.bulk_create(rezeptzutaten)
             return HttpResponseRedirect('/rezepte/' + rezept.slug)
     else:

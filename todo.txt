@@ -4,16 +4,14 @@
 (B) Link zur Hauptseite in die navbar
 (B) Hauptseite der Kitas mit TinyMCE editierbar machen
 (B) Deployment checklist durcharbeiten +deployment
-(B) memcache oder redis einsetzen für sessions +deployment
-(B) Wenn die Menge nicht angegeben ist, steht bei der Rezeptzutat undefined +rezept
+(C) memcache oder redis einsetzen für sessions +deployment
+(A) Wenn die Menge nicht angegeben ist, steht bei der Rezeptzutat undefined +rezept
 (D) Meta-Description und Title für die einzelnen Seiten anpassen
 (B) In /zutaten ist der Preis pro Einheit mit -1 vorbelegt
 (C) in Rezept 1314 steht im Rezept 0 Pckg. Gekörnte Brühe und in edit undefined Pckg. Gekörnte Brühe
 (B) In /zutaten sollte der Preis als Kommazahl einzugeben sein
-(B) In der Zutateneingabe bei Rezeptedit sollen die Zutaten nach Länge sortiert sein
 (B) Editier-Views sollten darauf achten, dass der richtige Client bearbeitet wird
-(B) Sortieren der Zutaten funktioniert nicht
-(B) Was passiert, wenn im Rezept bei Menge gar nichts eingegeben wird?
+(A) Was passiert, wenn im Rezept bei Menge gar nichts eingegeben wird?
 (B) Bedeutung von KITAREZEPTE_DOMAIN und KITAREZEPTE_FULL_DOMAIN bei kitarez und kita-rezepte überdenken
 (B) Wenn man sich bei slug.kitarez.uber.space anmeldet, wird man auf slug.kita-rezepte.de weitergeleitet
 (C) Nicht-öffentliche Rezepte

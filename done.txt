@@ -51,3 +51,4 @@ x 2020-04-26 In der Einkaufsliste in kg und l umrechnen
 x 2020-04-26 Logout implementieren
 x 2020-04-26 Logout-View und -Link
 x 2020-04-26 Wenn man nicht geplant einträgt, bekommt man einen Not Found Error
+x 2020-04-28 Sortieren der Zutaten funktioniert nicht
