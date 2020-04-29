@@ -1,3 +1,4 @@
+// jshint esversion: 6
 var views = (function($, _, Backbone) {
 "use strict";
 
@@ -144,7 +145,18 @@ var ZutatenEingabeView = Backbone.View.extend({
         let that = this;
         let el = this.$el;
         el.autocomplete({
-            source: models.zutaten.pluck('name'),
+            source: function(request, response) {
+                let names = models.zutaten.pluck('name');
+                let term = $.ui.autocomplete.escapeRegex(request.term);
+                let matcher1 = new RegExp("^" + term, "i");
+                let matcher2 = new RegExp("^.+" + term, "i");
+                function subarray(matcher) {
+                    return _.filter(names, function(item) {
+                        return matcher.test(item);
+                    });
+                }
+                response(subarray(matcher1).concat(subarray(matcher2)));
+            },
             autoFocus: true,
             change: function(event, ui) { that.check_zutat(ui.item, true); },
         });
