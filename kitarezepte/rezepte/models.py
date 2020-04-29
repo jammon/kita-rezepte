@@ -278,7 +278,7 @@ class RezeptZutat(models.Model):
         ordering = ("nummer",)
 
     def __str__(self):
-        if self.menge_qualitativ:
+        if self.menge_qualitativ is not None:
             return f"{self.menge_qualitativ} {self.zutat.name}"
         if self.menge == 0:
             return f"{self.zutat.name}"

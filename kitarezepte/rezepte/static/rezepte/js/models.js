@@ -82,7 +82,7 @@ var RezeptZutat = Backbone.Model.extend({
     toString: function() {
         let zutat = this.get('zutat');
         let name = zutat.get('name');
-        if (this.get('menge_qualitativ'))
+        if (this.has('menge_qualitativ'))
             return this.get('menge_qualitativ') + ' ' + name;
         let einheit = zutat.get_einheit();
         let menge = this.get('menge');

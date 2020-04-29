@@ -88,6 +88,14 @@ var MonatView = Backbone.View.extend({
 
 // Rezept - Edit ----------------------------------------------------
 //
+// RezeptZutatView: Zeigt eine RezeptZutat an
+// ZutatenListeView: Zeigt die Liste der Rezeptzutaten
+// ZutatenEingabeView: Autocomplete-Input für die Auswahl der Zutat
+// NeueZutatView: Modaler Dialog für die Eingabe einer neuen Zutat
+// MengenEingabeView: Input für Menge (quant. oder qual.)
+// EinheitView: stellt die passende Einheiit dar
+// ZutatenView: Stellt die anderen Views für die Eingabe der Zutaten dar
+
 var RezeptZutatView = Backbone.View.extend({
     tagName: 'li',
     className: "list-group-item",
