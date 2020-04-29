@@ -34,7 +34,7 @@
       <h2>{% if zutat_id %}Zutat bearbeiten {% else %}Neue Zutat {% endif %}</h2>
       <form action="{{ zutat_id }}" method="post">{% csrf_token %}
         {% include "rezepte/zutat-form.html" %}
-        <button type="submit" value="Speichern" class="btn btn-default">Speichern</button>
+        <button type="submit" value="Speichern" class="btn btn-primary">Speichern</button>
       </form>
       {% if rezepte %}
         <div>

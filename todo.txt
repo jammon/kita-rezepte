@@ -20,5 +20,3 @@
 (C) Datenschutzerklärung verfassen
 (C) Ist User und Editor eine 1:1-Beziehung? Kann man das sicherstellen?
 (C) User-Eingabe-Maske bauen
-Bearbeiten-Button in rezeptedit herausheben
-Tinymce scheint noch ein jquery laden zu wollen

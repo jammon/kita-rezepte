@@ -54,3 +54,5 @@ x 2020-04-26 Wenn man nicht geplant einträgt, bekommt man einen Not Found Error
 x 2020-04-28 Sortieren der Zutaten funktioniert nicht
 x 2020-04-29 Was passiert, wenn im Rezept bei Menge gar nichts eingegeben wird?
 x 2020-04-29 Wenn die Menge nicht angegeben ist, steht bei der Rezeptzutat undefined +rezept
+x 2020-04-29 Bearbeiten-Button in rezeptedit herausheben
+x 2020-04-29 Tinymce scheint noch ein jquery laden zu wollen

@@ -197,3 +197,5 @@ LOGGING = {
         },
     },
 }
+
+TINYMCE_INCLUDE_JQUERY = False

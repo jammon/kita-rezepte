@@ -2,7 +2,6 @@
 {% load static %}
 {% block extrahead %}
   <link rel="stylesheet" href="{% static 'vendor/jquery-ui-1.12.1.custom/jquery-ui.css' %}">
-  {{ form.media }}
 {% endblock extrahead %}
 {% block content %}
   <form action="" id="rezept-edit-form" method="post">{% csrf_token %}
@@ -78,7 +77,7 @@
         {{ form.kategorie_list }}
         {{ form.kategorie_list.errors }}
       </div>
-      <div><button class="submit-rezept btn btn-default" type="button">Speichern</button></div>
+      <div><button class="submit-rezept btn btn-primary" type="button">Speichern</button></div>
     </div>
   </div>
   </form>
@@ -129,6 +128,7 @@
 <script src="{% static 'rezepte/js/views.js' %}"></script>
 <script src="{% static 'rezepte/js/changeviews.js' %}"></script>
 <script src="{% static 'rezepte/js/main.js' %}"></script>
+{{ form.media }}
 <script>
   main.initialize_rezept_edit({
     'zutaten': [{% for zutat in zutaten %}
