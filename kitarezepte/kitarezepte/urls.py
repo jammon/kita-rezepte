@@ -27,6 +27,8 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('login/', views.login, name='login'),
     path('logout/', views.logout, name='logout'),
+    path('impressum/',
+         TemplateView.as_view(template_name="impressum.html")),
     path('change-password/',
          auth_views.PasswordChangeView.as_view(
             template_name='registration/password_change.html',

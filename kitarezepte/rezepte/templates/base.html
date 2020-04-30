@@ -17,15 +17,18 @@
     {% block extrahead %}{% endblock extrahead %}
   </head>
   <body>
-    <div class="container">
+    <main class="container">
     {% block navigation %}
       {% include "rezepte/navigation.html" %}
     {% endblock navigation %}
     {% block content %} {% endblock content %}
-    </div> <!-- /.container -->
+    </main> <!-- /.container -->
 
-    {% block extracontent %}
-    {% endblock extracontent %}
+    <footer class="footer">
+      <div class="container">
+        <a href="/impressum/">Impressum</a>
+      </div>
+    </footer>
 
     <script src="{% static 'vendor/jquery-3.3.1.js' %}"></script>
     <script src="{% static 'vendor/bootstrap-4.4.1-dist/js/bootstrap.js' %}"></script>

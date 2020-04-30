@@ -57,3 +57,4 @@ x 2020-04-29 Wenn die Menge nicht angegeben ist, steht bei der Rezeptzutat undef
 x 2020-04-29 Bearbeiten-Button in rezeptedit herausheben
 x 2020-04-29 Tinymce scheint noch ein jquery laden zu wollen
 x 2020-04-29 In der Zutateneingabe bei Rezeptedit sollen die Zutaten intuitiver sortiert sein
+x 2020-04-30 Impressum verfassen +public

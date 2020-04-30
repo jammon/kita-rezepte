@@ -1,76 +1,91 @@
 .hidden {
-	display: none;
+    display: none;
 }
-.pull-right {
-    float: right !important;
+
+/* Footer */
+html {
+  position: relative;
+  min-height: 100%;
 }
+body {
+  margin-bottom: 60px; /* Margin bottom by footer height */
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 60px; /* Set the fixed height of the footer here */
+  line-height: 60px; /* Vertically center the text there */
+  background-color: #f5f5f5;
+}
+
 /* Rezept-Eingabe */
 .delete {
-	font-size: larger;
-	margin-right: 1em;
+    font-size: larger;
+    margin-right: 1em;
 }
 .zutat-form td {
-	vertical-align: top;
+    vertical-align: top;
 }
 .help_text {
-	font-size: small;
-	color: #666;
+    font-size: small;
+    color: #666;
 }
 .inline-list ul {
-	padding-left: 0;
+    padding-left: 0;
 }
 .inline-list li {
-	list-style: none;
-	display: inline;
+    list-style: none;
+    display: inline;
 }
 .menge_pro_einheit ul {
-	display: inline;
+    display: inline;
 }
 .errorlist ul {
-	padding-left: 0;
+    padding-left: 0;
 }
 .errorlist li {
-	list-style: none;
+    list-style: none;
 }
 .errorlist li,
 #zutatModal .error {
-	background-color: #FAA;
+    background-color: #FAA;
 }
 #id_menge_pro_einheit,
 #id_preis_pro_einheit {
-	width: 4em;
+    width: 4em;
 }
 .editorwindow {
-	margin-bottom: 1em;
+    margin-bottom: 1em;
 }
 .tag-row {
-	margin-top: 1ex;
+    margin-top: 1ex;
 }
 .monat-kategorien {
-	float: left;
-	color: #888;
+    float: left;
+    color: #888;
 }
 .monat-preis {
-	float: right;
+    float: right;
 }
 #cpv-rezepte {
-	width: 400px;
+    width: 400px;
 }
 #cpv-rezept {
-	margin-bottom: 18px;
+    margin-bottom: 18px;
 }
 /* Einkaufsliste */
 #ekl-start {
-	width: 100px;
+    width: 100px;
 }
 #ekl-dauer {
-	width: 50px;
+    width: 50px;
 }
 #rezept-edit-form #id_titel, 
 #rezept-edit-form #id_untertitel {
-	width: 500px;
+    width: 500px;
 }
 #rezept-edit-form #id_fuer_kinder, 
 #rezept-edit-form #id_fuer_erwachsene {
-	width: 50px;
+    width: 50px;
 }

@@ -15,8 +15,11 @@
 (C) Nicht-öffentliche Rezepte
 (C) Benutzerrollen für Lesen und Planen
 (C) Allergene erfassen
-(C) FAQ schreiben
-(C) Impressum verfassen
-(C) Datenschutzerklärung verfassen
+(C) FAQ schreiben +public
+(C) Datenschutzerklärung verfassen +public
 (C) Ist User und Editor eine 1:1-Beziehung? Kann man das sicherstellen?
 (C) User-Eingabe-Maske bauen
+Impressum muss auf der Hauptseite keine Navigation haben
+Rezepte-Seite darstellen wie auf der alten Site
+Failed to connect to kita-rezepte.de port 80: Connection refused
+index.html für Pusteblume erstellen
