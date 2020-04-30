@@ -96,14 +96,35 @@ def rezepte(request, client_slug='', id=0, slug=''):
 
 
 def alle_rezepte(request, client_slug, msg=''):
-    recipes = Rezept.objects.filter(client__slug=client_slug).order_by('slug')
+    """ Zeigt alle Rezepte, für jeden Gang eine Spalte,
+        dann nach Kategorien geordnet
+    """
+    recipes = Rezept.objects.filter(
+        client__slug=client_slug
+    ).order_by('slug')
     client = get_object_or_404(Client, slug=client_slug)
     gaenge = client.gaenge.split()
-    data = [(g, [r for r in recipes if g in r.gang]) for g in gaenge]
-    data.append(
-        ("unsortiert", [r for r in recipes if r.gang.strip() == '']))
+    kategorien = client.kategorien.split()
+    data = []
+    for g in gaenge:
+        g_data = []
+        for k in kategorien:
+            k_data = [r for r in recipes
+                      if g in r.gang and k in r.kategorien]
+            if k_data:
+                g_data.append((k, k_data))
+        # keine Kategorie
+        k_data = [r for r in recipes
+                  if g in r.gang and r.kategorien.strip() == ""]
+        if k_data:
+            g_data.append(("keine Kategorie", k_data))
+        if g_data:
+            data.append((g, g_data))
     return render(
-        request, 'rezepte/rezepte.html', {'recipes': data, 'msg': msg})
+        request, 'rezepte/rezepte.html', {
+            'recipes': data,
+            'msg': msg
+        })
 
 
 @client_param

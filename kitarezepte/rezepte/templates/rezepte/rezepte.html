@@ -14,25 +14,21 @@
         </div>
       {% endif %}
       <h1>Rezepte</h1>
-      <table class="table">
-      {% for g, rs in recipes  %}
-        {% if rs %}
-          <tr>
-            <td colspan="2"><h2>{{ g }}</h2></td>
-          </tr>
-          {% for r in rs  %}
-            <tr>
-              <td><a href="{{ r.slug }}">{{ r.titel }}</a></td>
-              <td>{{ r.kategorie_list|join:", " }}</td>
-              <td>{% if user.is_authenticated %}{{ r.preisToStr|safe }}{% endif %}</td>
-            </tr>
+      <div class="row">
+      {% for g, kategorien in recipes  %}
+        <div class="col-sm">
+          <h2>{{ g }}</h2>
+          {% for k, rs in kategorien %}
+            <h3>{{ k }}</h3>
+            {% for r in rs  %}
+              <p><a href="{{ r.slug }}">{{ r.titel }}</a></p>
+            {% endfor %}
           {% endfor %}
-        {% endif %}
+        </div>
       {% empty %}
-        <tr>
-          <td>Es sind noch keine Rezepte eingegeben.</td>
-        </tr>
+        <div class="col">Es sind noch keine Rezepte eingegeben.</div>
       {% endfor %}
+      </div>
       </table>
     </div>
   </div>

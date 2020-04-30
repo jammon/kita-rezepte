@@ -205,7 +205,7 @@ class Rezept(models.Model):
 
     @property
     def kategorie_list(self):
-        """ Gänge als Liste """
+        """ Kategorien als Liste """
         return self.kategorien.split()
 
     @kategorie_list.setter
