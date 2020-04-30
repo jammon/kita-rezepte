@@ -4,7 +4,7 @@
   <div class="row">
     <div class="col">
       {% if msg %}
-        <p class="bg-danger">{{ msg }}</p>
+        <div class="alert alert-warning" role="alert"> {{ msg }} </div>
       {% endif %}
       {% if user.is_authenticated %}
         <div class="float-right">

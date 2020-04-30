@@ -23,5 +23,4 @@ Impressum muss auf der Hauptseite keine Navigation haben
 Failed to connect to kita-rezepte.de port 80: Connection refused
 index.html für Pusteblume erstellen
 Link zum Login wenn man nicht angemeldet und nicht auf der Haupt- bzw. Loginseite ist
-msg in alle_rezepte besser formatieren
 Den Client im Menu anzeigen
