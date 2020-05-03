@@ -1,7 +1,5 @@
-(A) Den Client im Menu anzeigen +show
 (A) Failed to connect to kita-rezepte.de port 80: Connection refused +show
 (A) Impressum muss auf der Hauptseite keine Navigation haben
-(A) index.html für Pusteblume erstellen +show
 (A) Link zum Login wenn man nicht angemeldet und nicht auf der Haupt- bzw. Loginseite ist
 (B) Bedeutung von KITAREZEPTE_DOMAIN und KITAREZEPTE_FULL_DOMAIN bei kitarez und kita-rezepte überdenken
 (A) Deployment checklist durcharbeiten +deployment
