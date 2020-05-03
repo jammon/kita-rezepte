@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from datetime import date
 from django.test import TestCase
-from .models import Client, Zutat, Rezept, RezeptZutat, GangPlan, get_einkaufsliste
+from .models import (
+    Client, Zutat, Rezept, RezeptZutat, GangPlan, get_einkaufsliste)
 from .utils import TEST_REIS, TEST_REZEPT
 
 
@@ -128,7 +129,7 @@ class Get_Einkaufsliste_TestCase(TestCase):
             GangPlan(datum=date(2019, 6, 2), rezept=milchreis, **args),
             GangPlan(datum=date(2019, 6, 3), rezept=wasserreis, **args),
         ])
-        el = get_einkaufsliste('test', date(2019, 5, 31), 3)
+        el = get_einkaufsliste(client, date(2019, 5, 31), 3)
 
         self.assertEqual(
             el['rezepte'],

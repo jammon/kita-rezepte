@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import json
-import re
 from collections import Counter, defaultdict
 from datetime import timedelta
 from django.db import models
@@ -148,6 +147,7 @@ class Zutat(models.Model):
             'masseinheit': self.masseinheit,
             'kategorie': self.kategorie,
         })
+
 
 TRANSTABLE = {'ä': 'ae', 'ö': 'oe', 'ü': 'ue',
               'Ä': 'ae', 'Ö': 'oe', 'Ü': 'ue',
@@ -353,12 +353,12 @@ def beautify_amounts(messbar):
     return sorted(res)
 
 
-def get_einkaufsliste(client_slug, start, dauer):
+def get_einkaufsliste(client, start, dauer):
     """ liefert die Daten für /einkaufsliste
     """
     # Für "Folgende Rezepte wurden geplant"
     rezept_plaene = GangPlan.objects.filter(
-        client__slug=client_slug,
+        client=client,
         datum__gte=start,
         datum__lt=start+timedelta(dauer)
     ).values_list('rezept__titel', 'rezept_id')

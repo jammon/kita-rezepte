@@ -1,9 +1,6 @@
 # coding: utf-8
 from datetime import date, timedelta
 from django.conf import settings
-from django.contrib.sites.shortcuts import get_current_site
-from django.http import Http404
-from django.shortcuts import get_object_or_404, get_list_or_404
 
 
 MONATSNAMEN = ("", "Januar", "Februar", "März", "April", "Mai", "Juni", "Juli",
@@ -11,34 +8,33 @@ MONATSNAMEN = ("", "Januar", "Februar", "März", "April", "Mai", "Juni", "Juli",
 
 
 def get_client(request):
-    return host2client(get_current_site(request).domain)
+    client = host2client(request.get_host())
+    if client == 'dev' and not request.user.is_authenticated:
+        return ''
+    return client
 
 
 def host2client(host):
-    h = host.split(':')[0].split('.')[0]
-    if h in ('localhost', '127'):
+    # strip port
+    hostname = host.split(':')[0]
+    if '.' in hostname:
+        c = hostname.split('.', maxsplit=1)[0]
+    else:
+        c = hostname
+    if c in ('localhost', '127'):
         return 'dev'
-    if h == 'testserver':
+    if c == 'testserver':
         # for unittests
         return 'test-kita'
-    if h in ('kita-rezepte', settings.KITAREZEPTE_DOMAIN, 'www'):
+    if c in ('kita-rezepte', settings.KITAREZEPTE_DOMAIN, 'www'):
         return ''
-    return h
+    return c
 
 
 def get_client_domain(slug):
     if slug in ('dev', 'test-kita'):
-        return '127.0.0.1'
+        return '127.0.0.1:8000'
     return slug + '.' + settings.KITAREZEPTE_FULL_DOMAIN
-
-
-def client_param(view):
-    def view_with_client_param(request, *args, **kwargs):
-        client_slug = get_client(request)
-        if not client_slug:
-            raise Http404
-        return view(request, client_slug, *args, **kwargs)
-    return view_with_client_param
 
 
 def day_fromJson(day):

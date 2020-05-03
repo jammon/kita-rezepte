@@ -58,17 +58,18 @@ class WrongClientTestcase(TestCase):
         self.wrong_user = create_user('Wrong User', self.wrong_client)
         Editor.objects.create(user=self.right_user, client=self.right_client)
         Editor.objects.create(user=self.wrong_user, client=self.wrong_client)
+# TBC
 
 
 class RezepteTestcase(TestCase):
     """Test rezepte view"""
 
     def setUp(self):
-        client = Client.objects.create(name='Test-Kita')
+        self.kita_client = Client.objects.create(name='Test-Kita')
         self.rezept1 = Rezept.objects.create(
-            titel="Testrezept1", client=client, **TEST_REZEPT)
+            titel="Testrezept1", client=self.kita_client, **TEST_REZEPT)
         self.rezept2 = Rezept.objects.create(
-            titel="Testrezept2", client=client, **TEST_REZEPT)
+            titel="Testrezept2", client=self.kita_client, **TEST_REZEPT)
 
     def test_ein_rezept_id(self):
         response = self.client.get('/rezepte/' + str(self.rezept1.id))
@@ -86,9 +87,21 @@ class RezepteTestcase(TestCase):
         recipes = response.context['recipes']
         self.assertEqual(
             [gang for gang, rezepte in recipes],
-            ["Vorspeise", "Hauptgang", "Nachtisch", "unsortiert"])
-        self.assertIn(self.rezept1, recipes[1][1])
-        self.assertIn(self.rezept2, recipes[1][1])
+            ["Hauptgang"])
+        self.assertEqual(
+            recipes,
+            [('Hauptgang',
+             [('keine Kategorie',
+               [self.rezept1, self.rezept2])])])
+
+        REZEPT = TEST_REZEPT.copy()
+        REZEPT["gang"] = "Vorspeise Nachtisch"
+        Rezept.objects.create(
+            titel="Vorspeise Nachtisch", client=self.kita_client, **REZEPT)
+        recipes = self.client.get('/rezepte/').context['recipes']
+        self.assertEqual(
+            [gang for gang, rezepte in recipes],
+            ["Vorspeise", "Hauptgang", "Nachtisch"])
 
     def test_wrong_rezept_id(self):
         response = self.client.get('/rezepte/1000')
