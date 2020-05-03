@@ -12,12 +12,17 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404, render, redirect
+from django.template.loader import select_template
 
 
 def index(request):
     if request.client is not None:
         return render(
-            request, "rezepte/client-index.html", {'client': request.client})
+            request, "rezepte/client-index.html",
+            {'client': request.client,
+             'template': select_template(
+                [f'rezepte/clients/{c}.html' for c in
+                 (request.client.slug, 'generic')])})
     clients = Client.objects.all().order_by('name')
     return render(request, "rezepte/index.html", {'clients': clients})
 
