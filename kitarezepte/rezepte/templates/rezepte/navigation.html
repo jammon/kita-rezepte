@@ -5,13 +5,12 @@
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
-      {% if request.client %}
+    {% if request.client %}
         <li class="nav-item navbar-brand" id="nav-home">
           <a href="/" class="nav-link">
             {{ request.client.name }}
           </a>
         </li>
-      {% endif %}
       <li class="nav-item" id="nav-rezepte">
         <a class="nav-link" href="/rezepte">Rezepte</a>
       </li>
@@ -26,16 +25,23 @@
       <li class="nav-item" id="nav-einkaufsliste">
         <a class="nav-link" href="/einkaufsliste">Einkaufsliste</a>
       </li>
+    {% endif %}
     {% if user.is_authenticated %}
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          {{ request.user.get_full_name }} ({{ request.session.client_slug }})
+          {{ request.user.get_full_name }}
         </a>
         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
           <li><a class="dropdown-item" href="/logout">Abmelden</a></li>
           <li><a class="dropdown-item" href="/change-password">Passwort ändern</a></li>
         </ul>
       </li>
+    {% else %}
+      {% if not no_login_link %}
+        <li class="nav-item" id="nav-login">
+          <a class="nav-link" href="/login">Login</a>
+        </li>
+      {% endif %}
     {% endif %}
     </ul>
   </div>

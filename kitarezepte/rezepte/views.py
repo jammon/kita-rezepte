@@ -22,9 +22,11 @@ def index(request):
             {'client': request.client,
              'template': select_template(
                 [f'rezepte/clients/{c}.html' for c in
-                 (request.client.slug, 'generic')])})
+                 (request.client.slug, 'generic')]),
+             'no_login_link': True})
     clients = Client.objects.all().order_by('name')
-    return render(request, "rezepte/index.html", {'clients': clients})
+    return render(request, "rezepte/index.html",
+                  {'clients': clients, 'no_login_link': True})
 
 
 # TODO: Wie mit request.client umgehen?
