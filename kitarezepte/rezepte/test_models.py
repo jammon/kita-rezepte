@@ -55,6 +55,21 @@ class Rezept_TestCase(TestCase):
                 titel=titel, client=client, **TEST_REZEPT)
             self.assertEqual(rezept.slug, slug)
 
+    def test_updateRezeptpreise(self):
+        client = Client.objects.create(name='Test-Kita')
+        reis = Zutat.objects.create(client=client, **TEST_REIS)
+        rezept = Rezept.objects.create(
+            titel="Reis", client=client, **TEST_REZEPT)
+        RezeptZutat.objects.create(
+            rezept=rezept, zutat=reis, menge=500, nummer=1)
+        self.assertEqual(reis.rezepte.count(), 1)
+        self.assertEqual(rezept.preis(update=True), 94)
+
+        reis.preis_pro_einheit = 200
+        reis.save()
+        rezept = Rezept.objects.get(pk=rezept.pk)
+        self.assertEqual(rezept.preis(update=False), 100)
+
 
 class RezeptZutat_TestCase(TestCase):
     def setUp(self):

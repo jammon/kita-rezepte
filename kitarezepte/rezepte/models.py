@@ -111,6 +111,10 @@ class Zutat(models.Model):
     def __str__(self):
         return self.name
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.updateRezeptpreise()
+
     def preisInEuro(self):
         """ Preis einer Packungseinheit in Euro als String
 
