@@ -63,3 +63,4 @@ x 2020-04-30 msg in alle_rezepte besser formatieren
 x 2020-05-03 index.html für Pusteblume erstellen +show
 x 2020-05-03 Den Client im Menu anzeigen +show
 x 2020-05-04 Ändert sich der Preis eines Rezepts, wenn man eine Zutat bearbeitet?
+x 2020-05-04 Link zur Hauptseite in die navbar

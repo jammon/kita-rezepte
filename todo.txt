@@ -6,7 +6,6 @@
 (B) Editier-Views sollten darauf achten, dass der richtige Client bearbeitet wird
 (B) In /zutaten ist der Preis pro Einheit mit -1 vorbelegt
 (B) In /zutaten sollte der Preis als Kommazahl einzugeben sein
-(A) Link zur Hauptseite in die navbar
 (B) Wenn man sich bei slug.kitarez.uber.space anmeldet, wird man auf slug.kita-rezepte.de weitergeleitet
 (B) zutat.name sollte unique sein +models
 (C) Allergene erfassen
