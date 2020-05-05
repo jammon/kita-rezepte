@@ -32,14 +32,18 @@
         <h2>Anmerkungen</h2>
         <p>{{ recipe.anmerkungen|safe }}</p>
       {% endif %}
-      <p>Geeignet als {{ recipe.gang_list|join:", " }} </p>
-      {% if recipe.kategorie_list %}
-        <p>Kategorie {{ recipe.kategorie_list|join:", " }} </p>
-      {% endif %}
 
+      <div class="row mt-3">
       {% if user.is_authenticated %}
-        <p><a href="{{ recipe.id }}/edit" class="btn btn-primary" role="button">Bearbeiten</a></p>
+        <div class="col"><a href="{{ recipe.id }}/edit" class="btn btn-primary" role="button">Bearbeiten</a></div>
       {% endif %}
+        <div class="col">Geeignet als {{ recipe.gang_list|join:", " }} </div>
+        <div class="col">
+        {% if recipe.kategorie_list %}
+          Kategorie: {{ recipe.kategorie_list|join:", " }}
+        {% endif %}
+        </div>
+      </div>
     </div>
   </div>
 {% endblock content %}
