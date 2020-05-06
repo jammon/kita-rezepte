@@ -6,7 +6,9 @@
       <p>Hier werden die Rezepte und Kochpläne von Tageseinrichtungen geplant, dargestellt und verwaltet.</p>
       <ul>
         {% for client in clients %}
-          <li><a href="https://{{ client.get_domain }}">{{ client.name }}</a></li>
+          {% if not client.hidden %}
+            <li><a href="https://{{ client.get_domain }}">{{ client.name }}</a></li>
+          {% endif %}
         {% endfor %}
       </ul>
     </div>

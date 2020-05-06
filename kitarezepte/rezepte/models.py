@@ -50,6 +50,10 @@ class Client(models.Model):
         help_text='z.B. "Reis Teigwaren Getreide Kartoffeln Gemüse '
                   'Suppe Fischgericht Lieblingsgericht"',
         default="", blank=True)
+    hidden = models.BooleanField(
+        "verborgen",
+        default=False,
+        help_text='Auf der Hauptseite verbergen')
 
     class Meta:
         verbose_name = "Mandant"

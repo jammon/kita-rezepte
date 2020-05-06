@@ -21,5 +21,3 @@
 (B) Write testcases for wrong client
 (D) Zutaten nach der Häufigkeit der Benutzung anzeigen
 Zertifikat anpassen
-Domain kita-rezepte.de in uberspaace anmelden
-kita-rezepte.de auf pusteblume weiterleiten

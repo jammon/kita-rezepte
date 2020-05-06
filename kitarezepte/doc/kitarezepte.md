@@ -39,16 +39,32 @@ Zutaten:
 - Der Verweis muss auf die Hauptseite (von Hand).
 
 ### Einen neuen Client anlegen
-- Den Client in der Admin-Site anlegen.
-- Editor anlegen.
-- (Admin anlegen.)
+- Die Subdomain beim Domainhoster anlegen (kann dauern). 
 - Die Subdomain im Webserver anlegen. 
     + `uberspace web domain add <slug>.kita-rezepte.de`
     + `uberspace web domain add <slug>.kitarez.uber.space`
-- Die Subdomain beim Domainhoster anlegen (kann dauern). 
-- 
-- Verweis auf der Hauptseite eintragen.
+- Den Client in der Admin-Site anlegen.
+- Editor anlegen.
+- (Admin anlegen.)
+- template anlegen (`rezepte/templates/rezepte/clients/<slug>.html`)
 
 ## Konfigurations-Dateien
+`kitarezepte/kita-rezepte.cnf` hat etwa dieses Format:
 
+    [django]
+    key = <geheim>
 
+    [server]
+    mode = production | development
+    domain = kita-rezepte
+    fulldomain=kita-rezepte.de
+
+## Designentscheidungen
+### Redis
+Wird nicht eingerichtet, weil die Site nicht zeitkritisch ist.
+
+### django-pipeline etc.
+Wird nicht eingerichtet, weil die Site nicht zeitkritisch ist.
+
+### Browser
+Es werden nur moderne ES6-kompatible Browser unterstützt.
