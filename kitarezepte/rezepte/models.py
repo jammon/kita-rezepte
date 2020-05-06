@@ -345,19 +345,17 @@ def beautify_amounts(messbar):
     res = []
     for zutat, menge in messbar.items():
         if zutat.masseinheit in units and menge >= 1000:
-            res.append((
-                zutat.kategorie,
-                zutat.name,
-                zutat.id,
-                prettyFloat(menge/1000),
-                units[zutat.masseinheit]))
+            _menge = prettyFloat(menge/1000)
+            einheit = units[zutat.masseinheit]
         else:
-            res.append((
-                zutat.kategorie,
-                zutat.name,
-                zutat.id,
-                prettyFloat(menge),
-                zutat.masseinheit))
+            _menge = prettyFloat(menge)
+            einheit = zutat.masseinheit
+        res.append((
+            zutat.get_kategorie_display(),
+            zutat.name,
+            zutat.id,
+            _menge,
+            einheit))
     return sorted(res)
 
 
