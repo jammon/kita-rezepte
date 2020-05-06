@@ -49,7 +49,7 @@
       {% for zutat, mengen in qualitativ %}
         {% ifchanged  %}
         <tr>
-          <td colspan="3"><h3>{{ zutat.kategorie }}</h3></td>
+          <td colspan="3"><h3>{{ zutat.get_kategorie_display }}</h3></td>
         </tr>
         {% endifchanged %}
         <tr>
