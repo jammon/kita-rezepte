@@ -70,3 +70,4 @@ x 2020-05-04 Navigation anpassen daran, ob ein Client ausgewählt ist
 x 2020-05-06 Client sollte man auf der Hauptseite verbergen können
 x 2020-05-06 Domain kita-rezepte.de in uberspaace anmelden
 x 2020-05-06 kita-rezepte.de auf pusteblume weiterleiten
+x 2020-05-06 Failed to connect to kita-rezepte.de port 80: Connection refused +show

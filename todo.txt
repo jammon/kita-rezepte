@@ -1,4 +1,3 @@
-(A) Failed to connect to kita-rezepte.de port 80: Connection refused +show
 (B) Bedeutung von KITAREZEPTE_DOMAIN und KITAREZEPTE_FULL_DOMAIN bei kitarez und kita-rezepte überdenken
 (A) Deployment checklist durcharbeiten +deployment
 (B) Editier-Views sollten darauf achten, dass der richtige Client bearbeitet wird
