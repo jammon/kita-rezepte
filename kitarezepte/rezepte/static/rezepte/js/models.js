@@ -1,3 +1,4 @@
+// jshint esversion: 6
 var models = (function($, _, Backbone) {
 "use strict";
 
@@ -52,7 +53,7 @@ var Rezept = Backbone.Model.extend({
     },
     titel_mit_preis: function() {
         if (this.get('id')==-1)
-            return 'nicht geplant'
+            return 'nicht geplant';
         return this.get('titel') + '  ' + this.preis_in_euro();
     },
     preis_in_euro: function() {
@@ -76,7 +77,7 @@ var Zutat = Backbone.Model.extend({
 var RezeptZutat = Backbone.Model.extend({
     initialize: function() {
         if (!this.get('zutat')) {
-            this.set('zutat', zutaten.get({id: this.get('zutat_id')}))
+            this.set('zutat', zutaten.get({id: this.get('zutat_id')}));
         }
     },
     toString: function() {

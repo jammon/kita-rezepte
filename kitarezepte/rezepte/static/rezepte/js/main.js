@@ -1,3 +1,4 @@
+// jshint esversion: 6
 var main = (function($, _, Backbone) {
 "use strict";
 

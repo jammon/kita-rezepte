@@ -41,7 +41,7 @@ var PlanungView = Backbone.View.extend({
     },
 });
 
-const Tagnamen = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"]
+const Tagnamen = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
 var TagView = Backbone.View.extend({
     className: 'row tag-row',
     initialize: function(options) {
@@ -164,7 +164,7 @@ var ZutatenEingabeView = Backbone.View.extend({
             el.autocomplete("option", "source", zutaten.pluck('name'));
         });
         let neuezutatview = new NeueZutatView({el: $("#zutatModal")});
-        this.listenTo(neuezutatview, "NeueZutat", this.check_zutat)
+        this.listenTo(neuezutatview, "NeueZutat", this.check_zutat);
     },
     check_zutat: function(item, edited) {
         if (item) {
@@ -278,9 +278,9 @@ var ZutatenView = Backbone.View.extend({
     neue_zutat: function() {
         let rz_dict = this.mengeneingabe.get_menge();
         this.mengeneingabe.empty();
-        rz_dict['zutat'] = this.zutateneingabe.zutat;
+        rz_dict.zutat = this.zutateneingabe.zutat;
         this.zutateneingabe.empty(true);
-        rz_dict['nummer'] = models.rezeptzutaten.length;
+        rz_dict.nummer = models.rezeptzutaten.length;
         models.rezeptzutaten.add(rz_dict);
     },
     write_rz_inputs: function() {
@@ -295,7 +295,7 @@ var ZutatenView = Backbone.View.extend({
     },
 });
 
-var dispatcher = _.clone(Backbone.Events)
+var dispatcher = _.clone(Backbone.Events);
 
 return {
     PlanungView: PlanungView,

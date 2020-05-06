@@ -1,3 +1,4 @@
+// jshint esversion: 6
 var changeviews = (function($, _, Backbone) {
 "use strict";
 
@@ -50,7 +51,7 @@ var ChangePlanungView = Backbone.View.extend({
         // Kategoriebox
         var kategorien = Object.keys(models.kategorien).sort();
         kategorien.unshift(allerezepte_string);
-        let templ = this.kat_input_template
+        let templ = this.kat_input_template;
         this.$("#cpv-kategorien").html(_.map(kategorien, function(kategorie, i) {
             return templ({kategorie: kategorie, i: i});
         }));
@@ -108,18 +109,19 @@ var ChangePlanungView = Backbone.View.extend({
     },
     edit_gang: function(planung) {
         this.planung = planung;
-        this.current_rezept = planung.get('rezept')
+        this.current_rezept = planung.get('rezept');
         this.gang_kategorie = planung.get('gang');
         this.rezepte = models.gangkategorien[this.gang_kategorie];
         this.render().$el.modal();
     },
     save_gang: function(rezept_id) {
+        let that = this;
         function error (jqXHR, textStatus, errorThrown) {
-            this.$(".error").text(errorThrown);
+            that.$(".error").text(errorThrown);
         }
         function success(data) {
-            this.planung.set('rezept', models.rezepte.get(data.rezept.id));
-            this.$el.modal('hide');
+            that.planung.set('rezept', models.rezepte.get(data.rezept.id));
+            that.$el.modal('hide');
         }
         $.ajax({
             method: "POST",

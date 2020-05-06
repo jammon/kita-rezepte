@@ -41,8 +41,8 @@ except KeyError:
     with open(CONFIG_FILE, 'w') as configfile:
         config.write(configfile)
 
-KITAREZEPTE_DOMAIN = config['server']['domain']
-KITAREZEPTE_FULL_DOMAIN = config['server']['fulldomain']
+KITAREZEPTE_DOMAIN = config['server']['domain']  # e.g. 'kitarez'
+KITAREZEPTE_FULL_DOMAIN = config['server']['fulldomain']  # e.g. 'kitarez.uber.space'
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases

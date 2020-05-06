@@ -43,7 +43,8 @@ def login(request):
                     if client_slug == "dev":
                         return HttpResponseRedirect('/monat')
                     return HttpResponseRedirect(
-                        f'https://{client_slug}.{settings.KITAREZEPTE_FULL_DOMAIN}/monat')
+                        f'https://{client_slug}.'
+                        f'{settings.KITAREZEPTE_FULL_DOMAIN}/monat')
                 return HttpResponseRedirect('/')
             else:
                 form.add_error(None, "Fehler bei der Anmeldung!")
