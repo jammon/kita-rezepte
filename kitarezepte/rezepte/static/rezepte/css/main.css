@@ -48,7 +48,7 @@ body {
     list-style: none;
 }
 .errorlist li,
-#zutatModal .error {
+.zutatModal .error {
     background-color: #FAA;
 }
 #id_menge_pro_einheit,
@@ -81,11 +81,15 @@ body {
 #ekl-dauer {
     width: 50px;
 }
-#rezept-edit-form #id_titel, 
-#rezept-edit-form #id_untertitel {
+.rezept-edit-form #id_titel, 
+.rezept-edit-form #id_untertitel {
     width: 500px;
 }
-#rezept-edit-form #id_fuer_kinder, 
-#rezept-edit-form #id_fuer_erwachsene {
+.rezept-edit-form #id_fuer_kinder, 
+.rezept-edit-form #id_fuer_erwachsene {
     width: 50px;
+}
+/* Rezept-Liste */
+.rezept-liste p {
+    margin-bottom: 0.5rem;
 }

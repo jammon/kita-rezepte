@@ -4,7 +4,7 @@
   <link rel="stylesheet" href="{% static 'vendor/jquery-ui-1.12.1.custom/jquery-ui.css' %}">
 {% endblock extrahead %}
 {% block content %}
-  <form action="" id="rezept-edit-form" method="post">{% csrf_token %}
+  <form action="" id="rezept-edit-form" class="rezept-edit-form" method="post">{% csrf_token %}
   <div class="row">
     <div class="col">
       <table>
@@ -84,7 +84,7 @@
   </form>
 
 {% comment "ChangeZutatView" %}{% endcomment %}
-<div class="modal fade" id="zutatModal" tabindex="-1" role="dialog" 
+<div class="modal fade zutatModal" id="zutatModal" tabindex="-1" role="dialog" 
      aria-labelledby="zutatModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
