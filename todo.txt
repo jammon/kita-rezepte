@@ -19,3 +19,5 @@
 (B) Write testcases for wrong client
 (D) Zutaten nach der Häufigkeit der Benutzung anzeigen
 Zertifikat anpassen
+Rezepte von anderen Kitas übernehmen
+Rezept mit halber Menge (drittel, zweidrittel) planen
