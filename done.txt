@@ -72,3 +72,5 @@ x 2020-05-06 Domain kita-rezepte.de in uberspaace anmelden
 x 2020-05-06 kita-rezepte.de auf pusteblume weiterleiten
 x 2020-05-06 Failed to connect to kita-rezepte.de port 80: Connection refused +show
 x 2020-05-06 memcache oder redis einsetzen für sessions +deployment
+x 2020-05-16 Zertifikat anpassen
+x 2020-05-17 robots.txt erstellen

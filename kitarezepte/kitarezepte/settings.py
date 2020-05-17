@@ -86,8 +86,8 @@ DEBUG = servermode == 'development'
 
 ALLOWED_HOSTS = (
     [] if DEBUG else
-    ['.kita-rezepte.de', '.kitarez.uber.space',
-     '.' + KITAREZEPTE_FULL_DOMAIN])
+    ['.kita-rezepte.de', '.kitarez.uber.space',  # FIXME
+     '.' + KITAREZEPTE_FULL_DOMAIN])  # '.kita-rezepte.de' taucht jetzt 2 mal auf
 
 ADMINS = [("Johannes Ammon", "j.ammon@dr-ammon.de")]
 

@@ -55,6 +55,8 @@ urlpatterns = [
     path('ajax/add-zutat/', ajax.add_zutat),
     path('tests', TemplateView.as_view(template_name="rezepte/tests.html"),
          name='tests'),
+    path('robots.txt', TemplateView.as_view(
+        template_name="robots.txt", content_type="text/plain")),
     re_path(r'^tinymce/', include('tinymce.urls')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

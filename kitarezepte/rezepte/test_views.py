@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.contrib.auth.models import User
 from django.test import TestCase
+from http import HTTPStatus
 from .models import Rezept, Client, Editor
 from .utils import TEST_REZEPT
 
@@ -16,7 +17,7 @@ class LoginTestcase(TestCase):
 
     def test_get(self):
         response = self.client.get('/login/')
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertTemplateUsed(response, 'rezepte/login.html')
 
     def setup_user(self):
@@ -27,7 +28,7 @@ class LoginTestcase(TestCase):
         self.setup_user()
         response = self.client.post(
             '/login/', {'username': 'test', 'password': 'test'})
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, HTTPStatus.FOUND)
         self.assertRedirects(response,
                              'https://test-kita.kita-rezepte.de/monat',
                              fetch_redirect_response=False)
@@ -103,14 +104,14 @@ class RezepteTestcase(TestCase):
 
     def test_wrong_rezept_id(self):
         response = self.client.get('/rezepte/1000')
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertTemplateUsed(response, 'rezepte/rezepte.html')
         self.assertEqual(response.context.get('msg'),
                          'Rezept "1000" nicht gefunden')
 
     def test_wrong_rezept_slug(self):
         response = self.client.get('/rezepte/not-there')
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertTemplateUsed(response, 'rezepte/rezepte.html')
         self.assertEqual(response.context.get('msg'),
                          'Rezept "not-there" nicht gefunden')
@@ -121,7 +122,20 @@ class RezepteTestcase(TestCase):
             titel="Not my Testrezept", client=client, fuer_kinder=20,
             fuer_erwachsene=5, zubereitung='', anmerkungen='', kategorien='')
         response = self.client.get('/rezepte/' + str(rezept.id))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertTemplateUsed(response, 'rezepte/rezepte.html')
-        self.assertEqual(response.context.get('msg'), 
+        self.assertEqual(response.context.get('msg'),
                          f'Rezept "{rezept.id}" nicht gefunden')
+
+
+class RobotsTxtTests(TestCase):
+    def test_get(self):
+        response = self.client.get("/robots.txt")
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(response["content-type"], "text/plain")
+        lines = response.content.decode().splitlines()
+        self.assertEqual(lines[0], "User-agent: *")
+
+    def test_post_disallowed(self):
+        response = self.client.post("/robots.txt")
+        self.assertEqual(HTTPStatus.METHOD_NOT_ALLOWED, response.status_code)

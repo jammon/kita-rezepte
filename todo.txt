@@ -18,6 +18,12 @@
 (D) Meta-Description und Title für die einzelnen Seiten anpassen
 (B) Write testcases for wrong client
 (D) Zutaten nach der Häufigkeit der Benutzung anzeigen
-Zertifikat anpassen
-Rezepte von anderen Kitas übernehmen
-Rezept mit halber Menge (drittel, zweidrittel) planen
+(A) Rezepte von anderen Kitas übernehmen
+(A) Rezept mit halber Menge (drittel, zweidrittel) planen
+(B) Bei Subdomains CNAME-Eintrag testen
+(A) Preis in Zutatenliste direkt bearbeiten
+(A) Zutaten von anderen Instanzen übernehmen
+(C) Caching einbauen
+clear old sessions
+Brauche ich persistent database connections ? https://docs.djangoproject.com/en/3.0/ref/databases/#persistent-database-connections
+Cached template loader? https://docs.djangoproject.com/en/3.0/ref/templates/api/#template-loaders
