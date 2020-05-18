@@ -180,12 +180,14 @@ if not DEBUG:
 
 LOGIN_URL = '/login/'
 
+
+DEBUG_LEVEL = 'DEBUG' if DEBUG else 'WARNING'
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'handlers': {
         'file': {
-            'level': 'DEBUG',
+            'level': DEBUG_LEVEL,
             'class': 'logging.FileHandler',
             'filename': os.path.join(BASE_DIR, 'debug.log'),
         },
@@ -193,7 +195,7 @@ LOGGING = {
     'loggers': {
         'django': {
             'handlers': ['file'],
-            'level': 'DEBUG',
+            'level': DEBUG_LEVEL,
             'propagate': True,
         },
     },
