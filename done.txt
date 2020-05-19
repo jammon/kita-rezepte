@@ -74,3 +74,7 @@ x 2020-05-06 Failed to connect to kita-rezepte.de port 80: Connection refused +s
 x 2020-05-06 memcache oder redis einsetzen für sessions +deployment
 x 2020-05-16 Zertifikat anpassen
 x 2020-05-17 robots.txt erstellen
+x 2020-05-19 Mailbenachrichtigung vom Server einrichten
+x 2020-05-19 clear old sessions
+x 2020-05-19 Brauche ich persistent database connections ? https://docs.djangoproject.com/en/3.0/ref/databases/#persistent-database-connections
+x 2020-05-19 Deployment checklist durcharbeiten +deployment

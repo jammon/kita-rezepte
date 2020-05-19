@@ -1,5 +1,4 @@
 (B) Bedeutung von KITAREZEPTE_DOMAIN und KITAREZEPTE_FULL_DOMAIN bei kitarez und kita-rezepte überdenken
-(A) Deployment checklist durcharbeiten +deployment
 (B) Editier-Views sollten darauf achten, dass der richtige Client bearbeitet wird
 (B) In /zutaten ist der Preis pro Einheit mit -1 vorbelegt
 (B) In /zutaten sollte der Preis als Kommazahl einzugeben sein
@@ -24,6 +23,4 @@
 (A) Preis in Zutatenliste direkt bearbeiten
 (A) Zutaten von anderen Instanzen übernehmen
 (C) Caching einbauen
-clear old sessions
-Brauche ich persistent database connections ? https://docs.djangoproject.com/en/3.0/ref/databases/#persistent-database-connections
-Cached template loader? https://docs.djangoproject.com/en/3.0/ref/templates/api/#template-loaders
+404.html, 500.html, 403.html und 400.html erstellen

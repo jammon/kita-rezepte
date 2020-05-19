@@ -90,6 +90,16 @@ ALLOWED_HOSTS = (
      '.' + KITAREZEPTE_FULL_DOMAIN])  # '.kita-rezepte.de' taucht jetzt 2 mal auf
 
 ADMINS = [("Johannes Ammon", "j.ammon@dr-ammon.de")]
+MANAGERS = ADMINS
+
+try:
+    EMAIL_HOST_PASSWORD = config['mail']['password']
+    EMAIL_HOST = 'kitarez.encke.uberspace.de'
+    EMAIL_PORT = 993
+    EMAIL_HOST_USER = 'kitarez@uber.space'
+    EMAIL_USE_TLS = True
+except KeyError:
+    pass
 
 # Application definition
 
