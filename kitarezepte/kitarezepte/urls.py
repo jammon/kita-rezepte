@@ -17,6 +17,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
+from django.views.generic.base import RedirectView
 from django.urls import include, path, re_path
 from django.views.generic import TemplateView
 
@@ -57,6 +58,8 @@ urlpatterns = [
          name='tests'),
     path('robots.txt', TemplateView.as_view(
         template_name="robots.txt", content_type="text/plain")),
+    path('favicon.ico', RedirectView.as_view(
+        url='/static/favicon.ico', permanent=True)),
     re_path(r'^tinymce/', include('tinymce.urls')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

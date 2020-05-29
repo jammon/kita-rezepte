@@ -24,3 +24,10 @@
 (A) Zutaten von anderen Instanzen übernehmen
 (C) Caching einbauen
 404.html, 500.html, 403.html und 400.html erstellen
+In der Einkaufsliste die qualitativen Mengen auf die Rezepte verlinken
+Warum kommt keine Mail?
+404 für Hauptseite anpassen, damit die alten Rezepte wieder funktionieren
+Link zu admin auf Hauptseite
+Rezepte und Zutaten nach Client sortieren
+Evaluate ProseMirror https://prosemirror.net/
+Mehrere Einrichtungen für einen Client

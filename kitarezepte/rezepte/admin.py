@@ -18,7 +18,10 @@ class KategorieListFilter(admin.SimpleListFilter):
     parameter_name = 'kategorien'
 
     def lookups(self, request, model_admin):
-        return ((k, k) for k in request.session.get('kategorien', []))
+        kategorien = request.session.get('kategorien', [])
+        if kategorien:
+            return ((k, k) for k in kategorien)
+        return super().lookups(request, model_admin)
 
     def queryset(self, request, queryset):
         value = self.value()
@@ -45,7 +48,9 @@ class RezeptAdmin(admin.ModelAdmin):
     exclude = ('_preis',)
     inlines = [RezeptZutatInline, ]
     list_display = ('titel', 'kategorien')
-    list_filter = (GangListFilter, KategorieListFilter)
+    # TODO: das funktioniert in production nicht
+    # list_filter = (GangListFilter, KategorieListFilter)
+    list_filter = ('client', 'gang', 'kategorien')
     ordering = ('slug',)
 
 

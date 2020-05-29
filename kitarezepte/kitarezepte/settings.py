@@ -95,9 +95,10 @@ MANAGERS = ADMINS
 try:
     EMAIL_HOST_PASSWORD = config['mail']['password']
     EMAIL_HOST = 'kitarez.encke.uberspace.de'
-    EMAIL_PORT = 993
-    EMAIL_HOST_USER = 'kitarez@uber.space'
+    EMAIL_PORT = 587
+    EMAIL_HOST_USER = 'post@kita-rezepte.de'
     EMAIL_USE_TLS = True
+    DEFAULT_FROM_EMAIL = 'post@kita-rezepte.de'
 except KeyError:
     pass
 
@@ -110,7 +111,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'taggit',
     'tinymce',
     'rezepte.apps.RezepteConfig',
 ]
