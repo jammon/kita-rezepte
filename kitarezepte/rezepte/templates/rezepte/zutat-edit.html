@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+  <div class="row">
+    <div class="col">
+      <h2>{% if zutat_id %}Zutat bearbeiten {% else %}Neue Zutat {% endif %}</h2>
+      <form action="{{ zutat_id }}" method="post">{% csrf_token %}
+        {% include "rezepte/zutat-form.html" %}
+        <button type="submit" value="Speichern" class="btn btn-primary">Speichern</button>
+      </form>
+      {% if rezepte %}
+        <div>
+          <h2>{{ zutat.name }} wird in diesen Rezepten verwendet:</h2>
+          <ul>
+            {% for r in rezepte %}
+              <li><a href="/rezepte/{{ r.slug }}">{{ r.titel }}</a></li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% elif zutat_id %}
+        <div>{{ zutat.name }} wird zur Zeit in keinem Rezept verwendet.</div>
+        <div>
+          <form action="/zutaten/delete" method="post">{% csrf_token %}
+            <input type="hidden" name="zutat_id" value="{{ zutat.id }}">
+            <button type="submit" class="btn btn-warning" >Löschen</button>
+          </form>
+        </div>
+      {% endif %}
+    </div>
+    
+  </div>
+{% endblock content %}

@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 from django.contrib.auth.models import User
-from django.test import TestCase
+from django.test import RequestFactory, TestCase
 from http import HTTPStatus
-from .models import Rezept, Client, Editor
+from .models import Rezept, Client, Editor, Zutat
 from .utils import TEST_REZEPT
+from .views import rezept_edit, zutat_edit
 
 
 def create_user(name, client, email='test@test.tld', password='test'):
@@ -55,9 +56,34 @@ class WrongClientTestcase(TestCase):
         self.wrong_client = Client.objects.create(name='Wrong')
         self.right_user = create_user('Test-Kita User', self.right_client)
         self.wrong_user = create_user('Wrong User', self.wrong_client)
-        Editor.objects.create(user=self.right_user, client=self.right_client)
-        Editor.objects.create(user=self.wrong_user, client=self.wrong_client)
-# TBC
+        self.factory = RequestFactory()
+
+    def right_page_wrong_user(self, request):
+        request.client_slug = self.right_client.slug
+        request.session = {
+            'client_id': self.wrong_client.id,
+            'client_slug': self.wrong_client.slug}
+        request.user = self.wrong_user
+
+    def test_rezept(self):
+        rezept = Rezept.objects.create(
+            titel="Reis", client=self.right_client, **TEST_REZEPT)
+        request = self.factory.post(
+            f"/rezepte/{str(rezept.id)}/edit", titel="Bohnen")
+        self.right_page_wrong_user(request)
+        response = rezept_edit(request, rezept.id)
+        self.assertEqual(response.status_code, 403)
+        rezept = Rezept.objects.get(id=rezept.id)
+        self.assertEqual(rezept.titel, "Reis")
+
+    def test_zutat(self):
+        zutat = Zutat.objects.create(name="Reis", client=self.right_client)
+        request = self.factory.post('/zutaten/'+str(zutat.id), name="Bohnen")
+        self.right_page_wrong_user(request)
+        response = zutat_edit(request, zutat.id)
+        self.assertEqual(response.status_code, 403)
+        zutat = Zutat.objects.get(id=zutat.id)
+        self.assertEqual(zutat.name, "Reis")
 
 
 class RezepteTestcase(TestCase):

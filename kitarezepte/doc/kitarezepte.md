@@ -48,16 +48,35 @@ Zutaten:
 - (Admin anlegen.)
 - template anlegen (`rezepte/templates/rezepte/clients/<slug>.html`)
 
+### Einrichtungen
+Ein Client kann mehrere Einrichtungen haben. Jede Einrichtung hat eigene Rezepte, aber alle Zutaten sind bei einem Client gleich.
+
+## Rezepte übernehmen
+- Wenn man für einen Client eingeloggt ist, kann man Rezepte eines anderen Clients übernehmen.
+- Dafür hat das Rezept einen Button "Für eigene Einrichtung übernehmen".
+- Die Funktion kopiert das Rezept.
+- Zutaten werden übernommen
+    + Wenn Zutaten beim eigenen Client nicht vorhanden sind, werden sie ohne Preis angelegt und die Mengen übernommen.
+    + Wenn Zutaten vorhanden sind, und die Einheit gleich ist, werden die Mengen übernommen.
+    + Wenn Zutaten vorhanden sind, und die Einheit verschieden ist, wird die Menge qualitativ übernommen. (Problem markieren?)
+    + Gang und Kategorien werden nur übernommen, wenn sie beim Client vorhanden sind.
+
+## Zutaten übernehmen
+Neu eingerichtete Kitas bekommen ein Set von häufigen Zutaten ohne Preis. Das sind die Zutaten, die in der Pusteblume am häufigsten benutzt werden.
+
 ## Konfigurations-Dateien
 `kitarezepte/kita-rezepte.cnf` hat etwa dieses Format:
 
     [django]
-    key = <geheim>
+    key = <SECRET_KEY>
 
     [server]
     mode = production | development
     domain = kita-rezepte
     fulldomain=kita-rezepte.de
+
+    [mail]
+    password = <EMAIL_HOST_PASSWORD>
 
 ## Designentscheidungen
 ### Redis

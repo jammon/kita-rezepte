@@ -43,7 +43,7 @@ urlpatterns = [
     path('rezepte/<slug:slug>', views.rezepte),
     path('rezepte/<slug:slug>/edit/', views.rezept_edit),
     path('zutaten/', views.zutaten, name="zutaten"),
-    path('zutaten/<int:id>', views.zutaten),
+    path('zutaten/<int:id>', views.zutat_edit),
     path('zutaten/delete', views.zutaten_delete),
     path('monat/<int:year>/<int:month>', views.monat),
     path('monat', views.monat),

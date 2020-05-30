@@ -10,9 +10,11 @@ from django.conf import settings
 from django.contrib import auth
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
+from django.db.models import Count
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404, render, redirect
 from django.template.loader import select_template
+from functools import wraps
 
 
 def index(request):
@@ -70,6 +72,14 @@ def write_client_id_to_session(session, user):
     except auth.models.User.editor.RelatedObjectDoesNotExist:
         pass
 
+
+def check_client(f):
+    @wraps(f)
+    def wrapper(request, *args, **kwargs):
+        if request.client_slug != request.session.get('client_slug'):
+            return HttpResponse(status=403, reason="Falscher Client.")
+        return f(request, *args, **kwargs)
+    return wrapper
 
 # TODO: Wie mit request.client umgehen?
 def get_query_args(id=0, slug=''):
@@ -135,9 +145,9 @@ def alle_rezepte(request, msg=''):
         })
 
 
+@login_required
+@check_client
 def rezept_edit(request, id=0, slug=''):
-    if request.client_slug != request.session.get('client_slug'):
-        return HttpResponse(status=403, reason="Falscher Client.")
     if id or slug:
         rezept = get_object_or_404(
             Rezept, client=request.client, **get_query_args(id, slug))
@@ -173,13 +183,21 @@ def rezept_edit(request, id=0, slug=''):
 
 # Zutaten ------------------------------------------------------------------
 @login_required
-def zutaten(request, id=0, msg=''):
+def zutaten(request, msg=''):
     zutaten = Zutat.objects.filter(
         client=request.client
-    ).order_by('kategorie', 'name')
+    ).annotate(Count('rezepte')).order_by('kategorie', 'name')
+    return render(request, 'rezepte/zutaten.html',
+                  {'zutaten': zutaten,
+                   'msg': msg})
+
+
+@login_required
+@check_client
+def zutat_edit(request, id=0, msg=''):
     if id:
         try:
-            zutat = zutaten.get(id=id)
+            zutat = Zutat.objects.get(id=id, client=request)
         except Zutat.DoesNotExist:
             raise Http404
         rezepte = Rezept.objects.filter(
@@ -197,22 +215,21 @@ def zutaten(request, id=0, msg=''):
             return HttpResponseRedirect('/zutaten/')
     else:
         form = ZutatForm(instance=zutat)
-    return render(request, 'rezepte/zutaten.html',
+    return render(request, 'rezepte/zutat-edit.html',
                   {'form': form,
-                   'zutaten': zutaten,
                    'zutat_id': id or '',
                    'zutat': zutat,
-                   'rezepte': rezepte,
-                   'msg': msg,
-                   'is_authenticated': request.user.is_authenticated})
+                   'rezepte': rezepte})
 
 
-# TODO: Kann man Zutaten eines fremden Client löschen?
+@login_required
+@check_client
 def zutaten_delete(request):
     if request.method != 'POST' or 'zutat_id' not in request.POST:
         return redirect("zutaten")
     id = request.POST['zutat_id']
     zutat = get_object_or_404(Zutat, client=request.client, id=id)
+    # TODO: check for recipes
     zutat.delete()
     return redirect("/zutaten/",
                     msg=f'Zutat {zutat.name} wurde gelöscht')

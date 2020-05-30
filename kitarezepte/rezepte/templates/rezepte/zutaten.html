@@ -4,23 +4,39 @@
   <div class="row">
     <div class="col">
       <h1>Zutaten</h1>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col col-lg-6">
       <table class="table">
         <tr>
           <th>Name</th>
           <th class="text-right">Preis</th>
           <th class="text-right">Menge</th>
           <th>Kategorie</th>
+          <th>Verwendung</th>
         </tr>
       {% for z in zutaten  %}
         <tr>
-          <td><a href="{{ z.id }}">{{ z.name }}</a></td>
+          <td>{{ z.name }}</td>
           <td class="text-right">{{ z.preisInEuro }} &euro;</td>
           <td class="text-right">{{ z.menge_pro_einheit }} {{ z.masseinheit }} </td>
           <td>{{ z.kategorie }} </td>
+          <td>
+            {% if z.rezepte__count %}
+              {{ z.rezepte__count }} Rezept{{ z.rezepte__count|pluralize:"e" }}
+            {% else %}
+              kein Rezept
+            {% endif %}
+          </td>
+          <td>
+            {% if user.is_authenticated %}
+              <a class="btn btn-primary btn-sm" href="{{ z.id }}" role="button">
+                Bearbeiten</a>
+              {% if not z.rezepte__count %}
+                <form action="delete" method="post">{% csrf_token %}
+                  <input type="hidden" name="zutat_id" value="{{ z.id }}">
+                  <button class="btn btn-primary btn-sm">Löschen</button>
+                </form>
+              {% endif %}
+            {% endif %}
+          </td>
         </tr>
       {% empty %}
         <tr>
@@ -29,33 +45,6 @@
       {% endfor %}
       </table>
     </div>
-    {% if user.is_authenticated %}
-    <div class="col col-lg-6">
-      <h2>{% if zutat_id %}Zutat bearbeiten {% else %}Neue Zutat {% endif %}</h2>
-      <form action="{{ zutat_id }}" method="post">{% csrf_token %}
-        {% include "rezepte/zutat-form.html" %}
-        <button type="submit" value="Speichern" class="btn btn-primary">Speichern</button>
-      </form>
-      {% if rezepte %}
-        <div>
-          <h2>{{ zutat.name }} wird in diesen Rezepten verwendet:</h2>
-          <ul>
-            {% for r in rezepte %}
-              <li><a href="/rezepte/{{ r.slug }}">{{ r.titel }}</a></li>
-            {% endfor %}
-          </ul>
-        </div>
-      {% elif zutat_id %}
-        <div>{{ zutat.name }} wird zur Zeit in keinem Rezept verwendet.</div>
-        <div>
-          <form action="/zutaten/delete" method="post">{% csrf_token %}
-            <input type="hidden" name="zutat_id" value="{{ zutat.id }}">
-            <button type="submit" class="btn btn-warning" >Löschen</button>
-          </form>
-        </div>
-      {% endif %}
-      <div>{{ msg }}</div>
-    </div>
-    {% endif %}
+    
   </div>
 {% endblock content %}

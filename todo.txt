@@ -15,19 +15,19 @@
 (C) Nicht-öffentliche Rezepte
 (C) User-Eingabe-Maske bauen
 (D) Meta-Description und Title für die einzelnen Seiten anpassen
-(B) Write testcases for wrong client
 (D) Zutaten nach der Häufigkeit der Benutzung anzeigen
 (A) Rezepte von anderen Kitas übernehmen
-(A) Rezept mit halber Menge (drittel, zweidrittel) planen
+(B) Rezept mit halber Menge (drittel, zweidrittel) planen
 (B) Bei Subdomains CNAME-Eintrag testen
 (A) Preis in Zutatenliste direkt bearbeiten
 (A) Zutaten von anderen Instanzen übernehmen
 (C) Caching einbauen
-404.html, 500.html, 403.html und 400.html erstellen
-In der Einkaufsliste die qualitativen Mengen auf die Rezepte verlinken
-Warum kommt keine Mail?
-404 für Hauptseite anpassen, damit die alten Rezepte wieder funktionieren
-Link zu admin auf Hauptseite
-Rezepte und Zutaten nach Client sortieren
-Evaluate ProseMirror https://prosemirror.net/
-Mehrere Einrichtungen für einen Client
+(B) 404.html, 500.html, 403.html und 400.html erstellen
+(B) In der Einkaufsliste die qualitativen Mengen auf die Rezepte verlinken
+(C) 404 für Hauptseite anpassen, damit die alten Rezepte wieder funktionieren
+(C) Link zu admin auf Hauptseite
+(B) Rezepte und Zutaten in admin nach Client sortieren
+(A) Mehrere Einrichtungen für einen Client
+(C) Quill als Editor einsetzen? https://quilljs.com/
+(A) Zutat-Seite: extra Edit-View, Anzahl der Rezepte anzeigen, Löschoption
+(C) Squash migrations, remove taggit

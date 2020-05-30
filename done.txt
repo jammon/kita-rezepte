@@ -79,3 +79,6 @@ x 2020-05-19 clear old sessions
 x 2020-05-19 Brauche ich persistent database connections ? https://docs.djangoproject.com/en/3.0/ref/databases/#persistent-database-connections
 x 2020-05-19 Deployment checklist durcharbeiten +deployment
 x 2020-05-20 favicon.ico anbieten
+x 2020-05-29 Warum kommt keine Mail?
+x 2020-05-30 Evaluate ProseMirror https://prosemirror.net/
+x 2020-05-30 Write testcases for wrong client
