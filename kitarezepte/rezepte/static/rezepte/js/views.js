@@ -237,7 +237,7 @@ var MengenEingabeView = Backbone.View.extend({
     },
     get_menge: function() {
         if (this.quantitativ) {
-            return {menge: parseFloat(this.$el.val().replace(',', '.'))};
+            return {menge: this.$el.val()};
         } else {
             return {menge_qualitativ: this.$el.val()};
         }

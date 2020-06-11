@@ -15,12 +15,12 @@ class ZutatForm(forms.ModelForm):
 
     class Meta:
         model = Zutat
-        fields = ('name', 'einheit', 'preis_pro_einheit', 'menge_pro_einheit',
+        fields = ('name', 'einheit', 'preis', 'menge_pro_einheit',
                   'masseinheit', 'kategorie')
         labels = {
             'name': 'Zutat',
             'einheit': 'Packungseinheit',
-            'preis_pro_einheit': 'Preis pro Einheit',
+            'preis': 'Preis pro Einheit',
             'menge_pro_einheit': 'Menge pro Einheit',
             'kategorie': 'Kategorie',
         }

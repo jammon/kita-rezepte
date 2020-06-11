@@ -71,7 +71,7 @@ var Zutat = Backbone.Model.extend({
 
 // RezeptZutat has
 // - zutat - a Zutat
-// - menge - a Float *or*
+// - menge - an Integer *or*
 // - menge_qualitativ - a string
 // - nummer - an Int
 var RezeptZutat = Backbone.Model.extend({

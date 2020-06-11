@@ -15,7 +15,7 @@
 <script type="text/template" id="gang-cell-auth">
   <div><%= rezept.get('titel') %></div>
   <div class="monat-kategorien"><%= rezept.get('kategorien') %></div>
-  <div class="monat-preis"><%= rezept.preis_in_euro() %></div>
+  <div class="monat-preis"><%= rezept.get('preis') %> €</div>
 </script>
 
 {# Template für einen Kategorie-Input #}

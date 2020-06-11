@@ -29,5 +29,7 @@
 (B) Rezepte und Zutaten in admin nach Client sortieren
 (A) Mehrere Einrichtungen für einen Client
 (C) Quill als Editor einsetzen? https://quilljs.com/
-(A) Zutat-Seite: extra Edit-View, Anzahl der Rezepte anzeigen, Löschoption
 (C) Squash migrations, remove taggit
+Zutat.preis als DecimalField setzen
+Wenn man 2,39 eingibt, wird 2,40 gespeichert
+Escape soll Bearbeitung beenden

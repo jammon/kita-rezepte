@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from datetime import date
+from decimal import Decimal, getcontext
 from django.test import TestCase
 from .models import (
     Client, Zutat, Rezept, RezeptZutat, GangPlan, get_einkaufsliste)
@@ -7,13 +8,6 @@ from .utils import TEST_REIS, TEST_REZEPT
 
 
 class Zutat_TestCase(TestCase):
-
-    def test_preisInEuro(self):
-        """ The price in Euro is displayed correctly """
-        zutat = Zutat()
-        self.assertEqual(zutat.preisInEuro(), "--")
-        zutat.preis_pro_einheit = 189
-        self.assertEqual(zutat.preisInEuro(), "1,89")
 
     def test_get_einheit(self):
         """ The unit is displayed correctly """
@@ -31,15 +25,15 @@ class Zutat_TestCase(TestCase):
         rz = RezeptZutat.objects.create(
             rezept=rezept,
             zutat=reis,
-            menge=2000.0,
+            menge_int=2000,
             nummer=1)
-        self.assertEqual(rz.preis(), 378)
-        self.assertEqual(rezept.preis(), 378)
-        reis.preis_pro_einheit = 179
+        self.assertEqual(rz.preis(), Decimal('3.78'))
+        self.assertEqual(rezept.preis(), Decimal('3.78'))
+        reis.preis = Decimal('1.79')
         reis.save()
         reis.updateRezeptpreise()
         rezept = Rezept.objects.get(pk=rezept.pk)
-        self.assertEqual(rezept.preis(), 358)
+        self.assertEqual(rezept.preis(), Decimal('3.58'))
 
 
 class Rezept_TestCase(TestCase):
@@ -61,14 +55,14 @@ class Rezept_TestCase(TestCase):
         rezept = Rezept.objects.create(
             titel="Reis", client=client, **TEST_REZEPT)
         RezeptZutat.objects.create(
-            rezept=rezept, zutat=reis, menge=500, nummer=1)
+            rezept=rezept, zutat=reis, menge_int=500, nummer=1)
         self.assertEqual(reis.rezepte.count(), 1)
-        self.assertEqual(rezept.preis(update=True), 94)
+        self.assertEqual(rezept.preis(update=True), Decimal('0.94'))
 
-        reis.preis_pro_einheit = 200
+        reis.preis = Decimal('2.00')
         reis.save()
         rezept = Rezept.objects.get(pk=rezept.pk)
-        self.assertEqual(rezept.preis(update=False), 100)
+        self.assertEqual(rezept.preis(update=False), Decimal('1.00'))
 
 
 class RezeptZutat_TestCase(TestCase):
@@ -77,23 +71,21 @@ class RezeptZutat_TestCase(TestCase):
         self.reis = Zutat(client=self.kitaclient, **TEST_REIS)
 
     def test_preis(self):
-        rz = RezeptZutat(zutat=self.reis, menge=500)
-        self.assertEqual(rz.preis(), 94)
-        self.assertEqual(rz.preisToStr(), "0,94 €")
+        rz = RezeptZutat(zutat=self.reis, menge_int=500)
+        self.assertEqual(rz.preis(), Decimal('0.94'))
 
         rz = RezeptZutat(zutat=self.reis, menge_qualitativ="etwas")
-        self.assertEqual(rz.preis(), 0)
-        self.assertEqual(rz.preisToStr(), "0,00 €")
+        self.assertEqual(rz.preis(), Decimal('0.00'))
 
     def test_str(self):
-        rz = RezeptZutat(zutat=self.reis, menge=500)
+        rz = RezeptZutat(zutat=self.reis, menge_int=500)
         self.assertEqual(str(rz), "500 g Reis")
 
         rz = RezeptZutat(zutat=self.reis, menge_qualitativ="etwas")
         self.assertEqual(str(rz), "etwas Reis")
 
         eier = Zutat(name="Eier", client=self.kitaclient, einheit="")
-        rz = RezeptZutat(zutat=eier, menge=3)
+        rz = RezeptZutat(zutat=eier, menge_int=3)
         self.assertEqual(str(rz), "3 Eier")
 
 
@@ -106,21 +98,21 @@ class Get_Einkaufsliste_TestCase(TestCase):
         reis = Zutat.objects.create(name="Reis",
                                     client=client,
                                     einheit="1 kg",
-                                    preis_pro_einheit=189,
+                                    preis=Decimal('1.89'),
                                     menge_pro_einheit=1000,
                                     masseinheit="g",
                                     kategorie="Grundnahrungsmittel")
         wasser = Zutat.objects.create(name="Wasser",
                                       client=client,
                                       einheit="1 l",
-                                      preis_pro_einheit=10,
+                                      preis=Decimal('0.10'),
                                       menge_pro_einheit=1000,
                                       masseinheit="ml",
                                       kategorie="Grundnahrungsmittel")
         milch = Zutat.objects.create(name="Milch",
                                      client=client,
                                      einheit="1 l",
-                                     preis_pro_einheit=129,
+                                     preis=Decimal('1.29'),
                                      menge_pro_einheit=1000,
                                      masseinheit="ml",
                                      kategorie="Milchprodukte")
@@ -131,10 +123,10 @@ class Get_Einkaufsliste_TestCase(TestCase):
         milchreis = Rezept.objects.create(titel="Milchreis", **args)
 
         RezeptZutat.objects.bulk_create([
-            RezeptZutat(rezept=wasserreis, zutat=reis, menge=500.0, nummer=1),
-            RezeptZutat(rezept=wasserreis, zutat=wasser, menge=2000.0, nummer=2),
-            RezeptZutat(rezept=milchreis, zutat=reis, menge=400.0, nummer=1),
-            RezeptZutat(rezept=milchreis, zutat=milch, menge=400.0, nummer=2),
+            RezeptZutat(rezept=wasserreis, zutat=reis, menge_int=500, nummer=1),
+            RezeptZutat(rezept=wasserreis, zutat=wasser, menge_int=2000, nummer=2),
+            RezeptZutat(rezept=milchreis, zutat=reis, menge_int=400, nummer=1),
+            RezeptZutat(rezept=milchreis, zutat=milch, menge_int=400, nummer=2),
             RezeptZutat(rezept=milchreis, zutat=wasser, menge_qualitativ="etwas", nummer=3),
         ])
         args = dict(client=client, gang="Hauptgang")

@@ -82,3 +82,4 @@ x 2020-05-20 favicon.ico anbieten
 x 2020-05-29 Warum kommt keine Mail?
 x 2020-05-30 Evaluate ProseMirror https://prosemirror.net/
 x 2020-05-30 Write testcases for wrong client
+x 2020-05-31 Zutat-Seite: extra Edit-View, Anzahl der Rezepte anzeigen, Löschoption

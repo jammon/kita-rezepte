@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 import json
-from .models import (Client, Rezept, Zutat, RezeptZutat, GangPlan, KEIN_PREIS,
+from .models import (Client, Rezept, Zutat, RezeptZutat, GangPlan,
                      get_einkaufsliste)
 from .forms import ZutatForm, RezeptForm
-from .utils import (days_in_month, next_dow,
+from .utils import (check_client, days_in_month, next_dow,
                     MONATSNAMEN, next_month)
 from datetime import date
 from django.conf import settings
@@ -11,10 +11,9 @@ from django.contrib import auth
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
-from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404, render, redirect
 from django.template.loader import select_template
-from functools import wraps
 
 
 def index(request):
@@ -73,14 +72,6 @@ def write_client_id_to_session(session, user):
         pass
 
 
-def check_client(f):
-    @wraps(f)
-    def wrapper(request, *args, **kwargs):
-        if request.client_slug != request.session.get('client_slug'):
-            return HttpResponse(status=403, reason="Falscher Client.")
-        return f(request, *args, **kwargs)
-    return wrapper
-
 # TODO: Wie mit request.client umgehen?
 def get_query_args(id=0, slug=''):
     res = {}
@@ -127,8 +118,12 @@ def alle_rezepte(request, msg=''):
     for g in gaenge:
         g_data = []
         for k in kategorien:
-            k_data = [r for r in recipes
-                      if g in r.gang and k in r.kategorien]
+            k_data = []
+            for r in recipes:
+                if g in r.gang and k in r.kategorien:
+                    k_data.append(r)
+            # k_data = [r for r in recipes
+            #           if g in r.gang and k in r.kategorien]
             if k_data:
                 g_data.append((k, k_data))
         # keine Kategorie
@@ -197,7 +192,8 @@ def zutaten(request, msg=''):
 def zutat_edit(request, id=0, msg=''):
     if id:
         try:
-            zutat = Zutat.objects.get(id=id, client=request)
+            zutat = Zutat.objects.get(
+                id=id, client_id=request.session['client_id'])
         except Zutat.DoesNotExist:
             raise Http404
         rezepte = Rezept.objects.filter(
@@ -259,7 +255,7 @@ def monat(request, year=0, month=0):
          'titel': r.titel,
          'gang': r.gang.split(),
          'kategorien': r.kategorie_list,
-         'preis': '--' if r._preis == KEIN_PREIS else r._preis}
+         'preis': str(r.preis() or '--').replace('.', ',')}
         for r in Rezept.objects.filter(
                 client=request.client
             ).order_by('slug')]

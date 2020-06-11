@@ -2,6 +2,7 @@
 import json
 from collections import Counter, defaultdict
 from datetime import timedelta
+from decimal import Decimal, getcontext
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.text import slugify
@@ -33,8 +34,6 @@ ZUTATENKATEGORIEN = (
     ("Gewürz", "Gewürz"),
     ("Sonst.", "Sonstiges"),
 )
-
-KEIN_PREIS = -1
 
 
 class Client(models.Model):
@@ -98,9 +97,16 @@ class Zutat(models.Model):
              aber auch 2,5 kg-Sack.
              Fällt weg bei Dingen wie Eiern, die eine natürliche Einheit
              haben; dann "Stück"''')
+    # TODO: erst löschen, wenn die Migration geklappt hat
     preis_pro_einheit = models.IntegerField(
-        default=KEIN_PREIS,
+        default=-1,
         help_text='der Preis einer Packungseinheit; in Cent')
+    preis = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        help_text='der Preis einer Packungseinheit; in Euro')
     menge_pro_einheit = models.IntegerField(
         default=0,
         help_text='Anzahl der Maßeinheiten pro Packungseinheit; '
@@ -119,12 +125,13 @@ class Zutat(models.Model):
         super().save(*args, **kwargs)
         self.updateRezeptpreise()
 
+    # TODO: erst löschen, wenn die Migration geklappt hat
     def preisInEuro(self):
         """ Preis einer Packungseinheit in Euro als String
 
         z.B. "3,59"
         """
-        if self.preis_pro_einheit == KEIN_PREIS:
+        if self.preis_pro_einheit is None:
             return "--"
         return cent2euro(self.preis_pro_einheit)
 
@@ -142,15 +149,15 @@ class Zutat(models.Model):
         - eine Abfrage nach den Zutaten und
         - ein save
         """
-        for rz in self.rezepte.all():
-            rz.rezept.preis(update=True)
+        for r in self.rezepte.all():
+            r.rezept.preis(update=True)
 
     def toJson(self):
         return json.dumps({
             'id': self.id,
             'name': self.name,
             'einheit': self.einheit,
-            'preis_pro_einheit': self.preis_pro_einheit,
+            'preis': str(self.preis),
             'menge_pro_einheit': self.menge_pro_einheit,
             'masseinheit': self.masseinheit,
             'kategorie': self.kategorie,
@@ -194,8 +201,11 @@ class Rezept(models.Model):
         'ggf. eine Leerzeichen-getrennte Liste mehrerer Kategorien',
         default='', blank=True)
     # z.B. Gemüse, Teigwaren, Suppe, Getreide, Reis usw.
-    _preis = models.IntegerField(
-        default=KEIN_PREIS,
+    _preis = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        null=True,
+        blank=True,
         help_text='kann leer sein, wird dann automatisch berechnet')
 
     class Meta:
@@ -248,9 +258,9 @@ class Rezept(models.Model):
             self.slug = slug + str(i)
 
     def preis(self, update=False):
-        """ Gibt den vorberechneten Preis in Cent oder rechnet ihn neu
+        """ Gibt den vorberechneten Preis in Euro oder rechnet ihn neu
         """
-        if self._preis == KEIN_PREIS or update:
+        if self._preis is None or update:
             self._preis = sum(
                 [zutat.preis() for zutat in self.zutaten.all()])
             if self.pk:
@@ -268,7 +278,7 @@ class RezeptZutat(models.Model):
 
     Enthält
     - rezept, zutat: einen Verweis auf das Rezept und die Zutat
-    - menge, menge_qualitativ: die gewünschte Menge als Float oder
+    - menge_int, menge_qualitativ: die gewünschte Menge als Integer oder
                                qualitativ als String
     - nummer: eine Nummer, um die Zutaten sortieren zu können
     """
@@ -277,6 +287,7 @@ class RezeptZutat(models.Model):
     zutat = models.ForeignKey(
         Zutat, on_delete=models.CASCADE, related_name='rezepte')
     menge = models.FloatField(blank=True, null=True)
+    menge_int = models.IntegerField(blank=True, null=True)
     menge_qualitativ = models.CharField(max_length=30, blank=True, null=True)
     nummer = models.IntegerField()
 
@@ -288,13 +299,12 @@ class RezeptZutat(models.Model):
     def __str__(self):
         if self.menge_qualitativ is not None:
             return f"{self.menge_qualitativ} {self.zutat.name}"
-        if self.menge == 0:
+        if self.menge_int == 0:
             return f"{self.zutat.name}"
-        menge = prettyFloat(self.menge)
         einheit = self.zutat.get_einheit()
         if einheit:
-            return f"{menge} {einheit} {self.zutat.name}"
-        return f"{menge} {self.zutat.name}"
+            return f"{self.menge_int} {einheit} {self.zutat.name}"
+        return f"{self.menge_int} {self.zutat.name}"
 
     def toJson(self):
         res = {
@@ -302,24 +312,20 @@ class RezeptZutat(models.Model):
             'zutat_id': self.zutat_id,
             'nummer': self.nummer,
         }
-        if self.menge:
-            res['menge'] = self.menge
+        if self.menge_int:
+            res['menge'] = self.menge_int
         else:
             res['menge_qualitativ'] = self.menge_qualitativ or ''
         return json.dumps(res)
 
     def preis(self):
-        '''Gibt den Preis der Zutat in Cent'''
-        if self.menge_qualitativ or not self.menge:
-            return 0
+        '''Gibt den Preis der Zutat als Decimal in Euro'''
         z = self.zutat
-        if z.preis_pro_einheit == KEIN_PREIS:
-            return 0
-        return int(self.menge * z.preis_pro_einheit //
-                   (z.menge_pro_einheit or 1))
-
-    def preisToStr(self):
-        return cent2euro(self.preis()) + " €"
+        if self.menge_qualitativ or not self.menge_int \
+                or z.preis is None:
+            return Decimal('0.00')
+        res = self.menge_int * z.preis / (z.menge_pro_einheit or 1)
+        return res.quantize(Decimal('0.00'))
 
 
 class GangPlan(models.Model):
@@ -368,7 +374,7 @@ def get_einkaufsliste(client, start, dauer):
         datum__gte=start,
         datum__lt=start+timedelta(dauer)
     ).values_list('rezept__titel', 'rezept_id')
-    messbar = defaultdict(float)  # Die Zutaten mit quantitativer Mengenangabe
+    messbar = defaultdict(int)  # Die Zutaten mit quantitativer Mengenangabe
     qualitativ = defaultdict(list)  # Die Zutaten mit qualitativer Mengenangabe
     rezeptcounts = Counter([p[1] for p in rezept_plaene])
     rezeptzutaten = RezeptZutat.objects.filter(
@@ -377,9 +383,9 @@ def get_einkaufsliste(client, start, dauer):
 
     for rz in rezeptzutaten:
         # Wenn messbar:
-        if rz.menge:
+        if rz.menge_int:
             # Zutat mit Mengenangabe aufsummieren
-            messbar[rz.zutat] += rz.menge * rezeptcounts[rz.rezept_id]
+            messbar[rz.zutat] += rz.menge_int * rezeptcounts[rz.rezept_id]
         # sonst:
         else:
             # Zutat mit qualitativer Mengenangabe abspeichern

@@ -66,6 +66,7 @@ function initialize_rezept_edit(initdata) {
 }
 
 return {
+    setupCsrfProtection: setupCsrfProtection,
     initialize_monat: initialize_monat,
     initialize_rezept_edit: initialize_rezept_edit,
 };

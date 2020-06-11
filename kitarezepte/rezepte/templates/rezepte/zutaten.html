@@ -15,7 +15,10 @@
       {% for z in zutaten  %}
         <tr>
           <td>{{ z.name }}</td>
-          <td class="text-right">{{ z.preisInEuro }} &euro;</td>
+          <td class="text-right">
+            <span class="zutat-preis" zutat_id="{{ z.id }}">{{ z.preisInEuro }}</span>
+            &euro;
+          </td>
           <td class="text-right">{{ z.menge_pro_einheit }} {{ z.masseinheit }} </td>
           <td>{{ z.kategorie }} </td>
           <td>
@@ -47,4 +50,14 @@
     </div>
     
   </div>
+  <span class="zutat-preis-input hidden">
+    <input type="text" value="" size="6"></span>
 {% endblock content %}
+{% block extrascripts %}
+{% if user.is_authenticated %}
+<script src="{% static 'vendor/underscore.js' %}"></script>
+<script src="{% static 'vendor/backbone.js' %}"></script>
+<script src="{% static 'rezepte/js/main.js' %}"></script>
+<script src="{% static 'rezepte/js/zutaten.js' %}"></script>
+{% endif %}
+{% endblock extrascripts %}

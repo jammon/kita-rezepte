@@ -1,6 +1,9 @@
 # coding: utf-8
 from datetime import date, timedelta
+from decimal import Decimal
 from django.conf import settings
+from django.http import HttpResponse
+from functools import wraps
 
 
 MONATSNAMEN = ("", "Januar", "Februar", "März", "April", "Mai", "Juni", "Juli",
@@ -35,6 +38,15 @@ def get_client_domain(slug):
     if slug in ('dev', 'test-kita'):
         return '127.0.0.1:8000'
     return slug + '.' + settings.KITAREZEPTE_FULL_DOMAIN
+
+
+def check_client(f):
+    @wraps(f)
+    def wrapper(request, *args, **kwargs):
+        if request.client_slug != request.session.get('client_slug'):
+            return HttpResponse(status=403, reason="Falscher Client.")
+        return f(request, *args, **kwargs)
+    return wrapper
 
 
 def day_fromJson(day):
@@ -97,6 +109,7 @@ def next_month(year, month, offset=1):
 
 TEST_REIS = dict(name="Reis",
                  einheit="1 kg",
+                 preis=Decimal('1.89'),
                  preis_pro_einheit=189,
                  menge_pro_einheit=1000,
                  masseinheit="g",
