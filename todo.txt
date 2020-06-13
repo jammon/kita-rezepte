@@ -30,5 +30,4 @@
 (A) Mehrere Einrichtungen für einen Client
 (C) Quill als Editor einsetzen? https://quilljs.com/
 (C) Squash migrations, remove taggit
-Escape soll Bearbeitung beenden
-Wenn man ein Rezept bearbeitet, werden die Mengenangaben zu None
+

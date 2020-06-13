@@ -31,14 +31,14 @@
           </td>
           <td>
             {% if user.is_authenticated %}
-              <a class="btn btn-primary btn-sm" href="{{ z.id }}" role="button">
-                Bearbeiten</a>
-              {% if not z.rezepte__count %}
-                <form action="delete" method="post">{% csrf_token %}
-                  <input type="hidden" name="zutat_id" value="{{ z.id }}">
+              <form action="delete" method="post">{% csrf_token %}
+                <a class="btn btn-primary btn-sm" href="{{ z.id }}" role="button">
+                  Bearbeiten</a>
+                <input type="hidden" name="zutat_id" value="{{ z.id }}">
+                {% if not z.rezepte__count %}
                   <button class="btn btn-primary btn-sm">Löschen</button>
-                </form>
-              {% endif %}
+                {% endif %}
+              </form>
             {% endif %}
           </td>
         </tr>

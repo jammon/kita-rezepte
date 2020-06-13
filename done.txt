@@ -86,3 +86,4 @@ x 2020-05-31 Zutat-Seite: extra Edit-View, Anzahl der Rezepte anzeigen, Löschop
 x 2020-06-11 Zutat.preis als DecimalField setzen
 x 2020-06-11 Wenn man 2,39 eingibt, wird 2,40 gespeichert
 x 2020-06-13 Zutat Preis zu ändern dauert lange und wird nicht gespeichert.
+x 2020-06-13 Wenn man ein Rezept bearbeitet, werden die Mengenangaben zu None
