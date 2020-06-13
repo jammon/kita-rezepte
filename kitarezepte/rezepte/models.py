@@ -296,6 +296,11 @@ class RezeptZutat(models.Model):
         verbose_name_plural = "Rezeptzutaten"
         ordering = ("nummer",)
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.menge is not None:
+            self.menge_int = int(self.menge)
+
     def __str__(self):
         if self.menge_qualitativ is not None:
             return f"{self.menge_qualitativ} {self.zutat.name}"

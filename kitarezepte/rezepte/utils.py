@@ -65,8 +65,8 @@ def days_in_month(year, month):
 
 
 def prettyFloat(f):
-    s = str(f)
-    return s[:-2] if s.endswith(u'.0') else s
+    s = str(f).replace('.', ',')
+    return s[:-2] if s.endswith(u',0') else s
 
 
 def cent2euro(cent):
