@@ -30,6 +30,5 @@
 (A) Mehrere Einrichtungen für einen Client
 (C) Quill als Editor einsetzen? https://quilljs.com/
 (C) Squash migrations, remove taggit
-Zutat.preis als DecimalField setzen
-Wenn man 2,39 eingibt, wird 2,40 gespeichert
 Escape soll Bearbeitung beenden
+Wenn man ein Rezept bearbeitet, werden die Mengenangaben zu None

@@ -83,3 +83,6 @@ x 2020-05-29 Warum kommt keine Mail?
 x 2020-05-30 Evaluate ProseMirror https://prosemirror.net/
 x 2020-05-30 Write testcases for wrong client
 x 2020-05-31 Zutat-Seite: extra Edit-View, Anzahl der Rezepte anzeigen, Löschoption
+x 2020-06-11 Zutat.preis als DecimalField setzen
+x 2020-06-11 Wenn man 2,39 eingibt, wird 2,40 gespeichert
+x 2020-06-13 Zutat Preis zu ändern dauert lange und wird nicht gespeichert.

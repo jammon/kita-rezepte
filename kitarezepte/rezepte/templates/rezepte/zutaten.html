@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load humanize %}
 {% block content %}
   <div class="row">
     <div class="col">
@@ -16,7 +17,7 @@
         <tr>
           <td>{{ z.name }}</td>
           <td class="text-right">
-            <span class="zutat-preis" zutat_id="{{ z.id }}">{{ z.preisInEuro }}</span>
+            <span class="zutat-preis" zutat_id="{{ z.id }}">{{ z.preis|intcomma }}</span>
             &euro;
           </td>
           <td class="text-right">{{ z.menge_pro_einheit }} {{ z.masseinheit }} </td>
