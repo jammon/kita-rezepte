@@ -20,7 +20,6 @@
 (B) Rezept mit halber Menge (drittel, zweidrittel) planen
 (B) Bei Subdomains CNAME-Eintrag testen
 (A) Preis in Zutatenliste direkt bearbeiten
-(A) Zutaten von anderen Instanzen übernehmen
 (C) Caching einbauen
 (B) 404.html, 500.html, 403.html und 400.html erstellen
 (B) In der Einkaufsliste die qualitativen Mengen auf die Rezepte verlinken
@@ -28,6 +27,6 @@
 (C) Link zu admin auf Hauptseite
 (B) Rezepte und Zutaten in admin nach Client sortieren
 (A) Mehrere Einrichtungen für einen Client
-(C) Quill als Editor einsetzen? https://quilljs.com/
 (C) Squash migrations, remove taggit
-
+(B) Feiertage eingeben
+(C) Unittests für javascript schreiben

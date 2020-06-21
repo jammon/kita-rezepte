@@ -87,3 +87,5 @@ x 2020-06-11 Zutat.preis als DecimalField setzen
 x 2020-06-11 Wenn man 2,39 eingibt, wird 2,40 gespeichert
 x 2020-06-13 Zutat Preis zu ändern dauert lange und wird nicht gespeichert.
 x 2020-06-13 Wenn man ein Rezept bearbeitet, werden die Mengenangaben zu None
+x 2020-06-14 Quill als Editor einsetzen? https://quilljs.com/
+x 2020-06-21 Zutaten von anderen Instanzen übernehmen
