@@ -54,10 +54,7 @@ var Rezept = Backbone.Model.extend({
     titel_mit_preis: function() {
         if (this.get('id')==-1)
             return 'nicht geplant';
-        return this.get('titel') + '  ' + this.preis_in_euro();
-    },
-    preis_in_euro: function() {
-        return preis_in_euro(this.get('preis'));
+        return this.get('titel') + '  ' + this.get('preis') + ' €';
     },
 });
 
@@ -108,16 +105,16 @@ var zutaten = new Zutaten();
 var rezeptzutaten = new RezeptZutaten();
 
 
-function preis_in_euro(preis) {
-    if (preis == '--') 
-        return preis;
-    if (preis>99) {
-        preis = preis + '';
-        return preis.slice(0, -2) + ',' + preis.slice(-2) + ' €';
-    }
-    preis = (preis + 100) + '';
-    return '0,' + preis.slice(-2) + ' €';
-}
+// function preis_in_euro(preis) {
+//     if (preis == '--') 
+//         return preis;
+//     if (preis>99) {
+//         preis = preis + '';
+//         return preis.slice(0, -2) + ',' + preis.slice(-2) + ' €';
+//     }
+//     preis = (preis + 100) + '';
+//     return '0,' + preis.slice(-2) + ' €';
+// }
 
 
 return {
@@ -131,6 +128,5 @@ return {
     kategorien: kategorien,
     gangkategorien: gangkategorien,
     data: data,
-    preis_in_euro: preis_in_euro,
 };
 })($, _, Backbone);
