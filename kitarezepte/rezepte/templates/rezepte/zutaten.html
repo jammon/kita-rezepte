@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% load humanize %}
+{% csrf_token %} 
 {% block content %}
   <div class="row">
     <div class="col">
@@ -17,7 +18,16 @@
         <tr>
           <td>{{ z.name }}</td>
           <td class="text-right">
-            <span class="zutat-preis" zutat_id="{{ z.id }}">{{ z.preis|intcomma }}</span>
+            <span class="zutat-preis">
+              <input type="text" zutat_id="{{ z.id }}" 
+              {% if z.preis is None %}
+                     value="" origvalue=""
+              {% else %}
+                     value="{{ z.preis|intcomma }}" 
+                     origvalue="{{ z.preis|intcomma }}" 
+              {% endif %}
+                     size="6">
+            </span>
             &euro;
           </td>
           <td class="text-right">{{ z.menge_pro_einheit }} {{ z.masseinheit }} </td>
@@ -36,7 +46,7 @@
                   Bearbeiten</a>
                 <input type="hidden" name="zutat_id" value="{{ z.id }}">
                 {% if not z.rezepte__count %}
-                  <button class="btn btn-primary btn-sm">Löschen</button>
+                  <button class="btn btn-primary btn-sm" tabindex="-1">Löschen</button>
                 {% endif %}
               </form>
             {% endif %}

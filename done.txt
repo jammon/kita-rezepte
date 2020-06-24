@@ -89,3 +89,8 @@ x 2020-06-13 Zutat Preis zu ändern dauert lange und wird nicht gespeichert.
 x 2020-06-13 Wenn man ein Rezept bearbeitet, werden die Mengenangaben zu None
 x 2020-06-14 Quill als Editor einsetzen? https://quilljs.com/
 x 2020-06-21 Zutaten von anderen Instanzen übernehmen
+x 2020-06-22 preis_pro_einheit soll noch mit aktualisiert werden
+x 2020-06-23 Wenn der Preis einer Zutat None ist, wird auch None angezeigt
+x 2020-06-23 Preiseingabe testen
+x 2020-06-23 Preis in Zutatenliste direkt bearbeiten
+x 2020-06-24 Bei Preiseingabe sollen nur die Preisinputfelder auszuwählen sein

@@ -92,3 +92,7 @@ body {
 .rezept-liste p {
     margin-bottom: 0.5rem;
 }
+/* Zutaten */
+.zutat-preis input {
+    text-align: right;
+}

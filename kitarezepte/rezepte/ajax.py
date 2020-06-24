@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from decimal import Decimal, getcontext
+from decimal import Decimal, InvalidOperation
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponse, HttpResponseNotFound
 from django.views.decorators.http import require_POST
@@ -79,6 +79,18 @@ def zutat_preis(request, zutat_id=0):
         return HttpResponseNotFound('Zutat nicht gefunden')
     if 'preis' not in request.POST:
         return HttpResponse("Fehlerhafte Anfrage.", status=422)
-    zutat.preis = Decimal(request.POST['preis'].replace(',', '.'))
+    try:
+        zutat.preis = Decimal(
+            request.POST['preis'].replace(',', '.')
+        ).quantize(Decimal('1.00'))
+        zutat.preis_pro_einheit = int(zutat.preis * 100)
+    except (InvalidOperation, ValueError):
+        if request.POST['preis'] == '':
+            zutat.preis = None
+            zutat.preis_pro_einheit = -1
+        else:
+            return HttpResponse("Fehlerhaftes Datenformat.", status=422)
     zutat.save()
-    return JsonResponse({'preis': str(zutat.preis).replace('.', ',')})
+    return JsonResponse(
+        {'preis': '' if zutat.preis is None
+            else str(zutat.preis).replace('.', ',')})

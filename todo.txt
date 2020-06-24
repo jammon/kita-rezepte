@@ -19,7 +19,6 @@
 (A) Rezepte von anderen Kitas übernehmen
 (B) Rezept mit halber Menge (drittel, zweidrittel) planen
 (B) Bei Subdomains CNAME-Eintrag testen
-(A) Preis in Zutatenliste direkt bearbeiten
 (C) Caching einbauen
 (B) 404.html, 500.html, 403.html und 400.html erstellen
 (B) In der Einkaufsliste die qualitativen Mengen auf die Rezepte verlinken
@@ -30,3 +29,6 @@
 (C) Squash migrations, remove taggit
 (B) Feiertage eingeben
 (C) Unittests für javascript schreiben
+(A) Enter soll bei Preiseingabe weiter führen
+(C) URLs mit Verweis auf den zugehörigen Client in die Datenbank
+(A) Wie wird der Preis eines Rezeptes berechnet, wenn der Preis einer Zutat None ist?

@@ -23,3 +23,12 @@ with open("zutatenpreise-neu.txt", "r") as neu:
       if n != a:
         print(f"alt: {a}")
         print(f"neu: {n}\n")
+
+## Häufigste Zutaten extrahieren
+    import csv
+    from django.db.models import Count
+    from rezepte.models import Zutat
+    with open('zutaten.csv', 'w', newline='') as csvfile:
+        csvwriter = csv.writer(csvfile, delimiter=';')
+        for z in Zutat.objects.annotate(Count('rezepte')).order_by('-rezepte__count'):
+          csvwriter.writerow([z.name, z.einheit, z.menge_pro_einheit, z.masseinheit, z.kategorie])

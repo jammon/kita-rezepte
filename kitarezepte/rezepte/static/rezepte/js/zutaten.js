@@ -1,28 +1,17 @@
-var input_span = $(".zutat-preis-input");
-var input_input = $(".zutat-preis-input input");
 main.setupCsrfProtection();
-$(".zutat-preis").click(function() {
-    var display_span = $(this);
-    display_span.addClass("hidden");
-    var value = display_span.text();
-    input_span.insertAfter(display_span);
-    input_span.removeClass("hidden");
-    input_input.val(value).select();
-});
-input_span.change(function() {
-    var display_span = input_span.prev();
+$(".zutat-preis input").change(function() {
+    var input = $(this);
     $.ajax({
         type: "POST",
-        url: "preis/" + display_span.attr("zutat_id"),
-        data: {preis: input_input.val()},
+        url: "preis/" + input.attr("zutat_id"),
+        data: {preis: input.val()},
         success: function(data) {
-            input_span.addClass("hidden")
-            var ds = input_span.prev();
-            ds.text(data.preis);
-            ds.removeClass("hidden");
+            input.val(data.preis);
+            input.attr("origvalue", data.preis);
         },
         error: function(jqXHR, textStatus, errorThrown) {
-            input_input.select();
+            input.val(input.attr("origvalue"));
+            input.select();
         },
         dataType: "json",
     });
