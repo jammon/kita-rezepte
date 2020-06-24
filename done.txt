@@ -95,3 +95,4 @@ x 2020-06-23 Preiseingabe testen
 x 2020-06-23 Preis in Zutatenliste direkt bearbeiten
 x 2020-06-24 Bei Preiseingabe sollen nur die Preisinputfelder auszuwählen sein
 x 2020-06-24 Enter soll bei Preiseingabe weiter führen
+x 2020-06-24 Wie wird der Preis eines Rezeptes berechnet, wenn der Preis einer Zutat None ist?

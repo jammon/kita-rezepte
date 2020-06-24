@@ -30,4 +30,3 @@
 (B) Feiertage eingeben
 (C) Unittests für javascript schreiben
 (C) URLs mit Verweis auf den zugehörigen Client in die Datenbank
-(A) Wie wird der Preis eines Rezeptes berechnet, wenn der Preis einer Zutat None ist?

@@ -71,6 +71,7 @@ def add_zutat(request):
 @require_POST
 @check_client
 def zutat_preis(request, zutat_id=0):
+    """ Den Preis einer Zutat ändern """
     try:
         zutat = Zutat.objects.get(
             id=zutat_id,

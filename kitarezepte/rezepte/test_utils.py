@@ -68,7 +68,7 @@ class PrettyFloatTestCase(TestCase):
     def test_prettyFloat(self):
         """ stringified floats are pretty """
         self.assertEqual(prettyFloat(3.0), "3")
-        self.assertEqual(prettyFloat(3.1), "3.1")
+        self.assertEqual(prettyFloat(3.1), "3,1")
 
 
 class Days_in_MonthTestCase(TestCase):

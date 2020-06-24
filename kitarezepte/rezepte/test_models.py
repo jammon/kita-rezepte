@@ -143,7 +143,7 @@ class Get_Einkaufsliste_TestCase(TestCase):
             [("Milchreis", milchreis.id), ("Wasserreis", wasserreis.id)])
         self.assertEqual(
             el['messbar'],
-            [('Grundnahrungsmittel', 'Reis', reis.id, '1.3', 'kg'),
+            [('Grundnahrungsmittel', 'Reis', reis.id, '1,3', 'kg'),
              ('Grundnahrungsmittel', 'Wasser', wasser.id, '2', 'l'),
              ('Milchprodukte', 'Milch', milch.id, '800', 'ml')])
         self.assertEqual(
