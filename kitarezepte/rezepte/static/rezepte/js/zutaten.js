@@ -15,4 +15,8 @@ $(".zutat-preis input").change(function() {
         },
         dataType: "json",
     });
+}).keyup(function(e) {
+    if (e.key=="Enter") {
+        $(this).closest("tr").next().find(".zutat-preis input").select();
+    }
 });
