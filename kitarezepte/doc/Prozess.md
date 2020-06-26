@@ -28,3 +28,19 @@ with open("zutatenpreise-neu.txt", "r") as neu:
         csvwriter = csv.writer(csvfile, delimiter=';')
         for z in Zutat.objects.annotate(Count('rezepte')).order_by('-rezepte__count'):
           csvwriter.writerow([z.name, z.einheit, z.menge_pro_einheit, z.masseinheit, z.kategorie])
+
+## Migration: Preis als Decimal, Menge als int
+- Schritt 1:
+  + Zutat.preis (Decimal) einführen
+  + Rezept._preis_dec (Decimal, default=None) einführen
+  + RezeptZutat.menge_int einführen
+- Schritt 2:
+  + Zutat.preis berechnen: Zutat.preis_pro_einheit / Decimal('100')
+  + RezeptZutat.menge_int berechnen: int(RezeptZutat.menge)
+- Schritt 3:
+  + Zutat.preis_pro_einheit löschen
+  + Rezept._preis löschen
+  + RezeptZutat.menge löschen
+- Schritt 4:
+  + Rezept._preis_dec umbenennen in Rezept._preis
+  + (RezeptZutat.menge_int umbenennen in RezeptZutat.menge)

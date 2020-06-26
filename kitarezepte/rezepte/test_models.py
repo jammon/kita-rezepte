@@ -25,7 +25,7 @@ class Zutat_TestCase(TestCase):
         rz = RezeptZutat.objects.create(
             rezept=rezept,
             zutat=reis,
-            menge_int=2000,
+            menge=2000,
             nummer=1)
         self.assertEqual(rz.preis(), Decimal('3.78'))
         self.assertEqual(rezept.preis(), Decimal('3.78'))
@@ -55,7 +55,7 @@ class Rezept_TestCase(TestCase):
         rezept = Rezept.objects.create(
             titel="Reis", client=client, **TEST_REZEPT)
         RezeptZutat.objects.create(
-            rezept=rezept, zutat=reis, menge_int=500, nummer=1)
+            rezept=rezept, zutat=reis, menge=500, nummer=1)
         self.assertEqual(reis.rezepte.count(), 1)
         self.assertEqual(rezept.preis(update=True), Decimal('0.94'))
 
@@ -71,21 +71,21 @@ class RezeptZutat_TestCase(TestCase):
         self.reis = Zutat(client=self.kitaclient, **TEST_REIS)
 
     def test_preis(self):
-        rz = RezeptZutat(zutat=self.reis, menge_int=500)
+        rz = RezeptZutat(zutat=self.reis, menge=500)
         self.assertEqual(rz.preis(), Decimal('0.94'))
 
         rz = RezeptZutat(zutat=self.reis, menge_qualitativ="etwas")
         self.assertEqual(rz.preis(), Decimal('0.00'))
 
     def test_str(self):
-        rz = RezeptZutat(zutat=self.reis, menge_int=500)
+        rz = RezeptZutat(zutat=self.reis, menge=500)
         self.assertEqual(str(rz), "500 g Reis")
 
         rz = RezeptZutat(zutat=self.reis, menge_qualitativ="etwas")
         self.assertEqual(str(rz), "etwas Reis")
 
         eier = Zutat(name="Eier", client=self.kitaclient, einheit="")
-        rz = RezeptZutat(zutat=eier, menge_int=3)
+        rz = RezeptZutat(zutat=eier, menge=3)
         self.assertEqual(str(rz), "3 Eier")
 
 
@@ -123,10 +123,10 @@ class Get_Einkaufsliste_TestCase(TestCase):
         milchreis = Rezept.objects.create(titel="Milchreis", **args)
 
         RezeptZutat.objects.bulk_create([
-            RezeptZutat(rezept=wasserreis, zutat=reis, menge_int=500, nummer=1),
-            RezeptZutat(rezept=wasserreis, zutat=wasser, menge_int=2000, nummer=2),
-            RezeptZutat(rezept=milchreis, zutat=reis, menge_int=400, nummer=1),
-            RezeptZutat(rezept=milchreis, zutat=milch, menge_int=400, nummer=2),
+            RezeptZutat(rezept=wasserreis, zutat=reis, menge=500, nummer=1),
+            RezeptZutat(rezept=wasserreis, zutat=wasser, menge=2000, nummer=2),
+            RezeptZutat(rezept=milchreis, zutat=reis, menge=400, nummer=1),
+            RezeptZutat(rezept=milchreis, zutat=milch, menge=400, nummer=2),
             RezeptZutat(rezept=milchreis, zutat=wasser, menge_qualitativ="etwas", nummer=3),
         ])
         args = dict(client=client, gang="Hauptgang")

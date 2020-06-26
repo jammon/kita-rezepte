@@ -2,7 +2,7 @@
 import json
 from collections import Counter, defaultdict
 from datetime import timedelta
-from decimal import Decimal, getcontext
+from decimal import Decimal
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.text import slugify
@@ -97,10 +97,6 @@ class Zutat(models.Model):
              aber auch 2,5 kg-Sack.
              Fällt weg bei Dingen wie Eiern, die eine natürliche Einheit
              haben; dann "Stück"''')
-    # TODO: erst löschen, wenn die Migration geklappt hat
-    preis_pro_einheit = models.IntegerField(
-        default=-1,
-        help_text='der Preis einer Packungseinheit; in Cent')
     preis = models.DecimalField(
         max_digits=5,
         decimal_places=2,
@@ -124,16 +120,6 @@ class Zutat(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         self.updateRezeptpreise()
-
-    # TODO: erst löschen, wenn die Migration geklappt hat
-    def preisInEuro(self):
-        """ Preis einer Packungseinheit in Euro als String
-
-        z.B. "3,59"
-        """
-        if self.preis_pro_einheit is None:
-            return "--"
-        return cent2euro(self.preis_pro_einheit)
 
     def get_einheit(self):
         if self.menge_pro_einheit:
@@ -278,7 +264,7 @@ class RezeptZutat(models.Model):
 
     Enthält
     - rezept, zutat: einen Verweis auf das Rezept und die Zutat
-    - menge_int, menge_qualitativ: die gewünschte Menge als Integer oder
+    - menge, menge_qualitativ: die gewünschte Menge als Integer oder
                                qualitativ als String
     - nummer: eine Nummer, um die Zutaten sortieren zu können
     """
@@ -286,8 +272,7 @@ class RezeptZutat(models.Model):
         Rezept, on_delete=models.CASCADE, related_name='zutaten')
     zutat = models.ForeignKey(
         Zutat, on_delete=models.CASCADE, related_name='rezepte')
-    menge = models.FloatField(blank=True, null=True)
-    menge_int = models.IntegerField(blank=True, null=True)
+    menge = models.IntegerField(blank=True, null=True)
     menge_qualitativ = models.CharField(max_length=30, blank=True, null=True)
     nummer = models.IntegerField()
 
@@ -296,20 +281,15 @@ class RezeptZutat(models.Model):
         verbose_name_plural = "Rezeptzutaten"
         ordering = ("nummer",)
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        if self.menge is not None:
-            self.menge_int = int(self.menge)
-
     def __str__(self):
         if self.menge_qualitativ is not None:
             return f"{self.menge_qualitativ} {self.zutat.name}"
-        if self.menge_int == 0:
+        if self.menge == 0:
             return f"{self.zutat.name}"
         einheit = self.zutat.get_einheit()
         if einheit:
-            return f"{self.menge_int} {einheit} {self.zutat.name}"
-        return f"{self.menge_int} {self.zutat.name}"
+            return f"{self.menge} {einheit} {self.zutat.name}"
+        return f"{self.menge} {self.zutat.name}"
 
     def toJson(self):
         res = {
@@ -317,8 +297,8 @@ class RezeptZutat(models.Model):
             'zutat_id': self.zutat_id,
             'nummer': self.nummer,
         }
-        if self.menge_int:
-            res['menge'] = self.menge_int
+        if self.menge:
+            res['menge'] = self.menge
         else:
             res['menge_qualitativ'] = self.menge_qualitativ or ''
         return json.dumps(res)
@@ -326,10 +306,10 @@ class RezeptZutat(models.Model):
     def preis(self):
         '''Gibt den Preis der Zutat als Decimal in Euro'''
         z = self.zutat
-        if self.menge_qualitativ or not self.menge_int \
+        if self.menge_qualitativ or not self.menge \
                 or z.preis is None:
             return Decimal('0.00')
-        res = self.menge_int * z.preis / (z.menge_pro_einheit or 1)
+        res = self.menge * z.preis / (z.menge_pro_einheit or 1)
         return res.quantize(Decimal('0.00'))
 
 
@@ -388,9 +368,9 @@ def get_einkaufsliste(client, start, dauer):
 
     for rz in rezeptzutaten:
         # Wenn messbar:
-        if rz.menge_int:
+        if rz.menge:
             # Zutat mit Mengenangabe aufsummieren
-            messbar[rz.zutat] += rz.menge_int * rezeptcounts[rz.rezept_id]
+            messbar[rz.zutat] += rz.menge * rezeptcounts[rz.rezept_id]
         # sonst:
         else:
             # Zutat mit qualitativer Mengenangabe abspeichern
