@@ -31,11 +31,6 @@
     + Auflistung der geplanten Rezepte √
     + Zeiträume für die Einkaufsliste angeben
 
-## Todos
-- Aus einem Rezept (evtl. eines anderen Mandanten) eine Kopie zum Editieren erstellen
-    + Benachrichtigung des Rezeptspenders?
-- Bei Eingabe neuer Zutaten evtl. die Zutaten anderer Kitas zur Auswahl anbieten.
-
 ## Mechanismen
 ### Clients
 - Jeder Client hat eine Domain ("fooclient.kita-rezepte.de"). √

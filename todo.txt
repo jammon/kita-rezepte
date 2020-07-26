@@ -30,3 +30,6 @@
 (B) Feiertage eingeben
 (C) Unittests für javascript schreiben
 (C) URLs mit Verweis auf den zugehörigen Client in die Datenbank
+(A) neue Version deployen
+Für jedes Rezept anzeigen, wann es die letzten Male geplant wurde
+Aus einem Rezept (evtl. eines anderen Mandanten) eine Kopie zum Editieren erstellen, ggf. mit Benachrichtigung des Rezeptspenders

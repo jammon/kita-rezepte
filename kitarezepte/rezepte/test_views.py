@@ -4,7 +4,7 @@ from django.test import RequestFactory, TestCase
 from http import HTTPStatus
 from .models import Rezept, Client, Editor, Zutat
 from .utils import TEST_REZEPT
-from .views import rezept_edit, zutat_edit
+from .views import rezept_edit, zutat_edit, zutaten, zutaten_delete
 
 
 def create_user(name, client, email='test@test.tld', password='test'):
@@ -86,6 +86,35 @@ class WrongClientTestcase(TestCase):
         self.assertEqual(zutat.name, "Reis")
 
 
+class ZutatenTestcase(TestCase):
+    """Test zutaten view"""
+
+    def setUp(self):
+        self.kita_client = Client.objects.create(name='Test-Kita')
+        self.user = create_user('test', self.kita_client)
+
+    def test_keine_zutaten(self):
+        self.client.login(username='test', password='test')
+        response = self.client.get("/zutaten/")
+        self.assertContains(response, "Zutaten importieren", status_code=200)
+        self.assertTemplateUsed(response, 'rezepte/zutaten.html')
+        self.assertEqual(len(response.context.get('zutaten')), 0)
+
+    def test_zutaten_importieren(self):
+        def anzahl_zutaten():
+            return Zutat.objects.filter(client=self.kita_client).count()
+        self.assertEqual(anzahl_zutaten(), 0)
+        self.client.post(
+            '/login/', {'username': 'test', 'password': 'test'})
+        # session = self.client.session
+        # for k, v in session.items():
+        #     print(f"{k}: {v}")
+        response = self.client.get("/zutaten/import")
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, "/zutaten/")
+        self.assertGreater(anzahl_zutaten(), 100)
+
+
 class RezepteTestcase(TestCase):
     """Test rezepte view"""
 
@@ -113,11 +142,17 @@ class RezepteTestcase(TestCase):
         self.assertEqual(
             [gang for gang, rezepte in recipes],
             ["Hauptgang"])
-        self.assertEqual(
-            recipes,
-            [('Hauptgang',
-             [('keine Kategorie',
-               [self.rezept1, self.rezept2])])])
+        # assume:
+        # recipes == [('Hauptgang',
+        #              [('keine Kategorie',
+        #                [self.rezept1, self.rezept2])])])
+        hauptgang, kategorien = recipes[0]
+        self.assertEqual(hauptgang, 'Hauptgang')
+        kat, rezepte = kategorien[0]
+        self.assertEqual(kat, 'keine Kategorie')
+        self.assertEqual(len(rezepte), 2)
+        self.assertIn(self.rezept1, rezepte)
+        self.assertIn(self.rezept2, rezepte)
 
         REZEPT = TEST_REZEPT.copy()
         REZEPT["gang"] = "Vorspeise Nachtisch"

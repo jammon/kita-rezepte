@@ -2,33 +2,6 @@
 
 Problem mit django-tinymce als Issue gemeldet: https://github.com/aljosa/django-tinymce/issues/265
 
-## Test auf Zutat-Preise
-with open("zutatenpreise.txt", "w") as outfile:
-    for z in Zutat.objects.all().order_by('id'):
-        outfile.write(f"{z.id};{z.name};{z.preisInEuro()}\n")
-
-with open("zutatenpreise-neu.txt", "w") as outfile:
-    for z in Zutat.objects.all().order_by('id'):
-        outfile.write(f"{z.id};{z.name};{z.preis}\n")
-
-with open("zutatenpreise-neu.txt", "r") as neu:
-  with open("zutatenpreise.txt", "r") as alt:
-    for a, n in zip(alt, neu):
-      if n[-4]=='.':
-        n = n[:-4] + ',' + n[-3:]
-      if n != a:
-        print(f"alt: {a}")
-        print(f"neu: {n}\n")
-
-## Häufigste Zutaten extrahieren
-    import csv
-    from django.db.models import Count
-    from rezepte.models import Zutat
-    with open('zutaten.csv', 'w', newline='') as csvfile:
-        csvwriter = csv.writer(csvfile, delimiter=';')
-        for z in Zutat.objects.annotate(Count('rezepte')).order_by('-rezepte__count'):
-          csvwriter.writerow([z.name, z.einheit, z.menge_pro_einheit, z.masseinheit, z.kategorie])
-
 ## Migration: Preis als Decimal, Menge als int
 - Schritt 1:
   + Zutat.preis (Decimal) einführen
@@ -44,3 +17,37 @@ with open("zutatenpreise-neu.txt", "r") as neu:
 - Schritt 4:
   + Rezept._preis_dec umbenennen in Rezept._preis
   + (RezeptZutat.menge_int umbenennen in RezeptZutat.menge)
+
+## Test auf Zutat-Preise
+Soll testen, ob die Preise nach der Migration noch gleich sind.
+
+    with open("zutatenpreise.txt", "w") as outfile:
+        for z in Zutat.objects.all().order_by('id'):
+            outfile.write(f"{z.id};{z.name};{z.preisInEuro()}\n")
+
+    with open("zutatenpreise-neu.txt", "w") as outfile:
+        for z in Zutat.objects.all().order_by('id'):
+            outfile.write(f"{z.id};{z.name};{z.preis}\n")
+
+    with open("zutatenpreise-neu.txt", "r") as neu:
+      with open("zutatenpreise.txt", "r") as alt:
+        for a, n in zip(alt, neu):
+          if n[-4]=='.':
+            n = n[:-4] + ',' + n[-3:]
+          if n != a:
+            print(f"alt: {a}")
+            print(f"neu: {n}\n")
+
+## Häufigste Zutaten extrahieren
+    import csv
+    from django.db.models import Count
+    from rezepte.models import Zutat
+    with open('zutaten.csv', 'w', newline='') as csvfile:
+        csvwriter = csv.writer(csvfile, delimiter=';')
+        for z in Zutat.objects.annotate(Count('rezepte')).order_by('-rezepte__count'):
+          csvwriter.writerow([z.name, z.einheit, z.menge_pro_einheit, z.masseinheit, z.kategorie])
+
+Die 194 häufigsten Zutaten sind in `/kitarezepte/zutaten.csv`.
+
+##Zutaten in neuen Client importieren
+Wenn der Client noch keine Zutaten hat, erscheint in der Liste der Zutaten eine entsprechende Aufforderung.

@@ -14,7 +14,7 @@ def calc_zutat_preis(apps, schema_editor):
 def calc_rezeptzutat_menge(apps, schema_editor):
     RezeptZutat = apps.get_model('rezepte', 'RezeptZutat')
     for rz in RezeptZutat.objects.all():
-        rz.menge_int = int(rz.menge)
+        rz.menge_int = None if rz.menge is None else int(rz.menge)
         rz.save()
 
 

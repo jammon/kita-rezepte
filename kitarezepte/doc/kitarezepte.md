@@ -49,6 +49,8 @@ Zutaten:
 - template anlegen (`rezepte/templates/rezepte/clients/<slug>.html`)
 
 ### Einrichtungen
+(TODO: Dieses Feature muss noch implementiert werden.)
+
 - Ein Client kann mehrere Einrichtungen haben. 
 - Jede Einrichtung hat eigene Rezepte, aber alle Zutaten sind bei einem Client gleich.
 - Die Einkaufsliste gibt es nur ein Mal.

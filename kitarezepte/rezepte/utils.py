@@ -110,7 +110,6 @@ def next_month(year, month, offset=1):
 TEST_REIS = dict(name="Reis",
                  einheit="1 kg",
                  preis=Decimal('1.89'),
-                 preis_pro_einheit=189,
                  menge_pro_einheit=1000,
                  masseinheit="g",
                  kategorie="Grundnahrungsmittel")

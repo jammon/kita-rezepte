@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
+import csv
 import json
-from .models import (Client, Rezept, Zutat, RezeptZutat, GangPlan,
-                     get_einkaufsliste)
-from .forms import ZutatForm, RezeptForm
-from .utils import (check_client, days_in_month, next_dow,
-                    MONATSNAMEN, next_month)
+import os
 from datetime import date
+
 from django.conf import settings
 from django.contrib import auth
 from django.contrib.auth.forms import AuthenticationForm
@@ -14,6 +12,12 @@ from django.db.models import Count
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404, render, redirect
 from django.template.loader import select_template
+
+from .forms import ZutatForm, RezeptForm
+from .models import (Client, Rezept, Zutat, RezeptZutat, GangPlan,
+                     get_einkaufsliste)
+from .utils import (check_client, days_in_month, next_dow,
+                    MONATSNAMEN, next_month)
 
 
 def index(request):
@@ -229,6 +233,26 @@ def zutaten_delete(request):
     zutat.delete()
     return redirect("/zutaten/",
                     msg=f'Zutat {zutat.name} wurde gelöscht')
+
+
+@login_required
+@check_client
+def zutaten_import(request):
+    with open(os.path.join(settings.BASE_DIR, "zutaten.csv")) as csvfile:
+        csvreader = csv.reader(csvfile, delimiter=';')
+        zutaten = (
+            Zutat(
+                name=name,
+                client=request.client,
+                einheit=einheit,
+                menge_pro_einheit=menge_pro_einheit,
+                masseinheit=masseinheit,
+                kategorie=kategorie)
+            for (name, einheit, menge_pro_einheit, masseinheit, kategorie)
+            in csvreader)
+        Zutat.objects.bulk_create(zutaten)
+    return redirect("/zutaten/",
+                    msg=f'Standardzutaten wurden importiert')
 
 
 # Monat ------------------------------------------------------------------

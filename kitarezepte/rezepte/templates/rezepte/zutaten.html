@@ -5,6 +5,7 @@
 {% block content %}
   <div class="row">
     <div class="col">
+      {% if zutaten %}
       <h1>Zutaten</h1>
       <table class="table table-sm">
         <tr>
@@ -52,12 +53,15 @@
             {% endif %}
           </td>
         </tr>
-      {% empty %}
-        <tr>
-          <td>Es sind noch keine Zutaten eingegeben.</td>
-        </tr>
       {% endfor %}
       </table>
+      {% else %}
+        <p>Es sind noch keine Zutaten eingegeben.</p>
+        {% if user.is_authenticated %}
+          <p>Sie können eine Sammlung häufig verwendeter Zutaten importieren.</p>
+          <div><a href="zutaten/import" class="btn btn-primary" role="button">Zutaten importieren</a></div>
+        {% endif %}
+      {% endif %}
     </div>
     
   </div>

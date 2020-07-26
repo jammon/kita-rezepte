@@ -46,6 +46,7 @@ urlpatterns = [
     path('zutaten/<int:id>', views.zutat_edit),
     path('zutaten/preis/<int:zutat_id>', ajax.zutat_preis),
     path('zutaten/delete', views.zutaten_delete),
+    path('zutaten/import', views.zutaten_import),
     path('monat/<int:year>/<int:month>', views.monat),
     path('monat', views.monat),
     path('tag/<int:year>/<int:month>/<int:day>', views.tag),
