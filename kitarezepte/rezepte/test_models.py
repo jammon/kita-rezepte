@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 from datetime import date
-from decimal import Decimal, getcontext
+from decimal import Decimal
 from django.test import TestCase
 from .models import (
-    Client, Zutat, Rezept, RezeptZutat, GangPlan, get_einkaufsliste)
+    Client, Provider, Zutat, Rezept, RezeptZutat, GangPlan,
+    get_einkaufsliste)
 from .utils import TEST_REIS, TEST_REZEPT
 
 
@@ -20,8 +21,10 @@ class Zutat_TestCase(TestCase):
     def test_updateRezeptpreise(self):
         """ The price of the recipes is updated """
         client = Client.objects.create(name='Test-Kita')
+        provider = Provider.objects.create(name='Test-Kita', client=client)
         reis = Zutat.objects.create(client=client, **TEST_REIS)
-        rezept = Rezept.objects.create(titel="Reis", client=client, **TEST_REZEPT)
+        rezept = Rezept.objects.create(
+            titel="Reis", client=client, **TEST_REZEPT)
         rz = RezeptZutat.objects.create(
             rezept=rezept,
             zutat=reis,
@@ -37,23 +40,26 @@ class Zutat_TestCase(TestCase):
 
 
 class Rezept_TestCase(TestCase):
+    def setUp(self):
+        self.client = Client.objects.create(name='Test-Kita')
+        self.provider = Provider.objects.create(
+            name='Test-Kita', client=self.client)
+
     def test_calculate_slug(self):
         """ The slug is derived from the title """
-        client = Client.objects.create(name='Test-Kita')
         for titel, slug in (
                 ("Möhren-Salat süß", "moehren-salat-suess"),
                 ("Möhren-Salat", "moehren-salat"),
                 ("Möhren-Salat", "moehren-salat1"),
         ):
             rezept = Rezept.objects.create(
-                titel=titel, client=client, **TEST_REZEPT)
+                titel=titel, provider=self.provider, **TEST_REZEPT)
             self.assertEqual(rezept.slug, slug)
 
     def test_updateRezeptpreise(self):
-        client = Client.objects.create(name='Test-Kita')
-        reis = Zutat.objects.create(client=client, **TEST_REIS)
+        reis = Zutat.objects.create(client=self.client, **TEST_REIS)
         rezept = Rezept.objects.create(
-            titel="Reis", client=client, **TEST_REZEPT)
+            titel="Reis", provider=self.provider, **TEST_REZEPT)
         RezeptZutat.objects.create(
             rezept=rezept, zutat=reis, menge=500, nummer=1)
         self.assertEqual(reis.rezepte.count(), 1)
@@ -92,8 +98,8 @@ class RezeptZutat_TestCase(TestCase):
 class Get_Einkaufsliste_TestCase(TestCase):
 
     def test_get_einkaufsliste(self):
-        client = Client.objects.create(
-            name="Test", slug="test", gaenge="Vorspeise Hauptgang Nachtisch")
+        client = Client.objects.create(name="Test", slug="test")
+        provider = Provider.objects.create(name='Test', client=client)
 
         reis = Zutat.objects.create(name="Reis",
                                     client=client,
@@ -117,8 +123,8 @@ class Get_Einkaufsliste_TestCase(TestCase):
                                      masseinheit="ml",
                                      kategorie="Milchprodukte")
 
-        args = dict(
-            client=client, fuer_kinder=20, fuer_erwachsene=5, zubereitung='')
+        args = dict(client=client, provider=provider, fuer_kinder=20,
+                    fuer_erwachsene=5, zubereitung='')
         wasserreis = Rezept.objects.create(titel="Wasserreis", **args)
         milchreis = Rezept.objects.create(titel="Milchreis", **args)
 
@@ -129,7 +135,7 @@ class Get_Einkaufsliste_TestCase(TestCase):
             RezeptZutat(rezept=milchreis, zutat=milch, menge=400, nummer=2),
             RezeptZutat(rezept=milchreis, zutat=wasser, menge_qualitativ="etwas", nummer=3),
         ])
-        args = dict(client=client, gang="Hauptgang")
+        args = dict(client=client, provider=provider, gang="Hauptgang")
         GangPlan.objects.bulk_create([
             GangPlan(datum=date(2019, 5, 31), rezept=milchreis, **args),
             GangPlan(datum=date(2019, 6, 1), rezept=wasserreis, **args),

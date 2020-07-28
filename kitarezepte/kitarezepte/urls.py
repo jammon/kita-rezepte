@@ -34,8 +34,8 @@ urlpatterns = [
          auth_views.PasswordChangeView.as_view(
             template_name='registration/password_change.html',
             success_url="/password_change_done/")),
-    path('password_change_done/',
-         TemplateView.as_view(template_name="registration/password_changed.html")),
+    path('password_change_done/', TemplateView.as_view(
+        template_name="registration/password_changed.html")),
     path('rezepte/', views.rezepte),
     path('rezepte/new', views.rezept_edit),
     path('rezepte/<int:id>', views.rezepte),
@@ -46,7 +46,6 @@ urlpatterns = [
     path('zutaten/<int:id>', views.zutat_edit),
     path('zutaten/preis/<int:zutat_id>', ajax.zutat_preis),
     path('zutaten/delete', views.zutaten_delete),
-    path('zutaten/import', views.zutaten_import),
     path('monat/<int:year>/<int:month>', views.monat),
     path('monat', views.monat),
     path('tag/<int:year>/<int:month>/<int:day>', views.tag),

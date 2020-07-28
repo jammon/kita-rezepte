@@ -1,57 +1,8 @@
 # -*- coding: utf-8 -*-
 from datetime import date
-from django.conf import settings
-from django.contrib.auth.models import AnonymousUser, User
-from django.test import TestCase, override_settings, RequestFactory
+from django.test import TestCase
 from .utils import (day_fromJson, prettyFloat, days_in_month,
-                    euro2cent, next_dow, host2client, get_client)
-
-
-class Host2ClientTestCase(TestCase):
-
-    def test_host2client(self):
-
-        def do_test(domain, expected):
-            self.assertEqual(
-                host2client(domain),
-                expected,
-                f"host2client liefert für {domain} {host2client(domain)} statt {expected}")
-
-        do_test('localhost', 'dev')
-        do_test('localhost:8000', 'dev')
-        do_test('127.0.0.1', 'dev')
-        do_test('127.0.0.1:8000', 'dev')
-        do_test('testserver', 'test-kita')
-        do_test('kita-rezepte.de', '')
-        do_test('www.kita-rezepte.de', '')
-        do_test(settings.KITAREZEPTE_FULL_DOMAIN, '')
-        do_test('www.' + settings.KITAREZEPTE_FULL_DOMAIN, '')
-        do_test('7zwerge.' + settings.KITAREZEPTE_FULL_DOMAIN, '7zwerge')
-
-    @override_settings(ALLOWED_HOSTS=[
-        "localhost", "testserver", ".kita-rezepte.de"])
-    def test_get_client(self):
-        factory = RequestFactory()
-        request = factory.get('/')
-        anonymous = AnonymousUser()
-        user = User.objects.create_user(
-            username='jammon', email='j@j.de', password='password')
-
-        def do_test(domain, authenticated, expected):
-            request.META['HTTP_HOST'] = domain
-            request.user = user if authenticated else anonymous
-            result = get_client(request)
-            self.assertEqual(
-                result,
-                expected,
-                f"get_client liefert für {domain} "
-                f"{'(angemeldet) ' if authenticated else ''}"
-                f"{result} statt {expected}")
-
-        do_test('localhost', True, 'dev')
-        do_test('localhost', False, '')
-        do_test('7zwerge.kita-rezepte.de', True, '7zwerge')
-        do_test('7zwerge.kita-rezepte.de', False, '7zwerge')
+                    euro2cent, next_dow)
 
 
 class Day_fromJsonTestCase(TestCase):

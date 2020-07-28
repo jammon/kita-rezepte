@@ -8,12 +8,12 @@ import json
 
 from .forms import ZutatForm
 from .models import Rezept, Zutat, GangPlan
-from .utils import check_client, day_fromJson
+from .utils import check_provider, day_fromJson
 
 
 @login_required
 @require_POST
-@check_client
+@check_provider
 def set_gangplan(request):
     data = json.loads(request.body)
     try:
@@ -24,7 +24,7 @@ def set_gangplan(request):
         return HttpResponse("Fehlerhafte Anfrage.", status=422)
     if rezept_id == '-1':
         count, _ = GangPlan.objects.filter(
-            client=request.client, datum=datum, gang=gang
+            provider=request.provider, datum=datum, gang=gang
         ).delete()
         return JsonResponse({
             'success': 'Planung ' + ('gelöscht' if count else 'nicht gefunden'),
@@ -34,11 +34,12 @@ def set_gangplan(request):
         })
 
     try:
-        rezept = Rezept.objects.get(id=rezept_id, client=request.client)
+        rezept = Rezept.objects.get(id=rezept_id, provider=request.provider)
     except Rezept.DoesNotExist:
         return HttpResponseNotFound(
             "Rezept nicht gefunden. Rezept Id: " + str(rezept_id))
     gangplan, created = GangPlan.objects.update_or_create(
+        provider=request.provider,
         client=request.client,
         datum=datum,
         gang=gang,
@@ -53,9 +54,10 @@ def set_gangplan(request):
 
 @login_required
 @require_POST
-@check_client
+@check_provider
 def add_zutat(request):
-    form = ZutatForm(request.POST, instance=Zutat(client=request.client))
+    form = ZutatForm(
+        request.POST, instance=Zutat(client=request.client))
     if form.is_valid():
         if form.cleaned_data['name'] == 'ERROR':
             return HttpResponse("Error requested.", status=400)
@@ -69,7 +71,7 @@ def add_zutat(request):
 
 @login_required
 @require_POST
-@check_client
+@check_provider
 def zutat_preis(request, zutat_id=0):
     """ Den Preis einer Zutat ändern """
     try:

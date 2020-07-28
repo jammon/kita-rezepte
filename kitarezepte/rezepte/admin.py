@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
-import csv, os
+import csv
+import os
 
 from django.conf import settings
 from django.contrib import admin, messages
 
-from .models import Zutat, Rezept, RezeptZutat, GangPlan, Client, Editor
+from .models import (Zutat, Rezept, RezeptZutat, GangPlan, Client, Provider,
+                     Domain, Editor)
 
 
 class ZutatAdmin(admin.ModelAdmin):
@@ -53,13 +55,13 @@ class RezeptAdmin(admin.ModelAdmin):
     list_display = ('titel', 'kategorien')
     # TODO: das funktioniert in production nicht
     # list_filter = (GangListFilter, KategorieListFilter)
-    list_filter = ('client', 'gang', 'kategorien')
+    list_filter = ('provider', 'gang', 'kategorien')
     ordering = ('slug',)
 
 
 class GangPlanAdmin(admin.ModelAdmin):
     ordering = ('datum',)
-    list_filter = ('gang', 'client__name')
+    list_filter = ('gang', 'provider__name')
     date_hierarchy = 'datum'
 
     def get_queryset(self, request):
@@ -83,19 +85,20 @@ class ClientAdmin(admin.ModelAdmin):
                     f"Client '{client.name}' hat schon Zutaten eingegeben",
                     messages.ERROR)
                 return
-            for z in zutaten_list:
-                if len(z) == 5:
-                    zutaten.append(Zutat(
-                        name=z[0],
-                        client=client,
-                        einheit=z[1],
-                        menge_pro_einheit=z[2],
-                        masseinheit=z[3],
-                        kategorie=z[4]))
+            for (name, einheit, menge_pro_einheit, masseinheit,
+                 kategorie) in zutaten_list:
+                zutaten.append(Zutat(
+                    name=name,
+                    client=client,
+                    einheit=einheit,
+                    menge_pro_einheit=menge_pro_einheit,
+                    masseinheit=masseinheit,
+                    kategorie=kategorie))
         Zutat.objects.bulk_create(zutaten)
         self.message_user(
             request, "Zutaten wurden importiert", messages.SUCCESS)
-    import_zutaten.short_description = "Standardzutaten für neuen Client importieren"
+    import_zutaten.short_description = \
+        "Standardzutaten für neuen Client importieren"
 
 
 admin.site.register(Zutat, ZutatAdmin)
@@ -103,4 +106,6 @@ admin.site.register(Rezept, RezeptAdmin)
 admin.site.register(RezeptZutat)
 admin.site.register(GangPlan, GangPlanAdmin)
 admin.site.register(Client, ClientAdmin)
+admin.site.register(Provider)
+admin.site.register(Domain)
 admin.site.register(Editor)

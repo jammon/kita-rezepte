@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-import csv
 import json
-import os
 from datetime import date
 
 from django.conf import settings
@@ -14,24 +12,24 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.template.loader import select_template
 
 from .forms import ZutatForm, RezeptForm
-from .models import (Client, Rezept, Zutat, RezeptZutat, GangPlan,
+from .models import (Provider, Rezept, Zutat, RezeptZutat, GangPlan,
                      get_einkaufsliste)
-from .utils import (check_client, days_in_month, next_dow,
+from .utils import (check_client, check_provider, days_in_month, next_dow,
                     MONATSNAMEN, next_month)
 
 
 def index(request):
-    if request.client is not None:
+    if request.provider is not None:
         return render(
-            request, "rezepte/client-index.html",
-            {'client': request.client,
+            request, "rezepte/provider-index.html",
+            {'provider': request.provider,
              'template': select_template(
-                [f'rezepte/clients/{c}.html' for c in
-                 (request.client.slug, 'generic')]),
+                [f'rezepte/providers/{c}.html' for c in
+                 (request.provider.slug, 'generic')]),
              'no_login_link': True})
-    clients = Client.objects.all().order_by('name')
+    providers = Provider.objects.all().order_by('name')
     return render(request, "rezepte/index.html",
-                  {'clients': clients, 'no_login_link': True})
+                  {'providers': providers, 'no_login_link': True})
 
 
 # TODO: Wie mit request.client umgehen?
@@ -42,8 +40,11 @@ def login(request):
             user = form.get_user()
             if user is not None:
                 auth.login(request, user)
-                write_client_id_to_session(request.session, user)
+                session = request.session
+                session['user_name'] = user.get_full_name() or user.get_username()
+                write_provider_to_session(request.provider, session)
                 client_slug = request.session.get('client_slug')
+                # TODO
                 if client_slug:
                     if client_slug == "dev":
                         return HttpResponseRedirect('/monat')
@@ -58,22 +59,20 @@ def login(request):
     return render(request, 'rezepte/login.html', {'form': form})
 
 
+def write_provider_to_session(provider, session):
+    # is a separate function for testing
+    session['client_id'] = provider.client.id
+    session['client_slug'] = provider.client.slug
+    session['provider_id'] = provider.id
+    session['provider_slug'] = provider.slug
+    session['gaenge'] = provider.get_gaenge()
+    session['kategorien'] = provider.get_kategorien()
+
+
 # TODO: Wie mit request.client umgehen?
 def logout(request):
     auth.logout(request)
     return HttpResponseRedirect('/')
-
-
-def write_client_id_to_session(session, user):
-    session['user_name'] = user.get_full_name() or user.get_username()
-    try:
-        client = user.editor.client
-        session['client_id'] = client.id
-        session['client_slug'] = client.slug
-        session['gaenge'] = client.get_gaenge()
-        session['kategorien'] = client.get_kategorien()
-    except auth.models.User.editor.RelatedObjectDoesNotExist:
-        pass
 
 
 # TODO: Wie mit request.client umgehen?
@@ -95,7 +94,7 @@ def rezepte(request, id=0, slug=''):
     # show just one recipe
     try:
         rezept = Rezept.objects.get(
-            client=request.client,
+            provider=request.provider,  # TODO: brauche ich die Zeile?
             **get_query_args(id, slug))
     except Rezept.DoesNotExist:
         return alle_rezepte(
@@ -113,11 +112,11 @@ def alle_rezepte(request, msg=''):
     """ Zeigt alle Rezepte, für jeden Gang eine Spalte,
         dann nach Kategorien geordnet
     """
-    if request.client is None:
-        raise Http404
-    recipes = Rezept.objects.filter(client=request.client).order_by('slug')
-    gaenge = request.client.get_gaenge()
-    kategorien = request.client.get_kategorien()
+    if request.provider is None:
+        raise Http404  # TODO: Redirect auf Hauptseite
+    recipes = Rezept.objects.filter(provider=request.provider).order_by('slug')
+    gaenge = request.provider.get_gaenge()
+    kategorien = request.provider.get_kategorien()
     data = []
     for g in gaenge:
         g_data = []
@@ -145,14 +144,14 @@ def alle_rezepte(request, msg=''):
 
 
 @login_required
-@check_client
+@check_provider
 def rezept_edit(request, id=0, slug=''):
     if id or slug:
         rezept = get_object_or_404(
-            Rezept, client=request.client, **get_query_args(id, slug))
+            Rezept, provider=request.provider, **get_query_args(id, slug))
     else:
         # neues Rezept
-        rezept = Rezept(client=request.client)
+        rezept = Rezept(provider=request.provider)
     if request.method == 'POST':
         form = RezeptForm(
             request.POST, instance=rezept, session=request.session)
@@ -235,26 +234,6 @@ def zutaten_delete(request):
                     msg=f'Zutat {zutat.name} wurde gelöscht')
 
 
-@login_required
-@check_client
-def zutaten_import(request):
-    with open(os.path.join(settings.BASE_DIR, "zutaten.csv")) as csvfile:
-        csvreader = csv.reader(csvfile, delimiter=';')
-        zutaten = (
-            Zutat(
-                name=name,
-                client=request.client,
-                einheit=einheit,
-                menge_pro_einheit=menge_pro_einheit,
-                masseinheit=masseinheit,
-                kategorie=kategorie)
-            for (name, einheit, menge_pro_einheit, masseinheit, kategorie)
-            in csvreader)
-        Zutat.objects.bulk_create(zutaten)
-    return redirect("/zutaten/",
-                    msg=f'Standardzutaten wurden importiert')
-
-
 # Monat ------------------------------------------------------------------
 def monat(request, year=0, month=0):
     today = date.today()
@@ -267,7 +246,7 @@ def monat(request, year=0, month=0):
     planungen = GangPlan.objects.filter(
         datum__gte=date(year, month, 1),
         datum__lt=naechster_erster,
-        client=request.client,
+        provider=request.provider,
     ).select_related('rezept')
     planungen_js = [
         {'datum': [g.datum.year, g.datum.month, g.datum.day],
@@ -281,16 +260,16 @@ def monat(request, year=0, month=0):
          'kategorien': r.kategorie_list,
          'preis': str(r.preis() or '--').replace('.', ',')}
         for r in Rezept.objects.filter(
-                client=request.client
+                provider=request.provider
             ).order_by('slug')]
     data = {'planungen': planungen_js,
             'rezepte': rezepte,
             'month': month,
             'year': year,
-            'gangfolge': request.client.gaenge,
+            'gangfolge': request.provider.gaenge,
             'days_in_month': days_in_month(year, month),
             'is_authenticated': request.user.is_authenticated}
-    gaenge = request.client.gaenge.split()
+    gaenge = request.provider.gaenge.split()
     return render(request, 'rezepte/monat.html', {
         'data': json.dumps(data),
         'month_name': MONATSNAMEN[month],
@@ -307,11 +286,11 @@ def tag(request, year=0, month=0, day=0):
     day = date(int(year), int(month), int(day)) if year else date.today()
     planungen = GangPlan.objects.filter(
         datum=day,
-        client=request.client,
+        provider=request.provider,
     ).select_related('rezept')
 
     def sortkey(planung):
-        return request.client.gaenge.find(planung.gang)
+        return request.provider.gaenge.find(planung.gang)
 
     data = {'planungen': sorted(planungen, key=sortkey),
             'day': day,

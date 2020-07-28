@@ -1,18 +1,21 @@
 # -*- coding: utf-8 -*-
-from .utils import get_client
-from .models import Client
+from .models import Domain
 
 
 def subdomain_middleware(get_response):
-    # One-time configuration and initialization.
 
     def middleware(request):
         # Code to be executed for each request before
         # the view (and later middleware) are called.
-        request.client_slug = get_client(request)
+        domain_name = request.get_host().split(':')[0]
         try:
-            request.client = Client.objects.get(slug=request.client_slug)
-        except Client.DoesNotExist:
+            domain = (Domain.objects
+                      .select_related('provider', 'provider__client')
+                      .get(domain=domain_name))
+            request.provider = domain.provider
+            request.client = domain.provider.client
+        except Domain.DoesNotExist:
+            request.provider = None
             request.client = None
 
         response = get_response(request)

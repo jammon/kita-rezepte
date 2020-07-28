@@ -7,7 +7,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.text import slugify
 
-from .utils import prettyFloat, cent2euro, get_client_domain
+from .utils import prettyFloat, cent2euro
 
 REZEPTKATEGORIEN = (
     ("Reis", "Reis"),
@@ -40,7 +40,26 @@ class Client(models.Model):
     """ Eine Kita, für die geplant wird """
     name = models.CharField(max_length=30)
     slug = models.SlugField(max_length=30, blank=True, unique=True,
-                            help_text='wird i.d.R. aus titel berechnet')
+                            help_text='wird i.d.R. aus dem Namen berechnet')
+
+    class Meta:
+        verbose_name = "Mandant"
+        verbose_name_plural = "Mandanten"
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name, allow_unicode=True)
+        super().save(*args, **kwargs)
+
+
+class Provider(models.Model):
+    name = models.CharField(max_length=30)
+    slug = models.SlugField(max_length=30, blank=True, unique=True,
+                            help_text='wird i.d.R. aus dem Namen berechnet')
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
     gaenge = models.CharField(
         max_length=50, help_text='z.B. "Vorspeise Hauptgang Nachtisch"',
         default="Vorspeise Hauptgang Nachtisch")
@@ -55,8 +74,8 @@ class Client(models.Model):
         help_text='Auf der Hauptseite verbergen')
 
     class Meta:
-        verbose_name = "Mandant"
-        verbose_name_plural = "Mandanten"
+        verbose_name = "Einrichtung"
+        verbose_name_plural = "Einrichtungen"
 
     def __str__(self):
         return self.name
@@ -66,14 +85,19 @@ class Client(models.Model):
             self.slug = slugify(self.name, allow_unicode=True)
         super().save(*args, **kwargs)
 
-    def get_domain(self):
-        return get_client_domain(self.slug)
-
     def get_gaenge(self):
         return self.gaenge.split()
 
     def get_kategorien(self):
         return self.kategorien.split()
+
+
+class Domain(models.Model):
+    domain = models.CharField(max_length=32)
+    provider = models.ForeignKey(Provider, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.domain
 
 
 class Editor(models.Model):
@@ -166,8 +190,14 @@ class Rezept(models.Model):
     '''
     titel = models.CharField(max_length=100)
     untertitel = models.CharField(max_length=100, blank=True, null=True)
+    # TODO: Löschen nach der Migration
     client = models.ForeignKey(
-        Client, on_delete=models.CASCADE, related_name="rezepte")
+        Client, on_delete=models.CASCADE, related_name="rezepte",
+        null=True)
+    # TODO: remove `null=True` after the migration
+    provider = models.ForeignKey(
+        Provider, on_delete=models.CASCADE, related_name="rezepte",
+        null=True)
     slug = models.SlugField(
         max_length=100, blank=True,
         help_text='wird i.d.R. aus titel berechnet')
@@ -317,8 +347,12 @@ class GangPlan(models.Model):
     """ Speichert ein Rezept mit Gang (Vorspeise, Hauptgang und Nachtisch)
     und Datum
     """
+    # TODO: Löschen nach der Migration
     client = models.ForeignKey(
         Client, on_delete=models.CASCADE, related_name="menues")
+    # TODO: remove `null=True` after the migration
+    provider = models.ForeignKey(
+        Provider, on_delete=models.CASCADE, related_name="menues", null=True)
     datum = models.DateField()
     rezept = models.ForeignKey(Rezept, on_delete=models.CASCADE)
     gang = models.CharField(max_length=15)
@@ -355,7 +389,7 @@ def get_einkaufsliste(client, start, dauer):
     """
     # Für "Folgende Rezepte wurden geplant"
     rezept_plaene = GangPlan.objects.filter(
-        client=client,
+        provider__client=client,
         datum__gte=start,
         datum__lt=start+timedelta(dauer)
     ).values_list('rezept__titel', 'rezept_id')

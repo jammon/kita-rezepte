@@ -43,19 +43,20 @@ Zutaten:
 - Die Subdomain im Webserver anlegen. 
     + `uberspace web domain add <slug>.kita-rezepte.de`
     + `uberspace web domain add <slug>.kitarez.uber.space`
-- Den Client in der Admin-Site anlegen.
+- Den Client, den Provider und die Domain in der Admin-Site anlegen.
 - Editor anlegen.
 - (Admin anlegen.)
-- template anlegen (`rezepte/templates/rezepte/clients/<slug>.html`)
+- template anlegen (`rezepte/templates/rezepte/providers/<slug>.html`)
+- Standardzutaten können über die Admin-Seite importiert werden
 
 ### Einrichtungen
-(TODO: Dieses Feature muss noch implementiert werden.)
-
 - Ein Client kann mehrere Einrichtungen haben. 
 - Jede Einrichtung hat eigene Rezepte, aber alle Zutaten sind bei einem Client gleich.
 - Die Einkaufsliste gibt es nur ein Mal.
 
 ## Rezepte übernehmen
+(TODO: Dieses Feature muss noch implementiert werden.)
+
 - Wenn man für einen Client eingeloggt ist, kann man Rezepte eines anderen Clients übernehmen.
 - Dafür hat das Rezept einen Button "Für eigene Einrichtung übernehmen".
 - Die Funktion kopiert das Rezept.

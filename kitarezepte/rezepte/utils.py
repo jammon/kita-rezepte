@@ -10,31 +10,7 @@ MONATSNAMEN = ("", "Januar", "Februar", "März", "April", "Mai", "Juni", "Juli",
                "August", "September", "Oktober", "November", "Dezember",)
 
 
-def get_client(request):
-    client = host2client(request.get_host())
-    if client == 'dev' and not request.user.is_authenticated:
-        return ''
-    return client
-
-
-def host2client(host):
-    # strip port
-    hostname = host.split(':')[0]
-    if '.' in hostname:
-        c = hostname.split('.', maxsplit=1)[0]
-    else:
-        c = hostname
-    if c in ('localhost', '127'):
-        return 'dev'
-    if c == 'testserver':
-        # for unittests
-        return 'test-kita'
-    if c in ('kita-rezepte', settings.KITAREZEPTE_DOMAIN, 'www'):
-        return ''
-    return c
-
-
-def get_client_domain(slug):
+def get_provider_domain(slug):
     if slug in ('dev', 'test-kita'):
         return '127.0.0.1:8000'
     return slug + '.' + settings.KITAREZEPTE_FULL_DOMAIN
@@ -43,8 +19,17 @@ def get_client_domain(slug):
 def check_client(f):
     @wraps(f)
     def wrapper(request, *args, **kwargs):
-        if request.client_slug != request.session.get('client_slug'):
+        if request.client.slug != request.session.get('client_slug'):
             return HttpResponse(status=403, reason="Falscher Client.")
+        return f(request, *args, **kwargs)
+    return wrapper
+
+
+def check_provider(f):
+    @wraps(f)
+    def wrapper(request, *args, **kwargs):
+        if request.provider.slug != request.session.get('provider_slug'):
+            return HttpResponse(status=403, reason="Falsche Einrichtung.")
         return f(request, *args, **kwargs)
     return wrapper
 

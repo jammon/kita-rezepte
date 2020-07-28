@@ -3,8 +3,9 @@ import json
 from datetime import date
 from django.contrib.auth.models import User
 from django.test import TestCase
-from rezepte.models import Client, Editor, Rezept, GangPlan
+from rezepte.models import Client, Provider, Domain, Editor, Rezept, GangPlan
 from rezepte.utils import TEST_REZEPT
+from rezepte.views import write_provider_to_session
 
 
 class Set_GangplanTestcase(TestCase):
@@ -12,13 +13,17 @@ class Set_GangplanTestcase(TestCase):
     def setUp(self):
         user = User.objects.create_user('test', 'test@test.tld', 'test')
         self.rez_client = Client.objects.create(name='Test-Kita')
+        self.rez_provider = Provider.objects.create(
+            name='Test-Kita', client=self.rez_client)
+        Domain.objects.create(domain='testserver', provider=self.rez_provider)
         Editor.objects.create(user=user, client=self.rez_client)
         self.client.force_login(user)
         session = self.client.session
-        session['client_slug'] = self.rez_client.slug
+        write_provider_to_session(self.rez_provider, session)
         session.save()
         self.rezept = Rezept.objects.create(
-            titel="Testrezept", client=self.rez_client, **TEST_REZEPT)
+            titel="Testrezept", client=self.rez_client,
+            provider=self.rez_provider, **TEST_REZEPT)
 
     def test_post(self):
         response = self.client.post(
@@ -34,7 +39,8 @@ class Set_GangplanTestcase(TestCase):
             data['rezept'], {'id': self.rezept.id, 'titel': self.rezept.titel})
 
         gang = GangPlan.objects.get(
-            client=self.rez_client,
+            # client=self.rez_client,
+            provider=self.rez_provider,
             datum=date(2019, 4, 23),
             gang="Vorspeise")
         self.assertEqual(gang.rezept_id, self.rezept.id)
@@ -78,9 +84,9 @@ class Set_GangplanTestcase(TestCase):
                 datum=date(2019, 4, 23),
                 gang="Vorspeise")
 
-    def test_post_wrong_client(self):
+    def test_post_wrong_provider(self):
         session = self.client.session
-        session['client_slug'] = 'otherclient'
+        session['provider_slug'] = 'otherprovider'
         session.save()
         response = self.client.post(
             '/ajax/set-gang/',

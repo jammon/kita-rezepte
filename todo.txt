@@ -20,16 +20,16 @@
 (B) Rezept mit halber Menge (drittel, zweidrittel) planen
 (B) Bei Subdomains CNAME-Eintrag testen
 (C) Caching einbauen
-(B) 404.html, 500.html, 403.html und 400.html erstellen
+(C) 404.html, 500.html, 403.html und 400.html erstellen
 (B) In der Einkaufsliste die qualitativen Mengen auf die Rezepte verlinken
 (C) 404 für Hauptseite anpassen, damit die alten Rezepte wieder funktionieren
 (C) Link zu admin auf Hauptseite
 (B) Rezepte und Zutaten in admin nach Client sortieren
-(A) Mehrere Einrichtungen für einen Client
 (C) Squash migrations, remove taggit
 (B) Feiertage eingeben
 (C) Unittests für javascript schreiben
 (C) URLs mit Verweis auf den zugehörigen Client in die Datenbank
 (A) neue Version deployen
-Für jedes Rezept anzeigen, wann es die letzten Male geplant wurde
-Aus einem Rezept (evtl. eines anderen Mandanten) eine Kopie zum Editieren erstellen, ggf. mit Benachrichtigung des Rezeptspenders
+(B) Für jedes Rezept anzeigen, wann es die letzten Male geplant wurde
+(B) Aus einem Rezept (evtl. eines anderen Mandanten) eine Kopie zum Editieren erstellen, ggf. mit Benachrichtigung des Rezeptspenders
+(B) Zutaten nach Saison einordnen
