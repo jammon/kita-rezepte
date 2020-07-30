@@ -34,10 +34,9 @@ class LoginTestcase(TestCase):
             '/login/', {'username': 'test', 'password': 'test'})
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
         self.assertRedirects(response,
-                             'https://test-kita.kita-rezepte.de/monat',
+                             'https://test-kita.kita-rezepte.de/choose_provider',
                              fetch_redirect_response=False)
         self.assertEqual(self.client.session['user_name'], 'test')
-        self.assertEqual(self.client.session['client_slug'], 'test-kita')
 
     def test_post_wrong_data(self):
         self.setup_user()

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
+from collections import namedtuple
 from datetime import date
 from django.contrib.auth.models import User
 from django.test import TestCase
@@ -18,9 +19,10 @@ class Set_GangplanTestcase(TestCase):
         Domain.objects.create(domain='testserver', provider=self.rez_provider)
         Editor.objects.create(user=user, client=self.rez_client)
         self.client.force_login(user)
-        session = self.client.session
-        write_provider_to_session(self.rez_provider, session)
-        session.save()
+        MockRequest = namedtuple('MockRequest', ['provider', 'session'])
+        request = MockRequest(self.rez_provider, self.client.session)
+        write_provider_to_session(request)
+        request.session.save()
         self.rezept = Rezept.objects.create(
             titel="Testrezept", client=self.rez_client,
             provider=self.rez_provider, **TEST_REZEPT)
