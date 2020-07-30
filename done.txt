@@ -97,3 +97,4 @@ x 2020-06-24 Bei Preiseingabe sollen nur die Preisinputfelder auszuwählen sein
 x 2020-06-24 Enter soll bei Preiseingabe weiter führen
 x 2020-06-24 Wie wird der Preis eines Rezeptes berechnet, wenn der Preis einer Zutat None ist?
 x 2020-07-28 Mehrere Einrichtungen für einen Client
+x 2020-07-30 In der Einkaufsliste erwähnen, für welche Einrichtungen diese gilt.

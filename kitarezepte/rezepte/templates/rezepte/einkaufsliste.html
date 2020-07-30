@@ -12,6 +12,9 @@
       {% endif %}
       <h1>Einkaufliste</h1>
       <p>ab {{ start }} für {{ dauer }} Tage</p>
+      {% if providers %}
+        <p>für {{ providers|join:", " }} </p>
+      {% endif %}
     </div>
   </div>
   <div class="row">

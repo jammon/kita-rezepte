@@ -442,5 +442,7 @@ def get_einkaufsliste(client, start, dauer):
         'dauer': dauer,
         'rezepte': sorted(set(rezept_plaene)),
         'messbar': beautify_amounts(messbar),
-        'qualitativ': sorted(qualitativ.items(), key=key)
+        'qualitativ': sorted(qualitativ.items(), key=key),
+        'providers': [p.name for p in client.providers.all()]
+                     if client.mult_providers else [],
     }
