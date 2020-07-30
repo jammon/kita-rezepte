@@ -69,6 +69,8 @@ class GangPlanAdmin(admin.ModelAdmin):
 
 
 class ClientAdmin(admin.ModelAdmin):
+    readonly_fields = ('mult_providers',)
+
     actions = ['import_zutaten']
 
     def import_zutaten(self, request, queryset):
@@ -101,11 +103,21 @@ class ClientAdmin(admin.ModelAdmin):
         "Standardzutaten für neuen Client importieren"
 
 
+class DomainInline(admin.TabularInline):
+    model = Domain
+
+
+class ProviderAdmin(admin.ModelAdmin):
+    inlines = [
+        DomainInline,
+    ]
+
+
 admin.site.register(Zutat, ZutatAdmin)
 admin.site.register(Rezept, RezeptAdmin)
 admin.site.register(RezeptZutat)
 admin.site.register(GangPlan, GangPlanAdmin)
 admin.site.register(Client, ClientAdmin)
-admin.site.register(Provider)
+admin.site.register(Provider, ProviderAdmin)
 admin.site.register(Domain)
 admin.site.register(Editor)

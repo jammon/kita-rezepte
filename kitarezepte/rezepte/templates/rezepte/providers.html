@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="row">
+    <div class="col">
+      <h1>Kita-Rezepte</h1>
+      <p>Welche Einrichtung soll bearbeitet werden?</p>
+      <ul>
+        {% for provider in request.client.providers.all %}
+            <li><a href="{{ provider.full_path }}/choose_provider">
+            {{ provider.name }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+{% endblock content %}

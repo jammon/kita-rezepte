@@ -2,7 +2,6 @@
 import json
 from datetime import date
 
-from django.conf import settings
 from django.contrib import auth
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
@@ -12,8 +11,8 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.template.loader import select_template
 
 from .forms import ZutatForm, RezeptForm
-from .models import (Provider, Rezept, Zutat, RezeptZutat, GangPlan,
-                     get_einkaufsliste)
+from .models import (Client, Provider, Rezept, Zutat, RezeptZutat,
+                     GangPlan, get_einkaufsliste, Editor)
 from .utils import (check_client, check_provider, days_in_month, next_dow,
                     MONATSNAMEN, next_month)
 
@@ -32,7 +31,6 @@ def index(request):
                   {'providers': providers, 'no_login_link': True})
 
 
-# TODO: Wie mit request.client umgehen?
 def login(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, request.POST)
@@ -42,16 +40,26 @@ def login(request):
                 auth.login(request, user)
                 session = request.session
                 session['user_name'] = user.get_full_name() or user.get_username()
-                write_provider_to_session(request.provider, session)
-                client_slug = request.session.get('client_slug')
-                # TODO
-                if client_slug:
-                    if client_slug == "dev":
-                        return HttpResponseRedirect('/monat')
-                    return HttpResponseRedirect(
-                        f'https://{client_slug}.'
-                        f'{settings.KITAREZEPTE_FULL_DOMAIN}/monat')
-                return HttpResponseRedirect('/')
+                # get client for user
+                try:
+                    client = user.editor.client
+                except (Editor.DoesNotExist, Client.DoesNotExist):
+                    # The user is not editor of a client
+                    # TODO: Add some message?
+                    return redirect('/')
+                # get providers for client
+                providers = client.providers.all()
+                if len(providers) == 1:
+                    # it's only one -> use it
+                    return redirect(
+                        f'{providers[0].full_path()}/choose_provider')
+                elif len(providers) == 0:
+                    # there is no provider
+                    return redirect('/')
+                    # TODO: Add some message? Should not happen!
+                else:
+                    # present choice
+                    return redirect("providers")
             else:
                 form.add_error(None, "Fehler bei der Anmeldung!")
     else:
@@ -59,23 +67,41 @@ def login(request):
     return render(request, 'rezepte/login.html', {'form': form})
 
 
-def write_provider_to_session(provider, session):
+def write_provider_to_session(request, providers=None):
     # is a separate function for testing
-    session['client_id'] = provider.client.id
-    session['client_slug'] = provider.client.slug
-    session['provider_id'] = provider.id
-    session['provider_slug'] = provider.slug
-    session['gaenge'] = provider.get_gaenge()
-    session['kategorien'] = provider.get_kategorien()
+    provider = request.provider
+    request.session['client_id'] = provider.client.id
+    request.session['client_slug'] = provider.client.slug
+    request.session['provider_id'] = provider.id
+    request.session['provider_slug'] = provider.slug
+    request.session['gaenge'] = provider.get_gaenge()
+    request.session['kategorien'] = provider.get_kategorien()
+    if providers is None:
+        providers = provider.client.providers.all()
+    if len(providers) > 1:
+        request.session['other_providers'] = tuple(
+            (p.name, p.full_path()) for p in providers if p.id != provider.id)
 
 
-# TODO: Wie mit request.client umgehen?
+def providers(request):
+    return render(request, 'rezepte/providers.html')
+
+
+def choose_provider(request):
+    provider = request.provider
+    if provider and provider.client_id == request.user.editor.client_id:
+        write_provider_to_session(request)
+        return redirect('/monat')
+    else:
+        # TODO: error message;  Should not happen!
+        return redirect('/')
+
+
 def logout(request):
     auth.logout(request)
-    return HttpResponseRedirect('/')
+    return redirect('/')
 
 
-# TODO: Wie mit request.client umgehen?
 def get_query_args(id=0, slug=''):
     res = {}
     if id:
@@ -227,8 +253,16 @@ def zutaten_delete(request):
     if request.method != 'POST' or 'zutat_id' not in request.POST:
         return redirect("zutaten")
     id = request.POST['zutat_id']
-    zutat = get_object_or_404(Zutat, client=request.client, id=id)
-    # TODO: check for recipes
+    try:
+        zutat = Zutat.objects.get(client=request.client, id=id)
+    except Zutat.DoesNotExist:
+        return redirect("/zutaten/",
+                        msg='Fehler beim Löschen einer Zutat')
+    rezepte = list(zutat.rezepte.values_list('titel', flat=True))
+    if len(rezepte) > 0:
+        return redirect("/zutaten/",
+                        msg=f'Zutat {zutat.name} wurde nicht gelöscht. '
+                            f'Es wird verwendet in "{", ".join(rezepte)}"')
     zutat.delete()
     return redirect("/zutaten/",
                     msg=f'Zutat {zutat.name} wurde gelöscht')

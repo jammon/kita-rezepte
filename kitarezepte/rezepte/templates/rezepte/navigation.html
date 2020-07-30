@@ -5,10 +5,10 @@
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
-    {% if request.client %}
+    {% if request.provider %}
         <li class="nav-item navbar-brand" id="nav-home">
           <a href="/" class="nav-link">
-            {{ request.client.name }}
+            {{ request.provider.name }}
           </a>
         </li>
       <li class="nav-item" id="nav-rezepte">
@@ -32,6 +32,14 @@
           {{ request.user.get_full_name }}
         </a>
         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+          {% if request.session.other_providers %}
+          {% for name, path in request.session.other_providers %}
+              <li><a href="{{ path }}/choose_provider" class="dropdown-item">
+                {{ name }}
+              </a></li>
+          {% endfor %}
+            
+          {% endif %}
           <li><a class="dropdown-item" href="/logout">Abmelden</a></li>
           <li><a class="dropdown-item" href="/change-password">Passwort ändern</a></li>
         </ul>

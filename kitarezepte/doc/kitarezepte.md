@@ -53,6 +53,8 @@ Zutaten:
 - Ein Client kann mehrere Einrichtungen haben. 
 - Jede Einrichtung hat eigene Rezepte, aber alle Zutaten sind bei einem Client gleich.
 - Die Einkaufsliste gibt es nur ein Mal.
+- Wenn sich ein Editor für mehrere Einrichtungen einloggt, dann bekommt er eine Auswahlseite mit den Einrichtungen.
+- Ein Editor für mehrere Einrichtungen hat im Menu Links zu den anderen Einrichtungen.
 
 ## Rezepte übernehmen
 (TODO: Dieses Feature muss noch implementiert werden.)

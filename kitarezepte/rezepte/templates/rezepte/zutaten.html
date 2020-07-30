@@ -31,7 +31,7 @@
             &euro;
           </td>
           <td class="text-right">{{ z.menge_pro_einheit }} {{ z.masseinheit }} </td>
-          <td>{{ z.kategorie }} </td>
+          <td>{{ z.get_kategorie_display }} </td>
           <td>
             {% if z.rezepte__count %}
               {{ z.rezepte__count }} Rezept{{ z.rezepte__count|pluralize:"e" }}
@@ -58,8 +58,7 @@
         </tr>
       {% endfor %}
       </table>
-    </div>
-    
+    </div>    
   </div>
   <span class="zutat-preis-input hidden">
     <input type="text" value="" size="6"></span>

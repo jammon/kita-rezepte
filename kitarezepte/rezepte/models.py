@@ -37,10 +37,12 @@ ZUTATENKATEGORIEN = (
 
 
 class Client(models.Model):
-    """ Eine Kita, für die geplant wird """
+    """ Ein Mandant, der evtl. mehrere Kitas haben kann """
     name = models.CharField(max_length=30)
     slug = models.SlugField(max_length=30, blank=True, unique=True,
                             help_text='wird i.d.R. aus dem Namen berechnet')
+    mult_providers = models.BooleanField(
+        "Mehrere Einrichtungen", default=False)
 
     class Meta:
         verbose_name = "Mandant"
@@ -56,10 +58,12 @@ class Client(models.Model):
 
 
 class Provider(models.Model):
+    """ Eine Kita, für die geplant wird """
     name = models.CharField(max_length=30)
     slug = models.SlugField(max_length=30, blank=True, unique=True,
                             help_text='wird i.d.R. aus dem Namen berechnet')
-    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    client = models.ForeignKey(
+        Client, on_delete=models.CASCADE, related_name="providers")
     gaenge = models.CharField(
         max_length=50, help_text='z.B. "Vorspeise Hauptgang Nachtisch"',
         default="Vorspeise Hauptgang Nachtisch")
@@ -72,6 +76,7 @@ class Provider(models.Model):
         "verborgen",
         default=False,
         help_text='Auf der Hauptseite verbergen')
+    _domain = models.CharField("Domain", max_length=32, default="")
 
     class Meta:
         verbose_name = "Einrichtung"
@@ -84,6 +89,8 @@ class Provider(models.Model):
         if not self.slug:
             self.slug = slugify(self.name, allow_unicode=True)
         super().save(*args, **kwargs)
+        self.client.mult_providers = self.client.providers.count() > 1
+        self.client.save()
 
     def get_gaenge(self):
         return self.gaenge.split()
@@ -91,8 +98,23 @@ class Provider(models.Model):
     def get_kategorien(self):
         return self.kategorien.split()
 
+    def main_domain(self):
+        return self._domain or self.slug + ".kita-rezepte.de"
+
+    def full_path(self):
+        LOCALHOSTS = ("localhost", "127.0.0.1")
+        domain = self.main_domain()
+        protocol = \
+            'http://' if domain.split(':')[0] in LOCALHOSTS else 'https://'
+        return protocol + domain
+
 
 class Domain(models.Model):
+    """ A Provider can be reached in several domains
+
+    This is for resolution of domain names.
+    The main domain of a Provider is provider.main_domain()
+    """
     domain = models.CharField(max_length=32)
     provider = models.ForeignKey(Provider, on_delete=models.CASCADE)
 

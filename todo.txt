@@ -33,3 +33,9 @@
 (B) Für jedes Rezept anzeigen, wann es die letzten Male geplant wurde
 (B) Aus einem Rezept (evtl. eines anderen Mandanten) eine Kopie zum Editieren erstellen, ggf. mit Benachrichtigung des Rezeptspenders
 (B) Zutaten nach Saison einordnen
+(A) Menge von Zutaten in Rezepten änderbar machen
+(B) In Admin für Domain Link zeigen, der in einem neuen Tab öffnet
+Rezept-Kategorien farblich markieren
+In der Einkaufsliste erwähnen, für welche Einrichtungen diese gilt.
+Wie ist das Menu wenn providers in kita-rezepte.de aufgerufen wird, z.B. nach dem Einloggen
+write tests for login, choose_provider
