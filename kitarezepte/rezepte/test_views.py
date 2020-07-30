@@ -22,11 +22,11 @@ class LoginTestcase(TestCase):
         self.assertTemplateUsed(response, 'rezepte/login.html')
 
     def setup_user(self):
-        client = Client.objects.create(name='Test-Kita')
-        provider = Provider.objects.create(
-            name='Test-Kita', client=client)
-        Domain.objects.create(domain='testserver', provider=provider)
-        create_user('test', client)
+        self.kitaclient = Client.objects.create(name='Test-Kita')
+        self.provider = Provider.objects.create(
+            name='Test-Kita', client=self.kitaclient)
+        Domain.objects.create(domain='testserver', provider=self.provider)
+        create_user('test', self.kitaclient)
 
     def test_post(self):
         self.setup_user()
@@ -44,11 +44,25 @@ class LoginTestcase(TestCase):
             '/login/', {'username': 'test', 'password': 'wrong'})
         self.assertEqual(response.context['form'].is_valid(), False)
 
-    # def test_no_editor(self):
-    #     User.objects.create_user('test', 'test@test.tld', 'test')
-    #     self.client.post('/login/', {'username': 'test', 'password': 'test'})
-    #     self.assertEqual(self.client.session['user_name'], 'test')
-    #     # TODO: what is expected here?
+    def test_choose_provider(self):
+        self.setup_user()
+        self.client.login(username='test', password='test')
+        self.client.get('/choose_provider')
+        session = self.client.session
+        self.assertEqual(session['client_id'], self.kitaclient.id)
+        self.assertEqual(session['client_slug'], self.kitaclient.slug)
+        self.assertEqual(session['provider_id'], self.provider.id)
+        self.assertEqual(session['provider_slug'], self.provider.slug)
+        self.assertEqual(session['gaenge'], self.provider.get_gaenge())
+        self.assertEqual(session['kategorien'], self.provider.get_kategorien())
+        self.assertIsNone(session.get('providers', None))
+
+
+class Choose_providerTestcase(TestCase):
+    """Test choose_provider view"""
+
+    def setUp(self):
+        pass
 
 
 class WrongClientTestcase(TestCase):
