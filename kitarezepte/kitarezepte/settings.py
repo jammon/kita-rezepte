@@ -85,9 +85,14 @@ elif servermode == 'production':
 DEBUG = servermode == 'development'
 
 ALLOWED_HOSTS = (
-    [] if DEBUG else
-    ['.kita-rezepte.de', '.kitarez.uber.space',  # FIXME
+    ['.localhost',
+     '.kita-rezepte.test',
+     '127.0.0.1'] if DEBUG else
+    ['.kita-rezepte.de',
+     '.kitarez.uber.space',  # FIXME
      '.' + KITAREZEPTE_FULL_DOMAIN])  # '.kita-rezepte.de' taucht jetzt 2 mal auf
+SESSION_COOKIE_DOMAIN = '.kita-rezepte.test' if DEBUG else '.kita-rezepte.de'
+SESSION_COOKIE_NAME = 'kr-sessionid'
 
 ADMINS = [("Johannes Ammon", "j.ammon@dr-ammon.de")]
 MANAGERS = ADMINS

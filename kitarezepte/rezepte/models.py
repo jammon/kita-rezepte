@@ -102,10 +102,14 @@ class Provider(models.Model):
         return self._domain or self.slug + ".kita-rezepte.de"
 
     def full_path(self):
-        LOCALHOSTS = ("localhost", "127.0.0.1")
+        LOCALHOSTS = ("localhost", "127.0.0.1", "kita-rezepte.test")
         domain = self.main_domain()
-        protocol = \
-            'http://' if domain.split(':')[0] in LOCALHOSTS else 'https://'
+        for host in LOCALHOSTS:
+            if host in domain:
+                protocol = 'http://'
+                break
+        else:
+            protocol = 'https://'
         return protocol + domain
 
 

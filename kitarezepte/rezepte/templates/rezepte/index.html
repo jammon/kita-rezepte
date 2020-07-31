@@ -5,9 +5,9 @@
       <h1>Kita-Rezepte</h1>
       <p>Hier werden die Rezepte und Kochpläne von Tageseinrichtungen geplant, dargestellt und verwaltet.</p>
       <ul>
-        {% for client in clients %}
-          {% if not client.hidden %}
-            <li><a href="https://{{ client.get_domain }}">{{ client.name }}</a></li>
+        {% for provider in providers %}
+          {% if not provider.hidden %}
+            <li><a href="{{ provider.full_path }}">{{ provider.name }}</a></li>
           {% endif %}
         {% endfor %}
       </ul>

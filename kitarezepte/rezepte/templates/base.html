@@ -28,6 +28,9 @@
       <div class="container">
         <a class="mx-3" href="/impressum/">Impressum</a>
         <a class="mx-3" href="https://kita-rezepte.de">kita-rezepte.de</a>
+        {% if user.is_authenticated and request.session.provider_id != request.provider.id %}
+        <span>Angemeldet für <a href="{{ request.session.provider_path }}">{{ request.session.provider_name }}</a></span>
+        {% endif %}
       </div>
     </footer>
 

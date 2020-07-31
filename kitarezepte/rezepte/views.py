@@ -74,6 +74,8 @@ def write_provider_to_session(request, providers=None):
     request.session['client_slug'] = provider.client.slug
     request.session['provider_id'] = provider.id
     request.session['provider_slug'] = provider.slug
+    request.session['provider_name'] = provider.name
+    request.session['provider_path'] = provider.full_path()
     request.session['gaenge'] = provider.get_gaenge()
     request.session['kategorien'] = provider.get_kategorien()
     if providers is None:
@@ -83,10 +85,14 @@ def write_provider_to_session(request, providers=None):
             (p.name, p.full_path()) for p in providers if p.id != provider.id)
 
 
+@login_required
 def providers(request):
-    return render(request, 'rezepte/providers.html')
+    return render(
+        request, 'rezepte/providers.html',
+        {'providers': request.user.editor.client.providers.all()})
 
 
+@login_required
 def choose_provider(request):
     provider = request.provider
     if provider and provider.client_id == request.user.editor.client_id:
