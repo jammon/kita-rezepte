@@ -1,4 +1,3 @@
-(B) Bedeutung von KITAREZEPTE_DOMAIN und KITAREZEPTE_FULL_DOMAIN bei kitarez und kita-rezepte überdenken
 (B) Editier-Views sollten darauf achten, dass der richtige Client bearbeitet wird
 (B) In /zutaten ist der Preis pro Einheit mit -1 vorbelegt
 (B) In /zutaten sollte der Preis als Kommazahl einzugeben sein
@@ -16,7 +15,6 @@
 (C) User-Eingabe-Maske bauen
 (D) Meta-Description und Title für die einzelnen Seiten anpassen
 (D) Zutaten nach der Häufigkeit der Benutzung anzeigen
-(A) Rezepte von anderen Kitas übernehmen
 (B) Rezept mit halber Menge (drittel, zweidrittel) planen
 (B) Bei Subdomains CNAME-Eintrag testen
 (C) Caching einbauen
@@ -31,9 +29,9 @@
 (C) URLs mit Verweis auf den zugehörigen Client in die Datenbank
 (A) neue Version deployen
 (B) Für jedes Rezept anzeigen, wann es die letzten Male geplant wurde
-(B) Aus einem Rezept (evtl. eines anderen Mandanten) eine Kopie zum Editieren erstellen, ggf. mit Benachrichtigung des Rezeptspenders
 (B) Zutaten nach Saison einordnen
 (A) Menge von Zutaten in Rezepten änderbar machen
 (B) In Admin für Domain Link zeigen, der in einem neuen Tab öffnet
 (B) Rezept-Kategorien farblich markieren
 (A) Wie ist das Menu wenn providers in kita-rezepte.de aufgerufen wird, z.B. nach dem Einloggen
+Speichern, wenn ein Rezept übernommen wurde

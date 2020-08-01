@@ -11,11 +11,14 @@
       {% if rezepte %}
         <div>
           <h2>{{ zutat.name }} wird in diesen Rezepten verwendet:</h2>
-          <ul>
-            {% for r in rezepte %}
-              <li><a href="/rezepte/{{ r.slug }}">{{ r.titel }}</a></li>
-            {% endfor %}
-          </ul>
+          {% for r in rezepte %}
+            {% if request.client.mult_providers %}
+              {% ifchanged  %}
+                <h4>{{ r.provider.name }}</h4>  
+              {% endifchanged %}
+            {% endif %}
+            <p class="mb-1"><a href="{{ r.get_absolute_url }}">{{ r.titel }}</a></p>
+          {% endfor %}
         </div>
       {% elif zutat_id %}
         <div>{{ zutat.name }} wird zur Zeit in keinem Rezept verwendet.</div>

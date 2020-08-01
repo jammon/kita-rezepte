@@ -1,19 +1,12 @@
 # coding: utf-8
 from datetime import date, timedelta
 from decimal import Decimal
-from django.conf import settings
 from django.http import HttpResponse
 from functools import wraps
 
 
 MONATSNAMEN = ("", "Januar", "Februar", "März", "April", "Mai", "Juni", "Juli",
                "August", "September", "Oktober", "November", "Dezember",)
-
-
-def get_provider_domain(slug):
-    if slug in ('dev', 'test-kita'):
-        return '127.0.0.1:8000'
-    return slug + '.' + settings.KITAREZEPTE_FULL_DOMAIN
 
 
 def check_client(f):

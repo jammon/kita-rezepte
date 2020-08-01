@@ -275,6 +275,9 @@ class Rezept(models.Model):
     def __str__(self):
         return self.titel
 
+    def get_absolute_url(self):
+        return f"{self.provider.full_path()}/rezepte/{self.id}"
+
     def save(self, *args, **kwargs):
         if not self.pk:
             self.calculate_slug()

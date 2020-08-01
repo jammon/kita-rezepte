@@ -30,8 +30,6 @@ config.read_string("""
     [django]
     [server]
         mode: production
-        domain: kita-rezepte
-        fulldomain: kita-rezepte.de
 """)
 config.read(CONFIG_FILE)
 try:
@@ -40,9 +38,6 @@ except KeyError:
     config['django']['key'] = SECRET_KEY = random_string(50)
     with open(CONFIG_FILE, 'w') as configfile:
         config.write(configfile)
-
-KITAREZEPTE_DOMAIN = config['server']['domain']  # e.g. 'kitarez'
-KITAREZEPTE_FULL_DOMAIN = config['server']['fulldomain']  # e.g. 'kitarez.uber.space'
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
@@ -85,12 +80,9 @@ elif servermode == 'production':
 DEBUG = servermode == 'development'
 
 ALLOWED_HOSTS = (
-    ['.localhost',
-     '.kita-rezepte.test',
-     '127.0.0.1'] if DEBUG else
-    ['.kita-rezepte.de',
-     '.kitarez.uber.space',  # FIXME
-     '.' + KITAREZEPTE_FULL_DOMAIN])  # '.kita-rezepte.de' taucht jetzt 2 mal auf
+    ['.localhost', '.kita-rezepte.test', '127.0.0.1']
+    if DEBUG else
+    ['.kita-rezepte.de', '.kitarez.uber.space'])
 SESSION_COOKIE_DOMAIN = '.kita-rezepte.test' if DEBUG else '.kita-rezepte.de'
 SESSION_COOKIE_NAME = 'kr-sessionid'
 

@@ -99,3 +99,6 @@ x 2020-06-24 Wie wird der Preis eines Rezeptes berechnet, wenn der Preis einer Z
 x 2020-07-28 Mehrere Einrichtungen für einen Client
 x 2020-07-30 In der Einkaufsliste erwähnen, für welche Einrichtungen diese gilt.
 x 2020-07-30 write tests for login, choose_provider
+x 2020-07-31 Rezepte von anderen Kitas übernehmen
+x 2020-07-31 Aus einem Rezept (evtl. eines anderen Mandanten) eine Kopie zum Editieren erstellen, ggf. mit Benachrichtigung des Rezeptspenders
+x 2020-07-31 Bedeutung von KITAREZEPTE_DOMAIN und KITAREZEPTE_FULL_DOMAIN bei kitarez und kita-rezepte überdenken

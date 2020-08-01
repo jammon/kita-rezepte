@@ -137,7 +137,9 @@ def rezepte(request, id=0, slug=''):
         'rezepte/rezept.html',
         {'recipe': rezept,
          'zutaten': rezept.zutaten.all().select_related('zutat')
-            .order_by('nummer')})
+            .order_by('nummer'),
+         'user_is_editor':
+            request.provider.id == request.session.get('provider_id')})
 
 
 def alle_rezepte(request, msg=''):
@@ -211,6 +213,51 @@ def rezept_edit(request, id=0, slug=''):
                    'rezeptzutaten': rezeptzutaten})
 
 
+@login_required
+def rezept_takeover(request, id):
+    original = get_object_or_404(Rezept, id=id)
+    if original.provider_id == request.session['provider_id']:
+        return redirect('/rezepte/')
+    gaenge = ' '.join(
+        g for g in original.gang_list
+        if g in request.session['gaenge'])
+    kategorien = ' '.join(
+        k for k in original.kategorie_list
+        if k in request.session['kategorien'])
+    rez = Rezept.objects.create(
+        titel=original.titel,
+        untertitel=original.untertitel,
+        client_id=request.session['client_id'],
+        provider_id=request.session['provider_id'],
+        slug=original.slug,
+        fuer_kinder=original.fuer_kinder,
+        fuer_erwachsene=original.fuer_erwachsene,
+        zubereitung=original.zubereitung,
+        anmerkungen=original.anmerkungen,
+        gang=gaenge,
+        kategorien=kategorien,
+    )
+    zutaten = original.zutaten.all().select_related('zutat')
+    z_dict = dict((zutat.name, zutat) for zutat in Zutat.objects.filter(
+        name__in=(z.zutat.name for z in zutaten)))
+    rz = []
+    for z in zutaten:
+        rz.append(RezeptZutat(
+            rezept=rez,
+            zutat=z_dict.get(z.zutat.name) or Zutat.objects.create(
+                name=z.zutat.name,
+                client=request.client,
+                einheit=z.zutat.einheit,
+                menge_pro_einheit=z.zutat.menge_pro_einheit,
+                masseinheit=z.zutat.masseinheit,
+                kategorie=z.zutat.kategorie),
+            menge=z.menge,
+            menge_qualitativ=z.menge_qualitativ,
+            nummer=z.nummer))
+    RezeptZutat.objects.bulk_create(rz)
+    return redirect(rez)
+
+
 # Zutaten ------------------------------------------------------------------
 @login_required
 def zutaten(request, msg=''):
@@ -233,7 +280,7 @@ def zutat_edit(request, id=0, msg=''):
             raise Http404
         rezepte = Rezept.objects.filter(
             zutaten__zutat=zutat
-        ).order_by('titel')
+        ).order_by('provider__name', 'titel').select_related('provider')
     else:
         # neue Zutat
         zutat = Zutat(client=request.client)

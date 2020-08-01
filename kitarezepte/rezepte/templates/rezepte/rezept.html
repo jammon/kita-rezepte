@@ -17,7 +17,7 @@
       <h2>Zutaten</h2>
       {% for rz in zutaten  %}
         <p>
-          {% if user.is_authenticated %}
+          {% if user_is_editor %}
             <a href="/zutaten/{{ rz.zutat.id }}">{{ rz }}</a>
           {% else %}
             {{ rz }}
@@ -28,13 +28,13 @@
     <div class="col col-sm-8 col-md-9">
       <h2>Zubereitung</h2>
       <p>{{ recipe.zubereitung|safe }}</p>
-      {% if recipe.anmerkungen and user.is_authenticated %}
+      {% if recipe.anmerkungen and user_is_editor %}
         <h2>Anmerkungen</h2>
         <p>{{ recipe.anmerkungen|safe }}</p>
       {% endif %}
 
       <div class="row mt-3">
-      {% if user.is_authenticated %}
+      {% if user_is_editor %}
         <div class="col"><a href="{{ recipe.id }}/edit" class="btn btn-primary" role="button">Bearbeiten</a></div>
       {% endif %}
         <div class="col">Geeignet als {{ recipe.gang_list|join:", " }} </div>
@@ -45,5 +45,14 @@
         </div>
       </div>
     </div>
+  </div>
+  <div class="row">
+    {% if user.is_authenticated and request.session.provider_id != request.provider.id %}
+      <div class="col">
+        <a href="{{ recipe.id }}/takeover" class="btn btn-primary" role="button">
+          Rezept für {{ request.session.provider_name }} übernehmen
+        </a>
+      </div>
+    {% endif %}
   </div>
 {% endblock content %}
