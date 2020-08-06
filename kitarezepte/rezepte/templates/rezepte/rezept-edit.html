@@ -41,17 +41,14 @@
         </tr>
       </table>
       <div id="zutaten">
-        <ul id="zutatenliste" class="list-group"></ul>
+        <table class="zutaten-table mb-4" id="zutatenliste">
+        </table>
         <table>
           <tr>
-            <th><label for="zutateneingabe">Zutat</label></th>
-            <th><label for="mengeneingabe">Menge</label></th>
-            <th></th>
+            <th><label for="zutateneingabe">Weitere Zutat</label></th>
           </tr>
           <tr>
             <td><input id="zutateneingabe" name="zutateneingabe" type="text"></td>
-            <td><input id="mengeneingabe" name="mengeneingabe" type="text"></td>
-            <td id="einheit_fuer_eingabe"></td>
           </tr>
         </table>
       </div>
@@ -88,7 +85,7 @@
      aria-labelledby="zutatModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
-      <form action="/ajax/add-zutat/" id="add-zutat" method="post">{% csrf_token %}
+      <form action="/ajax/add-zutat/" id="add-zutat-form" method="post">{% csrf_token %}
       <div class="modal-header">
         <h5 class="modal-title" id="zutatModalLabel">Neue Zutat</h5>
         <button type="button" class="close" data-dismiss="modal"
@@ -122,6 +119,7 @@
 
 {% endblock content %}
 {% block extrascripts %}
+{% include "rezepte/rezept-edit-templates.html" %}
 <script src="{% static 'vendor/jquery-ui-1.12.1.custom/jquery-ui.js' %}"></script>
 <script src="{% static 'vendor/underscore.js' %}"></script>
 <script src="{% static 'vendor/backbone.js' %}"></script>

@@ -6,11 +6,6 @@ var kategorien = {};
 var gangkategorien = {};
 var data = {};  // data like 'gangfolge', 'days_in_month', 'year', 'month', 'is_authenticated'
 
-// var _user_can_change = false;
-// function user_can_change(can_change) {
-//     if (arguments.length===0) return _user_can_change;
-//     _user_can_change = can_change;
-// }
 
 // Planung has a
 // - day (1-31)
@@ -66,32 +61,47 @@ var Zutat = Backbone.Model.extend({
     },
 });
 
+function is_quantitativ(value) {
+    return /^\d+$/.test(value);
+}
 // RezeptZutat has
 // - zutat - a Zutat
-// - menge - an Integer *or*
-// - menge_qualitativ - a string
+// - menge - an Integer *or* a string
 // - nummer - an Int
 var RezeptZutat = Backbone.Model.extend({
     initialize: function() {
         if (!this.get('zutat')) {
             this.set('zutat', zutaten.get({id: this.get('zutat_id')}));
         }
+        let mq = this.get('menge_qualitativ');
+        if (mq)
+            this.set('menge', mq);
     },
     toString: function() {
         let zutat = this.get('zutat');
         let name = zutat.get('name');
-        if (this.has('menge_qualitativ'))
-            return this.get('menge_qualitativ') + ' ' + name;
-        let einheit = zutat.get_einheit();
         let menge = this.get('menge');
-        if (einheit)
-            return menge + ' ' + einheit + ' ' + name;
+        if (is_quantitativ(menge)) {
+            let einheit = zutat.get_einheit();
+            if (einheit)
+                return menge + ' ' + einheit + ' ' + name;
+        }
         return menge + ' ' + name;
     },
     toJson: function() {
-        let res = _.pick(this.attributes, 'menge', 'menge_qualitativ', 'nummer');
-        res.zutat_id = this.get('zutat').get('id');
+        let res = {
+            zutat_id: this.get('zutat').get('id'),
+            nummer: this.get('nummer'),
+        };
+        let menge = this.get('menge');
+        if (is_quantitativ(menge))
+            res.menge = parseInt(menge);
+        else
+            res.menge_qualitativ = menge;
         return JSON.stringify(res);
+    },
+    is_quantitativ: function() {
+        return is_quantitativ(this.get('menge'));
     },
 });
 
@@ -127,6 +137,7 @@ return {
     RezeptZutat: RezeptZutat,
     kategorien: kategorien,
     gangkategorien: gangkategorien,
+    is_quantitativ: is_quantitativ,
     data: data,
 };
 })($, _, Backbone);

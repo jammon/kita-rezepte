@@ -57,15 +57,13 @@ Zutaten:
 - Ein Editor für mehrere Einrichtungen hat im Menu Links zu den anderen Einrichtungen.
 
 ## Rezepte übernehmen
-(TODO: Dieses Feature muss noch implementiert werden.)
-
 - Wenn man für einen Client eingeloggt ist, kann man Rezepte eines anderen Clients übernehmen.
-- Dafür hat das Rezept einen Button "Für eigene Einrichtung übernehmen".
+- Dafür hat das Rezept einen Button "Für &lt;eigene Einrichtung&gt; übernehmen".
 - Die Funktion kopiert das Rezept.
 - Zutaten werden übernommen
     + Wenn Zutaten beim eigenen Client nicht vorhanden sind, werden sie ohne Preis angelegt und die Mengen übernommen.
     + Wenn Zutaten vorhanden sind, und die Einheit gleich ist, werden die Mengen übernommen.
-    + Wenn Zutaten vorhanden sind, und die Einheit verschieden ist, wird die Menge qualitativ übernommen. (Problem markieren?)
+    + TODO: Wenn Zutaten vorhanden sind, und die Einheit verschieden ist, wird die Menge qualitativ übernommen. (Problem markieren?)
     + Gang und Kategorien werden nur übernommen, wenn sie beim Client vorhanden sind.
 
 ## Zutaten übernehmen
@@ -79,8 +77,6 @@ Neu eingerichtete Kitas bekommen ein Set von häufigen Zutaten ohne Preis. Das s
 
     [server]
     mode = production | development
-    domain = kita-rezepte
-    fulldomain=kita-rezepte.de
 
     [mail]
     password = <EMAIL_HOST_PASSWORD>

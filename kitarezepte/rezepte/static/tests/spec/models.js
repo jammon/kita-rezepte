@@ -1,3 +1,4 @@
+// jshint esversion: 6
 describe("Rezept", function() {
     it("should initialize kategorien", function() {
         models.data.gangfolge = ['Vorspeise', 'Hauptgang', 'Nachtisch'];
@@ -43,5 +44,15 @@ describe("RezeptZutat", function() {
             menge: 3,
         });
         expect(rz.toString()).toBe("3 Eier");
+    });
+});
+describe("is_quantitativ", function() {
+    it("should read values", function() {
+        expect(models.is_quantitativ("500")).toBe(true);
+        expect(models.is_quantitativ("5,00")).toBe(false); // keine Kommazahlen
+        expect(models.is_quantitativ("5.00")).toBe(false); // keine Kommazahlen
+        expect(models.is_quantitativ("500 g")).toBe(false);
+        expect(models.is_quantitativ("eine Prise")).toBe(false);
+        expect(models.is_quantitativ("1/2")).toBe(false);
     });
 });

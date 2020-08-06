@@ -22,7 +22,6 @@
 (B) In der Einkaufsliste die qualitativen Mengen auf die Rezepte verlinken
 (C) 404 für Hauptseite anpassen, damit die alten Rezepte wieder funktionieren
 (C) Link zu admin auf Hauptseite
-(B) Rezepte und Zutaten in admin nach Client sortieren
 (C) Squash migrations, remove taggit
 (B) Feiertage eingeben
 (C) Unittests für javascript schreiben
@@ -30,8 +29,7 @@
 (A) neue Version deployen
 (B) Für jedes Rezept anzeigen, wann es die letzten Male geplant wurde
 (B) Zutaten nach Saison einordnen
-(A) Menge von Zutaten in Rezepten änderbar machen
 (B) In Admin für Domain Link zeigen, der in einem neuen Tab öffnet
 (B) Rezept-Kategorien farblich markieren
 (A) Wie ist das Menu wenn providers in kita-rezepte.de aufgerufen wird, z.B. nach dem Einloggen
-Speichern, wenn ein Rezept übernommen wurde
+(B) Speichern, wenn ein Rezept übernommen wurde

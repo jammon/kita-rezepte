@@ -90,27 +90,76 @@ var MonatView = Backbone.View.extend({
 // Rezept - Edit ----------------------------------------------------
 //
 // RezeptZutatView: Zeigt eine RezeptZutat an
+// MengenEingabeView: Input für Menge (quant. oder qual.)
+// EinheitView: stellt die passende Einheit dar
 // ZutatenListeView: Zeigt die Liste der Rezeptzutaten
+
 // ZutatenEingabeView: Autocomplete-Input für die Auswahl der Zutat
 // NeueZutatView: Modaler Dialog für die Eingabe einer neuen Zutat
-// MengenEingabeView: Input für Menge (quant. oder qual.)
-// EinheitView: stellt die passende Einheiit dar
 // ZutatenView: Stellt die anderen Views für die Eingabe der Zutaten dar
 
 var RezeptZutatView = Backbone.View.extend({
-    tagName: 'li',
-    className: "list-group-item",
+    tagName: 'tr',
+    template: _.template($('#zutat-zeile').html()),
     events: {
-        'click .delete': 'delete',
+        'click .delete-zutat': 'delete',
+        'change .mengeneingabe': 'update'
+    },
+    initialize: function() {
+        this.zutat = this.model.get('zutat');
+
+        this.mengeneingabe = new MengenEingabeView({model: this.model});
+        this.einheitview = new EinheitView({model: this.model});
+        this.einheitview.listenTo(
+            this.mengeneingabe, 'menge-changed', this.einheitview.change_hidden);
     },
     render: function() {
-        this.$el.html(
-            '<span class="delete">&times;</span>' + this.model.toString());
+        this.$el.empty()
+            .append($("<td>")
+                .append(this.mengeneingabe.render().el)
+                .append(this.einheitview.render().el))
+            .append($("<td>").text(this.zutat.get('name')))
+            .append($('<td><a class="btn btn-small btn-light delete-zutat">&times;</a></td>'));
         return this;
     },
     delete: function() {
         this.$el.remove();
         this.trigger('delete', this);
+    },
+});
+
+var MengenEingabeView = Backbone.View.extend({
+    tagName: 'input',
+    className: 'mengeneingabe',
+    events: {
+        'keyup': 'input_changed',
+        'blur': 'update_model',
+    },
+    render: function() {
+        this.$el.val(this.model.get('menge'));
+        return this;
+    },
+    input_changed: function(event) {
+        this.trigger(
+            'menge-changed', models.is_quantitativ(event.target.value));
+    },
+    update_model: function() {
+        return this.model.set('menge', this.$el.val());
+    },
+    focus: function() {
+        this.$el.focus();
+    },
+});
+
+var EinheitView = Backbone.View.extend({
+    tagName: "span",
+    render: function() {
+        this.$el.text(this.model.get('zutat').get_einheit());
+        this.change_hidden(this.model.is_quantitativ());
+        return this;
+    },
+    change_hidden: function(enabled) {
+        this.$el.toggleClass('hidden', !enabled);
     },
 });
 
@@ -121,16 +170,20 @@ var ZutatenListeView = Backbone.View.extend({
         this.listenTo(this.collection, "add", this.appendModelView);
     },
     render: function() {
-        this.$el.children().remove();
+        this.$el.empty();
         this.zutaten_views = [];
-        this.collection.each(this.appendModelView, this);
+        this.collection.each(function(rz) {
+            this.appendModelView(rz, this.collection, {});
+        }, this);
         return this;
     },    
-    appendModelView: function(model) {
+    appendModelView: function(model, collection, options) {
         var view = new views.RezeptZutatView({model: model}).render();
         this.$el.append(view.el);
         this.zutaten_views.push(view);
         this.listenTo(view, 'delete', this.delete_model);
+        if (options.added) 
+            view.$el.find("input").focus();
     },
     delete_model: function(view) {
         this.collection.remove(view.model);
@@ -141,6 +194,15 @@ var ZutatenListeView = Backbone.View.extend({
 });
 
 var ZutatenEingabeView = Backbone.View.extend({
+    // Zutat aus der Liste auswählen
+    // bei Enter die Zutat in die Rezeptzutatenliste einfügen
+    // wenn die Zutat noch nicht bekannt ist,
+    //   NeueZutat aufrufen
+    // das Ergebnis von NeueZutat in die Auswahl einfügen
+    //   und wie bei Enter weitermachen
+    events: {
+        'keydown': 'keydown',
+    },
     initialize: function() {
         let that = this;
         let el = this.$el;
@@ -158,31 +220,41 @@ var ZutatenEingabeView = Backbone.View.extend({
                 response(subarray(matcher1).concat(subarray(matcher2)));
             },
             autoFocus: true,
-            change: function(event, ui) { that.check_zutat(ui.item, true); },
+            delay: 0,
+            focus: function(event, ui) {
+                console.log('focus  - ui.item.value: ' + ui.item.value);
+                that.zutat = models.zutaten.findWhere({name: ui.item.value});
+            },
+            response: function(event, ui) {
+                if (ui.content.length === 0) {
+                    // Nichts gefunden
+                    that.zutat = null;
+                }
+            },
         });
         this.listenTo(models.zutaten, "update", function(zutaten) {
             el.autocomplete("option", "source", zutaten.pluck('name'));
         });
         let neuezutatview = new NeueZutatView({el: $("#zutatModal")});
-        this.listenTo(neuezutatview, "NeueZutat", this.check_zutat);
+        this.listenTo(neuezutatview, "NeueZutat", this.choose_zutat);
     },
-    check_zutat: function(item, edited) {
-        if (item) {
-            this.zutat = models.zutaten.findWhere({'name': item.value});
-        } else {
-            let lower_name = this.$el.val().toLocaleLowerCase('de-DE');
-            this.zutat = models.zutaten.find(function(zutat) {
-                return zutat.get('name').toLocaleLowerCase('de-DE').indexOf(lower_name) > -1;
-            });
+    keydown: function(event) {
+        if (event.key == "Enter" || event.key == "Tab") {
+            event.preventDefault();
+            if (this.zutat) 
+                this.choose_zutat(this.zutat);
+            else 
+                this.show_NeueZutat();
         }
-        if (this.zutat) {
-            if (edited) this.$el.val(this.zutat.get('name'));
-            this.trigger("zutat-selected", this.zutat);
-        } else if (edited) {
-            $('#add-zutat')[0].reset();
-            $('#zutatModal #id_name').val(this.$el.val());
-            $('#zutatModal').modal();
-        }
+    },
+    choose_zutat: function(zutat) {
+        models.rezeptzutaten.add({zutat: zutat}, {added: true});
+        this.$el.val('');
+    },
+    show_NeueZutat: function() {
+        $('#add-zutat-form')[0].reset();
+        $('#zutatModal #id_name').val(this.$el.val());
+        $('#zutatModal').modal();
     },
     empty: function(focus) {
         this.$el.val('');
@@ -194,7 +266,7 @@ var ZutatenEingabeView = Backbone.View.extend({
 var NeueZutatView = Backbone.View.extend({
     initialize: function() {
         let that = this;
-        let zutatform = this.$('#add-zutat');
+        let zutatform = this.$('#add-zutat-form');
         let el = this.$el;
         zutatform.submit(function () {
             $.ajax({
@@ -202,9 +274,9 @@ var NeueZutatView = Backbone.View.extend({
                 url: zutatform.attr('action'),
                 data: zutatform.serialize(),
                 success: function (data) {
-                    models.zutaten.add(JSON.parse(data.zutat));
+                    let zutat = models.zutaten.add(JSON.parse(data.zutat));
                     el.modal('hide');
-                    that.trigger("NeueZutat");
+                    that.trigger("NeueZutat", zutat);
                     $("#mengeneingabe").focus();
                 },
                 dataType: "json",
@@ -217,45 +289,6 @@ var NeueZutatView = Backbone.View.extend({
     },
 });
 
-var MengenEingabeView = Backbone.View.extend({
-    events: {
-        'input': 'input_changed',
-        'keyup': 'maybe_enter',
-    },
-    initialize: function() {
-        this.regex = /^\d+(,\d*)?$/;
-        this.quantitativ = false;
-    },
-    input_changed: function(event) {
-        this.quantitativ = this.regex.test(event.target.value);
-        this.trigger('menge-changed', this.quantitativ);
-    },
-    maybe_enter: function(event) {
-        if (event.key=='Enter') {
-            this.trigger('menge-ready');
-        }
-    },
-    get_menge: function() {
-        if (this.quantitativ) {
-            return {menge: this.$el.val()};
-        } else {
-            return {menge_qualitativ: this.$el.val()};
-        }
-    },
-    empty: function() {
-        this.$el.val('');
-    },
-});
-
-var EinheitView = Backbone.View.extend({
-    new_unit: function(zutat) {
-        this.$el.text(zutat.get_einheit());
-    },
-    change_greyed_out: function(enabled) {
-        this.$el.toggleClass('text-muted', !enabled);
-    },
-});
-
 var ZutatenView = Backbone.View.extend({
     initialize: function() {
         this.zutatenliste = (new ZutatenListeView({
@@ -263,17 +296,9 @@ var ZutatenView = Backbone.View.extend({
             collection: models.rezeptzutaten,
         })).render();
         this.zutateneingabe = new ZutatenEingabeView({el: this.$("#zutateneingabe")});
-        this.mengeneingabe = new MengenEingabeView({el: this.$("#mengeneingabe")});
-        this.einheitview = new EinheitView({el: this.$("#einheit_fuer_eingabe")});
-        this.einheitview.listenTo(
-            this.zutateneingabe, "zutat-selected", this.einheitview.new_unit);
-        this.einheitview.listenTo(
-            this.mengeneingabe, 'menge-changed', this.einheitview.change_greyed_out);
-        this.listenTo(this.mengeneingabe, 'menge-ready', this.neue_zutat);
-        this.zutateneingabe.check_zutat();
-    },
-    zutat_changed: function(zutat) {
-        this.$("#einheit_fuer_eingabe").text(zutat.get_einheit());
+        this.zutatenliste.listenTo(
+            this.zutateneingabe, 'neue_zutat',
+            this.zutateneingabe.neue_zutat);
     },
     neue_zutat: function() {
         let rz_dict = this.mengeneingabe.get_menge();
@@ -284,6 +309,8 @@ var ZutatenView = Backbone.View.extend({
         models.rezeptzutaten.add(rz_dict);
     },
     write_rz_inputs: function() {
+        // call this before saving the form
+        // to produce the hidden inputs for the RezeptZutaten
         this.zutatenliste.zutaten_views.forEach(function(view, index) {
             let nr = view.$el.index();
             view.model.set('nummer', nr);
