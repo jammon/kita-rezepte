@@ -104,3 +104,12 @@ x 2020-07-31 Aus einem Rezept (evtl. eines anderen Mandanten) eine Kopie zum Edi
 x 2020-07-31 Bedeutung von KITAREZEPTE_DOMAIN und KITAREZEPTE_FULL_DOMAIN bei kitarez und kita-rezepte überdenken
 x 2020-08-06 Menge von Zutaten in Rezepten änderbar machen
 x 2020-08-06 Rezepte und Zutaten in admin nach Client sortieren
+x 2020-08-07 In /zutaten ist der Preis pro Einheit mit -1 vorbelegt
+x 2020-08-07 In /zutaten sollte der Preis als Kommazahl einzugeben sein
+x 2020-08-07 Wenn man sich bei slug.kitarez.uber.space anmeldet, wird man auf slug.kita-rezepte.de weitergeleitet
+x 2020-08-07 zutat.name sollte unique sein +models
+x 2020-08-07 Cached templates aktivieren https://docs.djangoproject.com/en/2.2/ref/templates/api/#template-loaders +deployment
+x 2020-08-07 Caching einbauen
+x 2020-08-07 Ist User und Editor eine 1:1-Beziehung? Kann man das sicherstellen?
+x 2020-08-07 URLs mit Verweis auf den zugehörigen Client in die Datenbank
+x 2020-08-07 CONN_MAX_AGE setzen +deployment

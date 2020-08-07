@@ -1,23 +1,15 @@
 (B) Editier-Views sollten darauf achten, dass der richtige Client bearbeitet wird
-(B) In /zutaten ist der Preis pro Einheit mit -1 vorbelegt
-(B) In /zutaten sollte der Preis als Kommazahl einzugeben sein
-(B) Wenn man sich bei slug.kitarez.uber.space anmeldet, wird man auf slug.kita-rezepte.de weitergeleitet
-(B) zutat.name sollte unique sein +models
-(C) Allergene erfassen
+(A) Allergene erfassen
 (C) Benutzerrollen für Lesen und Planen
-(C) Cached templates aktivieren https://docs.djangoproject.com/en/2.2/ref/templates/api/#template-loaders +deployment
-(C) CONN_MAX_AGE setzen +deployment
 (C) Datenschutzerklärung verfassen +public
 (B) FAQ schreiben +public
 (C) Hauptseite der Kitas mit TinyMCE editierbar machen
-(C) Ist User und Editor eine 1:1-Beziehung? Kann man das sicherstellen?
 (C) Nicht-öffentliche Rezepte
 (C) User-Eingabe-Maske bauen
 (D) Meta-Description und Title für die einzelnen Seiten anpassen
 (D) Zutaten nach der Häufigkeit der Benutzung anzeigen
 (B) Rezept mit halber Menge (drittel, zweidrittel) planen
 (B) Bei Subdomains CNAME-Eintrag testen
-(C) Caching einbauen
 (C) 404.html, 500.html, 403.html und 400.html erstellen
 (B) In der Einkaufsliste die qualitativen Mengen auf die Rezepte verlinken
 (C) 404 für Hauptseite anpassen, damit die alten Rezepte wieder funktionieren
@@ -25,10 +17,9 @@
 (C) Squash migrations, remove taggit
 (B) Feiertage eingeben
 (C) Unittests für javascript schreiben
-(C) URLs mit Verweis auf den zugehörigen Client in die Datenbank
 (A) neue Version deployen
 (B) Für jedes Rezept anzeigen, wann es die letzten Male geplant wurde
-(B) Zutaten nach Saison einordnen
+(A) Zutaten nach Saison einordnen
 (B) In Admin für Domain Link zeigen, der in einem neuen Tab öffnet
 (B) Rezept-Kategorien farblich markieren
 (A) Wie ist das Menu wenn providers in kita-rezepte.de aufgerufen wird, z.B. nach dem Einloggen

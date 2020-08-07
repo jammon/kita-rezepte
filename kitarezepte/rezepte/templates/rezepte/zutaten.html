@@ -30,7 +30,11 @@
             </span>
             &euro;
           </td>
-          <td class="text-right">{{ z.menge_pro_einheit }} {{ z.masseinheit }} </td>
+          <td class="text-right">
+            {% if z.menge_pro_einheit %}
+              {{ z.menge_pro_einheit }} {{ z.masseinheit }} 
+            {% endif %}
+          </td>
           <td>{{ z.get_kategorie_display }} </td>
           <td>
             {% if z.rezepte__count %}
