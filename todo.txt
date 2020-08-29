@@ -24,3 +24,4 @@
 (B) Rezept-Kategorien farblich markieren
 (A) Wie ist das Menu wenn providers in kita-rezepte.de aufgerufen wird, z.B. nach dem Einloggen
 (B) Speichern, wenn ein Rezept übernommen wurde
+Upgrade to Django 3.1.1
