@@ -49,5 +49,9 @@ Soll testen, ob die Preise nach der Migration noch gleich sind.
 
 Die 194 häufigsten Zutaten sind in `/kitarezepte/zutaten.csv`.
 
-##Zutaten in neuen Client importieren
-Wenn der Client noch keine Zutaten hat, erscheint in der Liste der Zutaten eine entsprechende Aufforderung.
+## Zutaten in neuen Client importieren
+Aktion im Admin.
+
+## Allergene
+Lebensmittelinformationsverordnung, in Anhang 2 ist die Liste der Allergene.
+https://eur-lex.europa.eu/legal-content/DE/TXT/?uri=CELEX:02011R1169-20180101

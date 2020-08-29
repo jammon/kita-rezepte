@@ -100,12 +100,12 @@ var MonatView = Backbone.View.extend({
 
 var RezeptZutatView = Backbone.View.extend({
     tagName: 'tr',
-    template: _.template($('#zutat-zeile').html()),
     events: {
         'click .delete-zutat': 'delete',
         'change .mengeneingabe': 'update'
     },
     initialize: function() {
+        this.template = this.template || _.template($('#zutat-zeile').html());
         this.zutat = this.model.get('zutat');
 
         this.mengeneingabe = new MengenEingabeView({model: this.model});
