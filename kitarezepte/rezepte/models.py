@@ -249,6 +249,10 @@ class Rezept(models.Model):
         null=True,
         blank=True,
         help_text='kann leer sein, wird dann automatisch berechnet')
+    aktiv = models.BooleanField(
+        'aktiv',
+        default=True, 
+        help_text='Für die Planung verwenden')
 
     class Meta:
         verbose_name = "Rezept"

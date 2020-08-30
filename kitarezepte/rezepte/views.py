@@ -148,7 +148,8 @@ def alle_rezepte(request, msg=''):
     """
     if request.provider is None:
         raise Http404  # TODO: Redirect auf Hauptseite
-    recipes = Rezept.objects.filter(provider=request.provider).order_by('slug')
+    all_recipes = Rezept.objects.filter(provider=request.provider).order_by('slug')
+    recipes = [r for r in all_recipes if r.aktiv]
     gaenge = request.provider.get_gaenge()
     kategorien = request.provider.get_kategorien()
     data = []
@@ -173,7 +174,8 @@ def alle_rezepte(request, msg=''):
     return render(
         request, 'rezepte/rezepte.html', {
             'recipes': data,
-            'msg': msg
+            'inaktive': [r for r in all_recipes if not r.aktiv],
+            'msg': msg,
         })
 
 
@@ -345,7 +347,8 @@ def monat(request, year=0, month=0):
          'titel': r.titel,
          'gang': r.gang.split(),
          'kategorien': r.kategorie_list,
-         'preis': str(r.preis() or '--').replace('.', ',')}
+         'preis': str(r.preis() or '--').replace('.', ','),
+         'aktiv': r.aktiv}
         for r in Rezept.objects.filter(
                 provider=request.provider
             ).order_by('slug')]

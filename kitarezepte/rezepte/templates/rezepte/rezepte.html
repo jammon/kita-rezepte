@@ -29,7 +29,16 @@
         <div class="col">Es sind noch keine Rezepte eingegeben.</div>
       {% endfor %}
       </div>
-      </table>
+      {% if inaktive %}
+        <div class="row rezept-liste">
+          <div class="col">
+            <h2>Nicht zu planende Rezepte</h2>
+            {% for r in inaktive  %}
+              <p><a href="{{ r.slug }}">{{ r.titel }}</a></p>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
     </div>
   </div>
 {% endblock content %}

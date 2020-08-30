@@ -46,13 +46,20 @@
       </div>
     </div>
   </div>
-  <div class="row">
-    {% if user.is_authenticated and request.session.provider_id != request.provider.id %}
+  {% if not recipe.aktiv %}
+    <div class="row">
+      <div class="col">
+        Dieses Rezept wird derzeit nicht geplant.
+      </div>
+    </div>
+  {% endif %}
+  {% if user.is_authenticated and request.session.provider_id != request.provider.id %}
+    <div class="row">
       <div class="col">
         <a href="{{ recipe.id }}/takeover" class="btn btn-primary" role="button">
           Rezept für {{ request.session.provider_name }} übernehmen
         </a>
       </div>
-    {% endif %}
-  </div>
+    </div>
+  {% endif %}
 {% endblock content %}

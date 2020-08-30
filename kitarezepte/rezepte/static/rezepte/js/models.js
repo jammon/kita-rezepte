@@ -2,6 +2,7 @@
 var models = (function($, _, Backbone) {
 "use strict";
 
+// collections of Rezepte for every kategorie or gang
 var kategorien = {};
 var gangkategorien = {};
 var data = {};  // data like 'gangfolge', 'days_in_month', 'year', 'month', 'is_authenticated'
@@ -32,19 +33,21 @@ var Planung = Backbone.Model.extend({
 // - preis (in Cent)
 var Rezept = Backbone.Model.extend({
     initialize: function() {
-        // für jede Kategorie eine eigene Collection
-        this.get('kategorien').forEach(function(kategorie) {
-            if (!kategorien[kategorie]) {
-                kategorien[kategorie] = new Rezepte();
-            }
-            kategorien[kategorie].add(this);
-        }, this);
-        this.get('gang').forEach(function(gang) {
-            if (!gangkategorien[gang]) {
-                gangkategorien[gang] = new Rezepte();
-            }
-            gangkategorien[gang].add(this);
-        }, this);
+        if (this.get('aktiv')) {
+            // für jede Kategorie eine eigene Collection
+            this.get('kategorien').forEach(function(kategorie) {
+                if (!kategorien[kategorie]) {
+                    kategorien[kategorie] = new Rezepte();
+                }
+                kategorien[kategorie].add(this);
+            }, this);
+            this.get('gang').forEach(function(gang) {
+                if (!gangkategorien[gang]) {
+                    gangkategorien[gang] = new Rezepte();
+                }
+                gangkategorien[gang].add(this);
+            }, this);
+        }
     },
     titel_mit_preis: function() {
         if (this.get('id')==-1)

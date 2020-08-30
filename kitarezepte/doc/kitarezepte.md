@@ -56,6 +56,15 @@ Zutaten:
 - Wenn sich ein Editor für mehrere Einrichtungen einloggt, dann bekommt er eine Auswahlseite mit den Einrichtungen.
 - Ein Editor für mehrere Einrichtungen hat im Menu Links zu den anderen Einrichtungen.
 
+## Zutaten enthalten Allergene
+- Es werden nur die 14 Allergene der LMIV erfasst.
+- Die Rezepte zeigen alle Allergene der Zutaten an.
+
+## Rezepte verbergen
+- Ein Rezept, das nicht mehr geplant wird, kann verborgen werden.
+- Die verborgenen Rezepte bleiben aber erhalten, weil sie früher evtl. verplant wurden.
+- In der Rezeptliste werden die verborgenen Rezepte getrennt aufgeführt.
+
 ## Rezepte übernehmen
 - Wenn man für einen Client eingeloggt ist, kann man Rezepte eines anderen Clients übernehmen.
 - Dafür hat das Rezept einen Button "Für &lt;eigene Einrichtung&gt; übernehmen".

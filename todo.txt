@@ -17,12 +17,11 @@
 (C) Squash migrations, remove taggit
 (B) Feiertage eingeben
 (C) Unittests für javascript schreiben
-(A) neue Version deployen
 (B) Für jedes Rezept anzeigen, wann es die letzten Male geplant wurde
 (A) Zutaten nach Saison einordnen
 (B) In Admin für Domain Link zeigen, der in einem neuen Tab öffnet
 (B) Rezept-Kategorien farblich markieren
 (A) Wie ist das Menu wenn providers in kita-rezepte.de aufgerufen wird, z.B. nach dem Einloggen
 (B) Speichern, wenn ein Rezept übernommen wurde
-Upgrade to Django 3.1.1
-Den Kategorien Farben zuordnen und diese in dem Monatsplan und der Rezept-Auswahl anzeigen
+(B) Upgrade to Django 3.1.1
+(B) Den Kategorien Farben zuordnen und diese in dem Monatsplan und der Rezept-Auswahl anzeigen

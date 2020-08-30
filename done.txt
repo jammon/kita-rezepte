@@ -113,3 +113,5 @@ x 2020-08-07 Caching einbauen
 x 2020-08-07 Ist User und Editor eine 1:1-Beziehung? Kann man das sicherstellen?
 x 2020-08-07 URLs mit Verweis auf den zugehörigen Client in die Datenbank
 x 2020-08-07 CONN_MAX_AGE setzen +deployment
+x 2020-08-30 neue Version deployen
+x 2020-08-30 Rezepte, die nicht mehr geplant werden, verbergen

@@ -34,7 +34,8 @@ def set_gangplan(request):
         })
 
     try:
-        rezept = Rezept.objects.get(id=rezept_id, provider=request.provider)
+        rezept = Rezept.objects.get(
+            id=rezept_id, provider=request.provider, aktiv=True)
     except Rezept.DoesNotExist:
         return HttpResponseNotFound(
             "Rezept nicht gefunden. Rezept Id: " + str(rezept_id))

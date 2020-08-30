@@ -40,7 +40,8 @@ class RezeptForm(forms.ModelForm):
     class Meta:
         model = Rezept
         fields = ('titel', 'untertitel', 'fuer_kinder', 'fuer_erwachsene',
-                  'zubereitung', 'anmerkungen', 'kategorie_list', 'gang_list')
+                  'zubereitung', 'anmerkungen', 'kategorie_list', 'gang_list',
+                  'aktiv')
         labels = {
             'fuer_kinder': 'Anzahl Kinder',
             'fuer_erwachsene': 'Anzahl Erwachsene',

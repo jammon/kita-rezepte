@@ -75,6 +75,12 @@
         {{ form.kategorie_list }}
         {{ form.kategorie_list.errors }}
       </div>
+      <div class="inline-list">
+        {{ form.aktiv.label_tag }}
+        {{ form.aktiv }}
+        {{ form.aktiv.errors }}
+        <span class="help_text">Das Rezept soll für Planungen verwendet werden.</span>
+      </div>
       <div><button class="submit-rezept btn btn-primary" type="button">Speichern</button></div>
     </div>
   </div>
