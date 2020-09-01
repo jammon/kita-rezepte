@@ -160,6 +160,38 @@ class Zutat(models.Model):
     masseinheit = models.CharField(max_length=5, choices=MASSEINHEITEN)
     kategorie = models.CharField(max_length=30, choices=ZUTATENKATEGORIEN)
 
+    GLUTEN = "a"
+    KREBSTIERE = "b"
+    EIER = "c"
+    FISCH = "d"
+    ERDNUESSE = "e"
+    SOJA = "f"
+    MILCH = "g"
+    NUESSE = "h"
+    SELLERIE = "i"
+    SENF = "j"
+    SESAM = "k"
+    SULPHITE = "l"
+    LUPINEN = "m"
+    WEICHTIERE = "n"
+    ALLERGENE = [
+        (GLUTEN, 'Gluten'),
+        (KREBSTIERE, 'Krebstiere'),
+        (EIER, 'Eier'),
+        (FISCH, 'Fisch'),
+        (ERDNUESSE, 'Erdnüsse'),
+        (SOJA, 'Soja'),
+        (MILCH, 'Milch'),
+        (NUESSE, 'Nüsse'),
+        (SELLERIE, 'Sellerie'),
+        (SENF, 'Senf'),
+        (SESAM, 'Sesam'),
+        (SULPHITE, 'Sulphite'),
+        (LUPINEN, 'Lupinen'),
+        (WEICHTIERE, 'Weichtiere'),
+    ]
+    allergene = models.CharField(max_length=20, default='')
+
     class Meta:
         verbose_name = "Zutat"
         verbose_name_plural = "Zutaten"
@@ -169,7 +201,7 @@ class Zutat(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        self.updateRezeptpreise()
+        self.updateRezepte()
 
     def get_einheit(self):
         if self.menge_pro_einheit:
@@ -177,9 +209,13 @@ class Zutat(models.Model):
         else:
             return self.einheit
 
-    def updateRezeptpreise(self):
-        """ Wenn der Preis einer Zutat geändert wurde,
-        müssen die Rezeptpreise entsprechend angepasst werden.
+    def get_allergene(self):
+        return ", ".join(
+            val for key, val in Zutat.ALLERGENE if key in self.allergene)
+
+    def updateRezepte(self):
+        """ Wenn der Preis bzw. die Allergene einer Zutat geändert wurden,
+        müssen die Rezeptpreise bzw. -allergene entsprechend angepasst werden.
 
         TODO: Dies macht für jedes Rezept
         - eine Abfrage nach den Zutaten und
@@ -197,6 +233,7 @@ class Zutat(models.Model):
             'menge_pro_einheit': self.menge_pro_einheit,
             'masseinheit': self.masseinheit,
             'kategorie': self.kategorie,
+            'allergene': self.allergene,
         })
 
 
@@ -253,6 +290,7 @@ class Rezept(models.Model):
         'aktiv',
         default=True, 
         help_text='Für die Planung verwenden')
+    allergene = models.CharField(max_length=20, default='')
 
     class Meta:
         verbose_name = "Rezept"
@@ -285,6 +323,8 @@ class Rezept(models.Model):
     def save(self, *args, **kwargs):
         if not self.pk:
             self.calculate_slug()
+        self.allergene = ''.join(set(''.join(
+            rz.zutat.allergene for rz in self.zutaten.select_related('zutat'))))
         super().save(*args, **kwargs)
 
     def calculate_slug(self):
@@ -306,14 +346,24 @@ class Rezept(models.Model):
                 i += 1
             self.slug = slug + str(i)
 
+    def update(self):
+        zutaten = self.zutaten.all().select_related('zutat')
+        self._preis = sum(
+            [rz.preis() for rz in zutaten])
+        self.allergene = ''.join(set(''.join(
+            rz.zutat.allergene for rz in zutaten)))
+        if self.pk:
+            self.save()
+
+    def get_allergene(self):
+        return ", ".join(
+            val for key, val in Zutat.ALLERGENE if key in self.allergene)
+
     def preis(self, update=False):
         """ Gibt den vorberechneten Preis in Euro oder rechnet ihn neu
         """
         if self._preis is None or update:
-            self._preis = sum(
-                [zutat.preis() for zutat in self.zutaten.all()])
-            if self.pk:
-                self.save()
+            self.update()
         return self._preis
 
     def preisToStr(self):

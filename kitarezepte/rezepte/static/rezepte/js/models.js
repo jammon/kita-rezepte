@@ -33,6 +33,8 @@ var Planung = Backbone.Model.extend({
 // - preis (in Cent)
 var Rezept = Backbone.Model.extend({
     initialize: function() {
+        if (!this.has('aktiv'))
+            this.set('aktiv', true);
         if (this.get('aktiv')) {
             // für jede Kategorie eine eigene Collection
             this.get('kategorien').forEach(function(kategorie) {

@@ -33,6 +33,10 @@
         <p>{{ recipe.anmerkungen|safe }}</p>
       {% endif %}
 
+      {% if recipe.allergene %}
+        <p>Dieses Rezept enthält folgende Allergene: {{ recipe.get_allergene }} </p>
+      {% endif %}
+
       <div class="row mt-3">
       {% if user_is_editor %}
         <div class="col"><a href="{{ recipe.id }}/edit" class="btn btn-primary" role="button">Bearbeiten</a></div>

@@ -1,13 +1,37 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
+  <form action="{{ zutat_id }}" method="post">{% csrf_token %}
   <div class="row">
     <div class="col">
       <h2>{% if zutat_id %}Zutat bearbeiten {% else %}Neue Zutat {% endif %}</h2>
-      <form action="{{ zutat_id }}" method="post">{% csrf_token %}
-        {% include "rezepte/zutat-form.html" %}
+    </div>
+  </div>
+  <div class="row">
+    <div class="col col-md-6">
+      {% include "rezepte/zutat-form.html" %}
+    </div>
+    <div class="col col-md-6">
+      <h3>Allergene</h3>
+      {% for key, label in allergene %}
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="{{ key }}"
+           name="allergen_{{ key }}" id="id_allergen_{{ key }}"
+           {% if key in zutat.allergene %}
+             checked="checked" 
+           {% endif %}
+           >
+          <label class="form-check-label" for="id_allergen_{{ key }}">
+          {{ label }}</label>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <div>
         <button type="submit" value="Speichern" class="btn btn-primary">Speichern</button>
-      </form>
+      </div>
       {% if rezepte %}
         <div>
           <h2>{{ zutat.name }} wird in diesen Rezepten verwendet:</h2>
@@ -30,6 +54,6 @@
         </div>
       {% endif %}
     </div>
-    
   </div>
+  </form>
 {% endblock content %}

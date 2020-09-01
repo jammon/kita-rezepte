@@ -290,8 +290,12 @@ def zutat_edit(request, id=0, msg=''):
     if request.method == 'POST':
         form = ZutatForm(request.POST, instance=zutat)
         if form.is_valid():
-            neue_zutat = form.save()
-            neue_zutat.updateRezeptpreise()
+            neue_zutat = form.save(commit=False)
+            neue_zutat.allergene = ''.join(
+                val for key, val in request.POST.items()
+                if key.startswith('allergen_'))
+            neue_zutat.save()
+            neue_zutat.updateRezepte()
             return HttpResponseRedirect('/zutaten/')
     else:
         form = ZutatForm(instance=zutat)
@@ -299,7 +303,8 @@ def zutat_edit(request, id=0, msg=''):
                   {'form': form,
                    'zutat_id': id or '',
                    'zutat': zutat,
-                   'rezepte': rezepte})
+                   'rezepte': rezepte,
+                   'allergene': Zutat.ALLERGENE})
 
 
 @login_required

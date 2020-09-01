@@ -18,7 +18,7 @@ class Zutat_TestCase(TestCase):
         zutat.masseinheit = "g"
         self.assertEqual(zutat.get_einheit(), "g")
 
-    def test_updateRezeptpreise(self):
+    def test_updateRezepte(self):
         """ The price of the recipes is updated """
         client = Client.objects.create(name='Test-Kita')
         provider = Provider.objects.create(name='Test-Kita', client=client)
@@ -34,7 +34,7 @@ class Zutat_TestCase(TestCase):
         self.assertEqual(rezept.preis(), Decimal('3.78'))
         reis.preis = Decimal('1.79')
         reis.save()
-        reis.updateRezeptpreise()
+        reis.updateRezepte()
         rezept = Rezept.objects.get(pk=rezept.pk)
         self.assertEqual(rezept.preis(), Decimal('3.58'))
 
@@ -56,7 +56,7 @@ class Rezept_TestCase(TestCase):
                 titel=titel, provider=self.provider, **TEST_REZEPT)
             self.assertEqual(rezept.slug, slug)
 
-    def test_updateRezeptpreise(self):
+    def test_updateRezepte(self):
         reis = Zutat.objects.create(client=self.client, **TEST_REIS)
         rezept = Rezept.objects.create(
             titel="Reis", provider=self.provider, **TEST_REZEPT)
@@ -69,6 +69,43 @@ class Rezept_TestCase(TestCase):
         reis.save()
         rezept = Rezept.objects.get(pk=rezept.pk)
         self.assertEqual(rezept.preis(update=False), Decimal('1.00'))
+
+    def test_allergene(self):
+        sosse = Zutat.objects.create(
+            name='Soße',
+            client=self.client,
+            allergene=Zutat.GLUTEN + Zutat.SENF + Zutat.SELLERIE)
+        eier = Zutat.objects.create(
+            name='Eier',
+            client=self.client,
+            allergene=Zutat.EIER)
+        rezept = Rezept.objects.create(
+            titel="Eier mit Soße", provider=self.provider, **TEST_REZEPT)
+        RezeptZutat.objects.create(
+            rezept=rezept, zutat=eier, menge=2, nummer=1)
+        RezeptZutat.objects.create(
+            rezept=rezept, zutat=sosse, menge_qualitativ='etwas', nummer=2)
+        rezept.save()
+        for allergen, present in (
+            (Zutat.GLUTEN, True),
+            (Zutat.KREBSTIERE, False),
+            (Zutat.EIER, True),
+            (Zutat.FISCH, False),
+            (Zutat.ERDNUESSE, False),
+            (Zutat.SOJA, False),
+            (Zutat.MILCH, False),
+            (Zutat.NUESSE, False),
+            (Zutat.SELLERIE, True),
+            (Zutat.SENF, True),
+            (Zutat.SESAM, False),
+            (Zutat.SULPHITE, False),
+            (Zutat.LUPINEN, False),
+            (Zutat.WEICHTIERE, False),
+        ):
+            self.assertEqual(allergen in rezept.allergene, present)
+        self.assertEqual(
+            rezept.get_allergene(),
+            "Gluten, Eier, Sellerie, Senf")
 
 
 class RezeptZutat_TestCase(TestCase):

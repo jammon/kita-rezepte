@@ -12,11 +12,13 @@
           <th class="text-right">Preis</th>
           <th class="text-right">Menge</th>
           <th>Kategorie</th>
+          <th>Allergene</th>
           <th>Verwendung</th>
+          <th></th>
         </tr>
       {% for z in zutaten  %}
         <tr>
-          <td>{{ z.name }}</td>
+          <td><a href="{{ z.id }}">{{ z.name }}</a></td>
           <td class="text-right">
             <span class="zutat-preis">
               <input type="text" zutat_id="{{ z.id }}" 
@@ -36,6 +38,7 @@
             {% endif %}
           </td>
           <td>{{ z.get_kategorie_display }} </td>
+          <td>{{ z.get_allergene }} </td>
           <td>
             {% if z.rezepte__count %}
               {{ z.rezepte__count }} Rezept{{ z.rezepte__count|pluralize:"e" }}
@@ -44,14 +47,10 @@
             {% endif %}
           </td>
           <td>
-            {% if user.is_authenticated %}
+            {% if user.is_authenticated and not z.rezepte__count %}
               <form action="delete" method="post">{% csrf_token %}
-                <a class="btn btn-primary btn-sm" href="{{ z.id }}" role="button">
-                  Bearbeiten</a>
                 <input type="hidden" name="zutat_id" value="{{ z.id }}">
-                {% if not z.rezepte__count %}
-                  <button class="btn btn-primary btn-sm" tabindex="-1">Löschen</button>
-                {% endif %}
+                <button class="btn btn-primary btn-sm" tabindex="-1">Löschen</button>
               </form>
             {% endif %}
           </td>
