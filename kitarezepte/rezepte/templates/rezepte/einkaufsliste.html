@@ -11,17 +11,17 @@
         <p class="bg-danger">{{ msg }}</p>
       {% endif %}
       <h1>Einkaufliste</h1>
-      <p>ab {{ start }} für {{ dauer }} Tage</p>
-      {% if providers %}
-        <p>für {{ providers|join:", " }} </p>
-      {% endif %}
     </div>
   </div>
   <div class="row">
     <div class="col col-lg-4">
+      <p>ab {{ start }} für {{ dauer }} Tage</p>
+      {% if providers %}
+        <p>für {{ providers|join:", " }} </p>
+      {% endif %}
       <p>Folgende Rezepte wurden geplant:</p>
-      {% for titel, id in rezepte %}
-        <p><a href="/rezepte/{{ id }}">{{ titel }}</a></p>
+      {% for titel, _, r in rezepte %}
+        <p><a href="{{ r.get_absolute_url }}">{{ titel }}</a></p>
       {% endfor %}
     </div>
     <div class="col col-lg-4">

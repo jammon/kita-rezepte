@@ -326,7 +326,7 @@ class Rezept(models.Model):
         return self.titel
 
     def get_absolute_url(self):
-        return f"{self.provider.full_path()}/rezepte/{self.id}"
+        return f"{self.provider.full_path()}/rezepte/{self.slug}"
 
     def save(self, *args, **kwargs):
         if not self.pk:
@@ -479,11 +479,12 @@ def get_einkaufsliste(client, start, dauer):
     """ liefert die Daten für /einkaufsliste
     """
     # Für "Folgende Rezepte wurden geplant"
-    rezept_plaene = GangPlan.objects.filter(
-        provider__client=client,
-        datum__gte=start,
-        datum__lt=start+timedelta(dauer)
-    ).values_list('rezept__titel', 'rezept_id')
+    rezept_plaene = [
+        (gp.rezept.titel, gp.rezept.id, gp.rezept) for gp in GangPlan.objects.filter(
+            provider__client=client,
+            datum__gte=start,
+            datum__lt=start+timedelta(dauer)
+        )]
     messbar = defaultdict(int)  # Die Zutaten mit quantitativer Mengenangabe
     qualitativ = defaultdict(list)  # Die Zutaten mit qualitativer Mengenangabe
     rezeptcounts = Counter([p[1] for p in rezept_plaene])

@@ -119,3 +119,5 @@ x 2020-09-01 Allergene erfassen
 x 2020-09-02 Wie ist das Menu wenn providers in kita-rezepte.de aufgerufen wird, z.B. nach dem Einloggen
 x 2020-09-02 Editier-Views sollten darauf achten, dass der richtige Client bearbeitet wird
 x 2020-09-02 Bei Subdomains CNAME-Eintrag testen
+x 2020-09-02 In Admin für Domain Link zeigen, der in einem neuen Tab öffnet
+x 2020-09-02 Upgrade to Django 3.1.1

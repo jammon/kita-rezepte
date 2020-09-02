@@ -5,7 +5,6 @@
 (C) Nicht-öffentliche Rezepte
 (C) User-Eingabe-Maske bauen
 (D) Meta-Description und Title für die einzelnen Seiten anpassen
-(D) Zutaten nach der Häufigkeit der Benutzung anzeigen
 (B) Rezept mit halber Menge (drittel, zweidrittel) planen
 (C) 404.html, 500.html, 403.html und 400.html erstellen
 (B) In der Einkaufsliste die qualitativen Mengen auf die Rezepte verlinken
@@ -16,8 +15,6 @@
 (C) Unittests für javascript schreiben
 (B) Für jedes Rezept anzeigen, wann es die letzten Male geplant wurde
 (B) Zutaten nach Saison einordnen
-(B) In Admin für Domain Link zeigen, der in einem neuen Tab öffnet
 (B) Rezept-Kategorien farblich markieren
 (B) Speichern, wenn ein Rezept übernommen wurde
-(B) Upgrade to Django 3.1.1
 (B) Den Kategorien Farben zuordnen und diese in dem Monatsplan und der Rezept-Auswahl anzeigen
