@@ -121,3 +121,4 @@ x 2020-09-02 Editier-Views sollten darauf achten, dass der richtige Client bearb
 x 2020-09-02 Bei Subdomains CNAME-Eintrag testen
 x 2020-09-02 In Admin für Domain Link zeigen, der in einem neuen Tab öffnet
 x 2020-09-02 Upgrade to Django 3.1.1
+x 2020-09-02 Meta-Description und Title für die einzelnen Seiten anpassen

@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% block title %}Essensplanung für {{ month_name }} {{ year}} - {{ request.provider.name }}{% endblock title %}
 {% block content %}
   <div class="row">
     <div class="col col-md-8"><h1>Planung für {{ month_name }} {{ year}} </h1></div>

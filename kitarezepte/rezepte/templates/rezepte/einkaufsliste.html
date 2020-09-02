@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% block title %}Einkaufliste ab {{ start }} für {{ dauer }} Tage - {{ request.client.name }}{% endblock title %}
 {% block extrahead %}
   {# <link rel="stylesheet" href="{ % static 'vendor/jquery-ui-1.12.1.custom/jquery-ui.css' %}"> #}
   <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">

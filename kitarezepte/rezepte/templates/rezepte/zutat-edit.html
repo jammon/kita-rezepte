@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% block title %}Zutat bearbeiten - {{ request.provider.name }}{% endblock title %}
 {% block content %}
   <form action="{{ zutat_id }}" method="post">{% csrf_token %}
   <div class="row">

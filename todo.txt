@@ -4,7 +4,6 @@
 (C) Hauptseite der Kitas mit TinyMCE editierbar machen
 (C) Nicht-öffentliche Rezepte
 (C) User-Eingabe-Maske bauen
-(D) Meta-Description und Title für die einzelnen Seiten anpassen
 (B) Rezept mit halber Menge (drittel, zweidrittel) planen
 (C) 404.html, 500.html, 403.html und 400.html erstellen
 (B) In der Einkaufsliste die qualitativen Mengen auf die Rezepte verlinken
