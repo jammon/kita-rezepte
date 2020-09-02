@@ -6,6 +6,7 @@ from decimal import Decimal
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.text import slugify
+from django.utils.html import format_html
 
 from .utils import prettyFloat, cent2euro
 
@@ -111,6 +112,13 @@ class Provider(models.Model):
         else:
             protocol = 'https://'
         return protocol + domain
+
+    def link_to_site(self):
+        return format_html(
+            '<a href="{}" target="_blank">{}</a>',
+            self.full_path(),
+            self.name)
+    link_to_site.short_description = "Link zur Seite"
 
 
 class Domain(models.Model):

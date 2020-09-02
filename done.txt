@@ -115,3 +115,7 @@ x 2020-08-07 URLs mit Verweis auf den zugehörigen Client in die Datenbank
 x 2020-08-07 CONN_MAX_AGE setzen +deployment
 x 2020-08-30 neue Version deployen
 x 2020-08-30 Rezepte, die nicht mehr geplant werden, verbergen
+x 2020-09-01 Allergene erfassen
+x 2020-09-02 Wie ist das Menu wenn providers in kita-rezepte.de aufgerufen wird, z.B. nach dem Einloggen
+x 2020-09-02 Editier-Views sollten darauf achten, dass der richtige Client bearbeitet wird
+x 2020-09-02 Bei Subdomains CNAME-Eintrag testen

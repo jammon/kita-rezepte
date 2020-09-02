@@ -1,5 +1,3 @@
-(B) Editier-Views sollten darauf achten, dass der richtige Client bearbeitet wird
-(A) Allergene erfassen
 (C) Benutzerrollen für Lesen und Planen
 (C) Datenschutzerklärung verfassen +public
 (B) FAQ schreiben +public
@@ -9,7 +7,6 @@
 (D) Meta-Description und Title für die einzelnen Seiten anpassen
 (D) Zutaten nach der Häufigkeit der Benutzung anzeigen
 (B) Rezept mit halber Menge (drittel, zweidrittel) planen
-(B) Bei Subdomains CNAME-Eintrag testen
 (C) 404.html, 500.html, 403.html und 400.html erstellen
 (B) In der Einkaufsliste die qualitativen Mengen auf die Rezepte verlinken
 (C) 404 für Hauptseite anpassen, damit die alten Rezepte wieder funktionieren
@@ -18,10 +15,9 @@
 (B) Feiertage eingeben
 (C) Unittests für javascript schreiben
 (B) Für jedes Rezept anzeigen, wann es die letzten Male geplant wurde
-(A) Zutaten nach Saison einordnen
+(B) Zutaten nach Saison einordnen
 (B) In Admin für Domain Link zeigen, der in einem neuen Tab öffnet
 (B) Rezept-Kategorien farblich markieren
-(A) Wie ist das Menu wenn providers in kita-rezepte.de aufgerufen wird, z.B. nach dem Einloggen
 (B) Speichern, wenn ein Rezept übernommen wurde
 (B) Upgrade to Django 3.1.1
 (B) Den Kategorien Farben zuordnen und diese in dem Monatsplan und der Rezept-Auswahl anzeigen

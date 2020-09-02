@@ -100,7 +100,7 @@ class ClientAdmin(admin.ModelAdmin):
         self.message_user(
             request, "Zutaten wurden importiert", messages.SUCCESS)
     import_zutaten.short_description = \
-        "Standardzutaten für neuen Client importieren"
+        "Standardzutaten für neuen Mandanten importieren"
 
 
 class DomainInline(admin.TabularInline):
@@ -111,6 +111,7 @@ class ProviderAdmin(admin.ModelAdmin):
     inlines = [
         DomainInline,
     ]
+    list_display = ('name', 'client', 'link_to_site')
 
 
 admin.site.register(Zutat, ZutatAdmin)
