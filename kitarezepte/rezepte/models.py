@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from django.utils.text import slugify
 from django.utils.html import format_html
 
+from kitarezepte.kitarezepte import settings
 from .utils import prettyFloat, cent2euro
 
 REZEPTKATEGORIEN = (
@@ -21,7 +22,7 @@ REZEPTKATEGORIEN = (
     ("Liebl.", "Lieblingsgericht"),
 )
 
-GAENGE = ('Vorspeise', 'Hauptgang', 'Nachtisch')
+GAENGE = ("Vorspeise", "Hauptgang", "Nachtisch")
 
 MASSEINHEITEN = [(s, s) for s in ("g", "ml", "St.", "Pckg.")]
 
@@ -38,12 +39,16 @@ ZUTATENKATEGORIEN = (
 
 
 class Client(models.Model):
-    """ Ein Mandant, der evtl. mehrere Kitas haben kann """
+    """Ein Mandant, der evtl. mehrere Kitas haben kann"""
+
     name = models.CharField(max_length=30)
-    slug = models.SlugField(max_length=30, blank=True, unique=True,
-                            help_text='wird i.d.R. aus dem Namen berechnet')
-    mult_providers = models.BooleanField(
-        "Mehrere Einrichtungen", default=False)
+    slug = models.SlugField(
+        max_length=30,
+        blank=True,
+        unique=True,
+        help_text="wird i.d.R. aus dem Namen berechnet",
+    )
+    mult_providers = models.BooleanField("Mehrere Einrichtungen", default=False)
 
     class Meta:
         verbose_name = "Mandant"
@@ -59,24 +64,33 @@ class Client(models.Model):
 
 
 class Provider(models.Model):
-    """ Eine Kita, für die geplant wird """
+    """Eine Kita, für die geplant wird"""
+
     name = models.CharField(max_length=30)
-    slug = models.SlugField(max_length=30, blank=True, unique=True,
-                            help_text='wird i.d.R. aus dem Namen berechnet')
+    slug = models.SlugField(
+        max_length=30,
+        blank=True,
+        unique=True,
+        help_text="wird i.d.R. aus dem Namen berechnet",
+    )
     client = models.ForeignKey(
-        Client, on_delete=models.CASCADE, related_name="providers")
+        Client, on_delete=models.CASCADE, related_name="providers"
+    )
     gaenge = models.CharField(
-        max_length=50, help_text='z.B. "Vorspeise Hauptgang Nachtisch"',
-        default="Vorspeise Hauptgang Nachtisch")
+        max_length=50,
+        help_text='z.B. "Vorspeise Hauptgang Nachtisch"',
+        default="Vorspeise Hauptgang Nachtisch",
+    )
     kategorien = models.CharField(
         max_length=100,
         help_text='z.B. "Reis Teigwaren Getreide Kartoffeln Gemüse '
-                  'Suppe Fischgericht Lieblingsgericht"',
-        default="", blank=True)
+        'Suppe Fischgericht Lieblingsgericht"',
+        default="",
+        blank=True,
+    )
     hidden = models.BooleanField(
-        "verborgen",
-        default=False,
-        help_text='Auf der Hauptseite verbergen')
+        "verborgen", default=False, help_text="Auf der Hauptseite verbergen"
+    )
     _domain = models.CharField("Domain", max_length=32, default="")
 
     class Meta:
@@ -100,33 +114,34 @@ class Provider(models.Model):
         return self.kategorien.split()
 
     def main_domain(self):
-        return self._domain or self.slug + ".kita-rezepte.de"
+        return self._domain or self.slug + settings.SERVER_DOMAIN
 
     def full_path(self):
         LOCALHOSTS = ("localhost", "127.0.0.1", "kita-rezepte.test")
         domain = self.main_domain()
         for host in LOCALHOSTS:
             if host in domain:
-                protocol = 'http://'
+                protocol = "http://"
                 break
         else:
-            protocol = 'https://'
+            protocol = "https://"
         return protocol + domain
 
     def link_to_site(self):
         return format_html(
-            '<a href="{}" target="_blank">{}</a>',
-            self.full_path(),
-            self.name)
+            '<a href="{}" target="_blank">{}</a>', self.full_path(), self.name
+        )
+
     link_to_site.short_description = "Link zur Seite"
 
 
 class Domain(models.Model):
-    """ A Provider can be reached in several domains
+    """A Provider can be reached in several domains
 
     This is for resolution of domain names.
     The main domain of a Provider is provider.main_domain()
     """
+
     domain = models.CharField(max_length=32)
     provider = models.ForeignKey(Provider, on_delete=models.CASCADE)
 
@@ -136,7 +151,8 @@ class Domain(models.Model):
 
 class Editor(models.Model):
     user = models.OneToOneField(
-        User, related_name='editor', on_delete=models.CASCADE)
+        User, related_name="editor", on_delete=models.CASCADE
+    )
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -145,26 +161,32 @@ class Editor(models.Model):
 
 
 class Zutat(models.Model):
-    """ Eine Zutat, die in den Rezepten verwandt werden kann """
+    """Eine Zutat, die in den Rezepten verwandt werden kann"""
+
     name = models.CharField(max_length=60)
     client = models.ForeignKey(
-        Client, on_delete=models.CASCADE, related_name="zutaten")
+        Client, on_delete=models.CASCADE, related_name="zutaten"
+    )
     einheit = models.CharField(
-        max_length=30, default='', blank=True,
+        max_length=30,
+        default="",
+        blank=True,
         help_text='''Packungseinheit für den Einkauf meist 1 kg, 1 l,
              aber auch 2,5 kg-Sack.
              Fällt weg bei Dingen wie Eiern, die eine natürliche Einheit
-             haben; dann "Stück"''')
+             haben; dann "Stück"''',
+    )
     preis = models.DecimalField(
         max_digits=5,
         decimal_places=2,
         null=True,
         blank=True,
-        help_text='der Preis einer Packungseinheit; in Euro')
+        help_text="der Preis einer Packungseinheit; in Euro",
+    )
     menge_pro_einheit = models.IntegerField(
         default=0,
-        help_text='Anzahl der Maßeinheiten pro Packungseinheit; '
-        'bei 1 kg: 1000')
+        help_text="Anzahl der Maßeinheiten pro Packungseinheit; bei 1 kg: 1000",
+    )
     masseinheit = models.CharField(max_length=5, choices=MASSEINHEITEN)
     kategorie = models.CharField(max_length=30, choices=ZUTATENKATEGORIEN)
 
@@ -183,22 +205,22 @@ class Zutat(models.Model):
     LUPINEN = "m"
     WEICHTIERE = "n"
     ALLERGENE = [
-        (GLUTEN, 'Gluten'),
-        (KREBSTIERE, 'Krebstiere'),
-        (EIER, 'Eier'),
-        (FISCH, 'Fisch'),
-        (ERDNUESSE, 'Erdnüsse'),
-        (SOJA, 'Soja'),
-        (MILCH, 'Milch'),
-        (NUESSE, 'Nüsse'),
-        (SELLERIE, 'Sellerie'),
-        (SENF, 'Senf'),
-        (SESAM, 'Sesam'),
-        (SULPHITE, 'Sulphite'),
-        (LUPINEN, 'Lupinen'),
-        (WEICHTIERE, 'Weichtiere'),
+        (GLUTEN, "Gluten"),
+        (KREBSTIERE, "Krebstiere"),
+        (EIER, "Eier"),
+        (FISCH, "Fisch"),
+        (ERDNUESSE, "Erdnüsse"),
+        (SOJA, "Soja"),
+        (MILCH, "Milch"),
+        (NUESSE, "Nüsse"),
+        (SELLERIE, "Sellerie"),
+        (SENF, "Senf"),
+        (SESAM, "Sesam"),
+        (SULPHITE, "Sulphite"),
+        (LUPINEN, "Lupinen"),
+        (WEICHTIERE, "Weichtiere"),
     ]
-    allergene = models.CharField(max_length=20, default='')
+    allergene = models.CharField(max_length=20, default="")
 
     class Meta:
         verbose_name = "Zutat"
@@ -219,10 +241,11 @@ class Zutat(models.Model):
 
     def get_allergene(self):
         return ", ".join(
-            val for key, val in Zutat.ALLERGENE if key in self.allergene)
+            val for key, val in Zutat.ALLERGENE if key in self.allergene
+        )
 
     def updateRezepte(self):
-        """ Wenn der Preis bzw. die Allergene einer Zutat geändert wurden,
+        """Wenn der Preis bzw. die Allergene einer Zutat geändert wurden,
         müssen die Rezeptpreise bzw. -allergene entsprechend angepasst werden.
 
         TODO: Dies macht für jedes Rezept
@@ -233,72 +256,88 @@ class Zutat(models.Model):
             r.rezept.preis(update=True)
 
     def toJson(self):
-        return json.dumps({
-            'id': self.id,
-            'name': self.name,
-            'einheit': self.einheit,
-            'preis': str(self.preis),
-            'menge_pro_einheit': self.menge_pro_einheit,
-            'masseinheit': self.masseinheit,
-            'kategorie': self.kategorie,
-            'allergene': self.allergene,
-        })
+        return json.dumps(
+            {
+                "id": self.id,
+                "name": self.name,
+                "einheit": self.einheit,
+                "preis": str(self.preis),
+                "menge_pro_einheit": self.menge_pro_einheit,
+                "masseinheit": self.masseinheit,
+                "kategorie": self.kategorie,
+                "allergene": self.allergene,
+            }
+        )
 
 
-TRANSTABLE = {'ä': 'ae', 'ö': 'oe', 'ü': 'ue',
-              'Ä': 'ae', 'Ö': 'oe', 'Ü': 'ue',
-              'ß': 'ss',
-              'é': 'e', 'è': 'e', 'à': 'a',
-              'É': 'e', 'È': 'e', 'À': 'a',
-              }
+TRANSTABLE = {
+    "ä": "ae",
+    "ö": "oe",
+    "ü": "ue",
+    "Ä": "ae",
+    "Ö": "oe",
+    "Ü": "ue",
+    "ß": "ss",
+    "é": "e",
+    "è": "e",
+    "à": "a",
+    "É": "e",
+    "È": "e",
+    "À": "a",
+}
 translate_specials = str.maketrans(TRANSTABLE)
 
 
 class Rezept(models.Model):
-    '''Enthält ein Rezept mit Titel, Kochanweisung usw.
-       Die Zutaten werden getrennt davon mit dem Key des Rezepts gespeichert
-       (Model RezeptZutat).
-    '''
+    """Enthält ein Rezept mit Titel, Kochanweisung usw.
+    Die Zutaten werden getrennt davon mit dem Key des Rezepts gespeichert
+    (Model RezeptZutat).
+    """
+
     titel = models.CharField(max_length=100)
     untertitel = models.CharField(max_length=100, blank=True, null=True)
     # TODO: Löschen nach der Migration
     client = models.ForeignKey(
-        Client, on_delete=models.CASCADE, related_name="rezepte",
-        null=True)
+        Client, on_delete=models.CASCADE, related_name="rezepte", null=True
+    )
     # TODO: remove `null=True` after the migration
     provider = models.ForeignKey(
-        Provider, on_delete=models.CASCADE, related_name="rezepte",
-        null=True)
+        Provider, on_delete=models.CASCADE, related_name="rezepte", null=True
+    )
     slug = models.SlugField(
-        max_length=100, blank=True,
-        help_text='wird i.d.R. aus titel berechnet')
+        max_length=100, blank=True, help_text="wird i.d.R. aus titel berechnet"
+    )
     fuer_kinder = models.IntegerField(help_text="Anzahl der Kinder")
     fuer_erwachsene = models.IntegerField(help_text="Anzahl der Erwachsenen")
     zubereitung = models.TextField()
     anmerkungen = models.TextField(null=True, blank=True)
-    eingegeben_von = models.ForeignKey(User, on_delete=models.SET_NULL,
-                                       null=True, blank=True)
+    eingegeben_von = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True
+    )
     gang = models.CharField(
         max_length=40,
-        help_text='Der Gang, für den das Rezept geeignet ist, '
-        'ggf. eine Leerzeichen-getrennte Liste mehrerer Gänge')
+        help_text="Der Gang, für den das Rezept geeignet ist, "
+        "ggf. eine Leerzeichen-getrennte Liste mehrerer Gänge",
+    )
     kategorien = models.CharField(
         max_length=60,
-        help_text='Die Kategorie, zu der das Rezept gehört, '
-        'ggf. eine Leerzeichen-getrennte Liste mehrerer Kategorien',
-        default='', blank=True)
+        help_text="Die Kategorie, zu der das Rezept gehört, "
+        "ggf. eine Leerzeichen-getrennte Liste mehrerer Kategorien",
+        default="",
+        blank=True,
+    )
     # z.B. Gemüse, Teigwaren, Suppe, Getreide, Reis usw.
     _preis = models.DecimalField(
         max_digits=5,
         decimal_places=2,
         null=True,
         blank=True,
-        help_text='kann leer sein, wird dann automatisch berechnet')
+        help_text="kann leer sein, wird dann automatisch berechnet",
+    )
     aktiv = models.BooleanField(
-        'aktiv',
-        default=True, 
-        help_text='Für die Planung verwenden')
-    allergene = models.CharField(max_length=20, default='')
+        "aktiv", default=True, help_text="Für die Planung verwenden"
+    )
+    allergene = models.CharField(max_length=20, default="")
 
     class Meta:
         verbose_name = "Rezept"
@@ -306,21 +345,21 @@ class Rezept(models.Model):
 
     @property
     def gang_list(self):
-        """ Gänge als Liste """
+        """Gänge als Liste"""
         return self.gang.split()
 
     @gang_list.setter
     def gang_list(self, values):
-        self.gang = ' '.join(values)
+        self.gang = " ".join(values)
 
     @property
     def kategorie_list(self):
-        """ Kategorien als Liste """
+        """Kategorien als Liste"""
         return self.kategorien.split()
 
     @kategorie_list.setter
     def kategorie_list(self, values):
-        self.kategorien = ' '.join(values)
+        self.kategorien = " ".join(values)
 
     def __str__(self):
         return self.titel
@@ -331,8 +370,14 @@ class Rezept(models.Model):
     def save(self, *args, **kwargs):
         if not self.pk:
             self.calculate_slug()
-        self.allergene = ''.join(set(''.join(
-            rz.zutat.allergene for rz in self.zutaten.select_related('zutat'))))
+        self.allergene = "".join(
+            set(
+                "".join(
+                    rz.zutat.allergene
+                    for rz in self.zutaten.select_related("zutat")
+                )
+            )
+        )
         super().save(*args, **kwargs)
 
     def calculate_slug(self):
@@ -341,13 +386,16 @@ class Rezept(models.Model):
         """
         # Slug erstellen und Sonderzeichen ersetzen
         self.slug = slug = (
-            slugify(self.titel, allow_unicode=True) or 'kein-titel'
-            ).translate(translate_specials)
+            slugify(self.titel, allow_unicode=True) or "kein-titel"
+        ).translate(translate_specials)
         # Alle Slugs raussuchen, die genau so anfangen
-        existing_slugs = Rezept.objects.all().filter(slug__startswith=slug)\
-            .exclude(pk=self.pk)\
-            .order_by('slug')\
-            .values_list('slug', flat=True)
+        existing_slugs = (
+            Rezept.objects.all()
+            .filter(slug__startswith=slug)
+            .exclude(pk=self.pk)
+            .order_by("slug")
+            .values_list("slug", flat=True)
+        )
         if len(existing_slugs) > 0 and slug in existing_slugs:
             i = 1
             while slug + str(i) in existing_slugs:
@@ -355,28 +403,27 @@ class Rezept(models.Model):
             self.slug = slug + str(i)
 
     def update(self):
-        zutaten = self.zutaten.all().select_related('zutat')
-        self._preis = sum(
-            [rz.preis() for rz in zutaten])
-        self.allergene = ''.join(set(''.join(
-            rz.zutat.allergene for rz in zutaten)))
+        zutaten = self.zutaten.all().select_related("zutat")
+        self._preis = sum([rz.preis() for rz in zutaten])
+        self.allergene = "".join(
+            set("".join(rz.zutat.allergene for rz in zutaten))
+        )
         if self.pk:
             self.save()
 
     def get_allergene(self):
         return ", ".join(
-            val for key, val in Zutat.ALLERGENE if key in self.allergene)
+            val for key, val in Zutat.ALLERGENE if key in self.allergene
+        )
 
     def preis(self, update=False):
-        """ Gibt den vorberechneten Preis in Euro oder rechnet ihn neu
-        """
+        """Gibt den vorberechneten Preis in Euro oder rechnet ihn neu"""
         if self._preis is None or update:
             self.update()
         return self._preis
 
     def preisToStr(self):
-        """ Gibt den Preis als String (z.B. '13,48 €')
-        """
+        """Gibt den Preis als String (z.B. '13,48 €')"""
         return cent2euro(self.preis()) + " €"
 
 
@@ -389,10 +436,13 @@ class RezeptZutat(models.Model):
                                qualitativ als String
     - nummer: eine Nummer, um die Zutaten sortieren zu können
     """
+
     rezept = models.ForeignKey(
-        Rezept, on_delete=models.CASCADE, related_name='zutaten')
+        Rezept, on_delete=models.CASCADE, related_name="zutaten"
+    )
     zutat = models.ForeignKey(
-        Zutat, on_delete=models.CASCADE, related_name='rezepte')
+        Zutat, on_delete=models.CASCADE, related_name="rezepte"
+    )
     menge = models.IntegerField(blank=True, null=True)
     menge_qualitativ = models.CharField(max_length=30, blank=True, null=True)
     nummer = models.IntegerField()
@@ -414,36 +464,38 @@ class RezeptZutat(models.Model):
 
     def toJson(self):
         res = {
-            'rezept_id': self.rezept_id,
-            'zutat_id': self.zutat_id,
-            'nummer': self.nummer,
+            "rezept_id": self.rezept_id,
+            "zutat_id": self.zutat_id,
+            "nummer": self.nummer,
         }
         if self.menge:
-            res['menge'] = self.menge
+            res["menge"] = self.menge
         else:
-            res['menge_qualitativ'] = self.menge_qualitativ or ''
+            res["menge_qualitativ"] = self.menge_qualitativ or ""
         return json.dumps(res)
 
     def preis(self):
-        '''Gibt den Preis der Zutat als Decimal in Euro'''
+        """Gibt den Preis der Zutat als Decimal in Euro"""
         z = self.zutat
-        if self.menge_qualitativ or not self.menge \
-                or z.preis is None:
-            return Decimal('0.00')
+        if self.menge_qualitativ or not self.menge or z.preis is None:
+            return Decimal("0.00")
         res = self.menge * z.preis / (z.menge_pro_einheit or 1)
-        return res.quantize(Decimal('0.00'))
+        return res.quantize(Decimal("0.00"))
 
 
 class GangPlan(models.Model):
-    """ Speichert ein Rezept mit Gang (Vorspeise, Hauptgang und Nachtisch)
+    """Speichert ein Rezept mit Gang (Vorspeise, Hauptgang und Nachtisch)
     und Datum
     """
+
     # TODO: Löschen nach der Migration
     client = models.ForeignKey(
-        Client, on_delete=models.CASCADE, related_name="menues")
+        Client, on_delete=models.CASCADE, related_name="menues"
+    )
     # TODO: remove `null=True` after the migration
     provider = models.ForeignKey(
-        Provider, on_delete=models.CASCADE, related_name="menues", null=True)
+        Provider, on_delete=models.CASCADE, related_name="menues", null=True
+    )
     datum = models.DateField()
     rezept = models.ForeignKey(Rezept, on_delete=models.CASCADE)
     gang = models.CharField(max_length=15)
@@ -457,40 +509,44 @@ class GangPlan(models.Model):
 
 
 def beautify_amounts(messbar):
-    units = {'g': 'kg', 'ml': 'l'}
+    units = {"g": "kg", "ml": "l"}
     res = []
     for zutat, menge in messbar.items():
         if zutat.masseinheit in units and menge >= 1000:
-            _menge = prettyFloat(menge/1000)
+            _menge = prettyFloat(menge / 1000)
             einheit = units[zutat.masseinheit]
         else:
             _menge = prettyFloat(menge)
             einheit = zutat.masseinheit
-        res.append((
-            zutat.get_kategorie_display(),
-            zutat.name,
-            zutat.id,
-            _menge,
-            einheit))
+        res.append(
+            (
+                zutat.get_kategorie_display(),
+                zutat.name,
+                zutat.id,
+                _menge,
+                einheit,
+            )
+        )
     return sorted(res)
 
 
 def get_einkaufsliste(client, start, dauer):
-    """ liefert die Daten für /einkaufsliste
-    """
+    """liefert die Daten für /einkaufsliste"""
     # Für "Folgende Rezepte wurden geplant"
     rezept_plaene = [
-        (gp.rezept.titel, gp.rezept.id, gp.rezept) for gp in GangPlan.objects.filter(
+        (gp.rezept.titel, gp.rezept.id, gp.rezept)
+        for gp in GangPlan.objects.filter(
             provider__client=client,
             datum__gte=start,
-            datum__lt=start+timedelta(dauer)
-        )]
+            datum__lt=start + timedelta(dauer),
+        )
+    ]
     messbar = defaultdict(int)  # Die Zutaten mit quantitativer Mengenangabe
     qualitativ = defaultdict(list)  # Die Zutaten mit qualitativer Mengenangabe
     rezeptcounts = Counter([p[1] for p in rezept_plaene])
     rezeptzutaten = RezeptZutat.objects.filter(
         rezept_id__in=rezeptcounts.keys()
-    ).select_related('zutat')
+    ).select_related("zutat")
 
     for rz in rezeptzutaten:
         # Wenn messbar:
@@ -501,18 +557,20 @@ def get_einkaufsliste(client, start, dauer):
         else:
             # Zutat mit qualitativer Mengenangabe abspeichern
             qualitativ[rz.zutat].extend(
-                [rz.menge_qualitativ] * rezeptcounts[rz.rezept_id])
+                [rz.menge_qualitativ] * rezeptcounts[rz.rezept_id]
+            )
 
     def key(item):
         zutat = item[0]
         return zutat.kategorie, zutat.name
 
     return {
-        'start': start,
-        'dauer': dauer,
-        'rezepte': sorted(set(rezept_plaene)),
-        'messbar': beautify_amounts(messbar),
-        'qualitativ': sorted(qualitativ.items(), key=key),
-        'providers': [p.name for p in client.providers.all()]
-                     if client.mult_providers else [],
+        "start": start,
+        "dauer": dauer,
+        "rezepte": sorted(set(rezept_plaene)),
+        "messbar": beautify_amounts(messbar),
+        "qualitativ": sorted(qualitativ.items(), key=key),
+        "providers": [p.name for p in client.providers.all()]
+        if client.mult_providers
+        else [],
     }

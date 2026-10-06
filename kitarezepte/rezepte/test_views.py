@@ -5,9 +5,10 @@ from http import HTTPStatus
 from .models import Rezept, Client, Provider, Domain, Editor, Zutat
 from .utils import TEST_REZEPT
 from .views import rezept_edit, zutat_edit, zutaten, zutaten_delete
+from kitarezepte.kitarezepte import settings
 
 
-def create_user(name, client, email='test@test.tld', password='test'):
+def create_user(name, client, email="test@test.tld", password="test"):
     user = User.objects.create_user(name, email, password)
     Editor.objects.create(user=user, client=client)
     return user
@@ -17,45 +18,50 @@ class LoginTestcase(TestCase):
     """Test login view"""
 
     def test_get(self):
-        response = self.client.get('/login/')
+        response = self.client.get("/login/")
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertTemplateUsed(response, 'rezepte/login.html')
+        self.assertTemplateUsed(response, "rezepte/login.html")
 
     def setup_user(self):
-        self.kitaclient = Client.objects.create(name='Test-Kita')
+        self.kitaclient = Client.objects.create(name="Test-Kita")
         self.provider = Provider.objects.create(
-            name='Test-Kita', client=self.kitaclient)
-        Domain.objects.create(domain='testserver', provider=self.provider)
-        create_user('test', self.kitaclient)
+            name="Test-Kita", client=self.kitaclient
+        )
+        Domain.objects.create(domain="testserver", provider=self.provider)
+        create_user("test", self.kitaclient)
 
     def test_post(self):
         self.setup_user()
         response = self.client.post(
-            '/login/', {'username': 'test', 'password': 'test'})
+            "/login/", {"username": "test", "password": "test"}
+        )
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
-        self.assertRedirects(response,
-                             'https://test-kita.kita-rezepte.de/choose_provider',
-                             fetch_redirect_response=False)
-        self.assertEqual(self.client.session['user_name'], 'test')
+        self.assertRedirects(
+            response,
+            f"https://test-kita{settings.SERVER_DOMAIN}/choose_provider",
+            fetch_redirect_response=False,
+        )
+        self.assertEqual(self.client.session["user_name"], "test")
 
     def test_post_wrong_data(self):
         self.setup_user()
         response = self.client.post(
-            '/login/', {'username': 'test', 'password': 'wrong'})
-        self.assertEqual(response.context['form'].is_valid(), False)
+            "/login/", {"username": "test", "password": "wrong"}
+        )
+        self.assertEqual(response.context["form"].is_valid(), False)
 
     def test_choose_provider(self):
         self.setup_user()
-        self.client.login(username='test', password='test')
-        self.client.get('/choose_provider')
+        self.client.login(username="test", password="test")
+        self.client.get("/choose_provider")
         session = self.client.session
-        self.assertEqual(session['client_id'], self.kitaclient.id)
-        self.assertEqual(session['client_slug'], self.kitaclient.slug)
-        self.assertEqual(session['provider_id'], self.provider.id)
-        self.assertEqual(session['provider_slug'], self.provider.slug)
-        self.assertEqual(session['gaenge'], self.provider.get_gaenge())
-        self.assertEqual(session['kategorien'], self.provider.get_kategorien())
-        self.assertIsNone(session.get('providers', None))
+        self.assertEqual(session["client_id"], self.kitaclient.id)
+        self.assertEqual(session["client_slug"], self.kitaclient.slug)
+        self.assertEqual(session["provider_id"], self.provider.id)
+        self.assertEqual(session["provider_slug"], self.provider.slug)
+        self.assertEqual(session["gaenge"], self.provider.get_gaenge())
+        self.assertEqual(session["kategorien"], self.provider.get_kategorien())
+        self.assertIsNone(session.get("providers", None))
 
 
 class Choose_providerTestcase(TestCase):
@@ -74,29 +80,34 @@ class WrongClientTestcase(TestCase):
         return client, provider
 
     def setUp(self):
-        self.right_client, self.right_provider = \
-            self.setup_client_and_provider('Test-Kita')
-        self.wrong_client, self.wrong_provider = \
-            self.setup_client_and_provider('Wrong')
-        self.right_user = create_user('Test-Kita User', self.right_client)
-        self.wrong_user = create_user('Wrong User', self.wrong_client)
+        self.right_client, self.right_provider = self.setup_client_and_provider(
+            "Test-Kita"
+        )
+        self.wrong_client, self.wrong_provider = self.setup_client_and_provider(
+            "Wrong"
+        )
+        self.right_user = create_user("Test-Kita User", self.right_client)
+        self.wrong_user = create_user("Wrong User", self.wrong_client)
         self.factory = RequestFactory()
 
     def right_page_wrong_user(self, request):
         request.client = self.right_client
         request.provider = self.right_provider
         request.session = {
-            'client_id': self.wrong_client.id,
-            'client_slug': self.wrong_client.slug,
-            'provider_id': self.wrong_provider.id,
-            'provider_slug': self.wrong_provider.slug}
+            "client_id": self.wrong_client.id,
+            "client_slug": self.wrong_client.slug,
+            "provider_id": self.wrong_provider.id,
+            "provider_slug": self.wrong_provider.slug,
+        }
         request.user = self.wrong_user
 
     def test_rezept(self):
         rezept = Rezept.objects.create(
-            titel="Reis", provider=self.right_provider, **TEST_REZEPT)
+            titel="Reis", provider=self.right_provider, **TEST_REZEPT
+        )
         request = self.factory.post(
-            f"/rezepte/{str(rezept.id)}/edit", titel="Bohnen")
+            f"/rezepte/{str(rezept.id)}/edit", titel="Bohnen"
+        )
         self.right_page_wrong_user(request)
         response = rezept_edit(request, rezept.id)
         self.assertEqual(response.status_code, 403)
@@ -105,7 +116,7 @@ class WrongClientTestcase(TestCase):
 
     def test_zutat(self):
         zutat = Zutat.objects.create(name="Reis", client=self.right_client)
-        request = self.factory.post('/zutaten/'+str(zutat.id), name="Bohnen")
+        request = self.factory.post("/zutaten/" + str(zutat.id), name="Bohnen")
         self.right_page_wrong_user(request)
         response = zutat_edit(request, zutat.id)
         self.assertEqual(response.status_code, 403)
@@ -120,41 +131,40 @@ class RezepteTestcase(TestCase):
     """Test rezepte view"""
 
     def setUp(self):
-        client = Client.objects.create(name='Test-Kita')
-        self.provider = Provider.objects.create(
-            name='Test-Kita', client=client)
-        self.domain = 'testserver'
+        client = Client.objects.create(name="Test-Kita")
+        self.provider = Provider.objects.create(name="Test-Kita", client=client)
+        self.domain = "testserver"
         Domain.objects.create(domain=self.domain, provider=self.provider)
         self.rezept1 = Rezept.objects.create(
-            titel="Testrezept1", provider=self.provider, **TEST_REZEPT)
+            titel="Testrezept1", provider=self.provider, **TEST_REZEPT
+        )
         self.rezept2 = Rezept.objects.create(
-            titel="Testrezept2", provider=self.provider, **TEST_REZEPT)
+            titel="Testrezept2", provider=self.provider, **TEST_REZEPT
+        )
 
     def test_ein_rezept_id(self):
-        response = self.client.get('/rezepte/' + str(self.rezept1.id))
-        self.assertTemplateUsed(response, 'rezepte/rezept.html')
-        self.assertEqual(response.context['recipe'], self.rezept1)
+        response = self.client.get("/rezepte/" + str(self.rezept1.id))
+        self.assertTemplateUsed(response, "rezepte/rezept.html")
+        self.assertEqual(response.context["recipe"], self.rezept1)
 
     def test_ein_rezept_slug(self):
-        response = self.client.get('/rezepte/' + str(self.rezept1.slug))
-        self.assertTemplateUsed(response, 'rezepte/rezept.html')
-        self.assertEqual(response.context['recipe'], self.rezept1)
+        response = self.client.get("/rezepte/" + str(self.rezept1.slug))
+        self.assertTemplateUsed(response, "rezepte/rezept.html")
+        self.assertEqual(response.context["recipe"], self.rezept1)
 
     def test_alle_rezepte(self):
-        response = self.client.get('/rezepte/')
-        self.assertTemplateUsed(response, 'rezepte/rezepte.html')
-        recipes = response.context['recipes']
-        self.assertEqual(
-            [gang for gang, rezepte in recipes],
-            ["Hauptgang"])
+        response = self.client.get("/rezepte/")
+        self.assertTemplateUsed(response, "rezepte/rezepte.html")
+        recipes = response.context["recipes"]
+        self.assertEqual([gang for gang, rezepte in recipes], ["Hauptgang"])
         # assume:
         # recipes == [('Hauptgang',
         #              [('keine Kategorie',
         #                [self.rezept1, self.rezept2])])])
         hauptgang, kategorien = recipes[0]
-        self.assertEqual(hauptgang, 'Hauptgang')
+        self.assertEqual(hauptgang, "Hauptgang")
         kat, rezepte = kategorien[0]
-        self.assertEqual(kat, 'keine Kategorie')
+        self.assertEqual(kat, "keine Kategorie")
         self.assertEqual(len(rezepte), 2)
         self.assertIn(self.rezept1, rezepte)
         self.assertIn(self.rezept2, rezepte)
@@ -162,38 +172,48 @@ class RezepteTestcase(TestCase):
         REZEPT = TEST_REZEPT.copy()
         REZEPT["gang"] = "Vorspeise Nachtisch"
         Rezept.objects.create(
-            titel="Vorspeise Nachtisch", provider=self.provider, **REZEPT)
-        recipes = self.client.get('/rezepte/').context['recipes']
+            titel="Vorspeise Nachtisch", provider=self.provider, **REZEPT
+        )
+        recipes = self.client.get("/rezepte/").context["recipes"]
         self.assertEqual(
             [gang for gang, rezepte in recipes],
-            ["Vorspeise", "Hauptgang", "Nachtisch"])
+            ["Vorspeise", "Hauptgang", "Nachtisch"],
+        )
 
     def test_wrong_rezept_id(self):
-        response = self.client.get('/rezepte/1000')
+        response = self.client.get("/rezepte/1000")
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertTemplateUsed(response, 'rezepte/rezepte.html')
-        self.assertEqual(response.context.get('msg'),
-                         'Rezept "1000" nicht gefunden')
+        self.assertTemplateUsed(response, "rezepte/rezepte.html")
+        self.assertEqual(
+            response.context.get("msg"), 'Rezept "1000" nicht gefunden'
+        )
 
     def test_wrong_rezept_slug(self):
-        response = self.client.get('/rezepte/not-there')
+        response = self.client.get("/rezepte/not-there")
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertTemplateUsed(response, 'rezepte/rezepte.html')
-        self.assertEqual(response.context.get('msg'),
-                         'Rezept "not-there" nicht gefunden')
+        self.assertTemplateUsed(response, "rezepte/rezepte.html")
+        self.assertEqual(
+            response.context.get("msg"), 'Rezept "not-there" nicht gefunden'
+        )
 
     def test_other_clients_rezept_id(self):
-        client = Client.objects.create(name='Other-Client')
-        provider = Provider.objects.create(
-            name='Other-Provider', client=client)
+        client = Client.objects.create(name="Other-Client")
+        provider = Provider.objects.create(name="Other-Provider", client=client)
         rezept = Rezept.objects.create(
-            titel="Not my Testrezept", provider=provider, fuer_kinder=20,
-            fuer_erwachsene=5, zubereitung='', anmerkungen='', kategorien='')
-        response = self.client.get('/rezepte/' + str(rezept.id))
+            titel="Not my Testrezept",
+            provider=provider,
+            fuer_kinder=20,
+            fuer_erwachsene=5,
+            zubereitung="",
+            anmerkungen="",
+            kategorien="",
+        )
+        response = self.client.get("/rezepte/" + str(rezept.id))
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertTemplateUsed(response, 'rezepte/rezepte.html')
-        self.assertEqual(response.context.get('msg'),
-                         f'Rezept "{rezept.id}" nicht gefunden')
+        self.assertTemplateUsed(response, "rezepte/rezepte.html")
+        self.assertEqual(
+            response.context.get("msg"), f'Rezept "{rezept.id}" nicht gefunden'
+        )
 
 
 class RobotsTxtTests(TestCase):

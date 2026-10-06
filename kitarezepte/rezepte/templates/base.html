@@ -1,42 +1,47 @@
 <!DOCTYPE html>
 {% load static %}
 <html lang="de" class="no-js">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>{% block title %} Kita-Rezepte {% endblock title %}</title>
-    <meta name="description" content="Planung von Menüs in Kitas">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/apple-touch-icon.png' %}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicon-32x32.png' %}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/favicon-16x16.png' %}">
-    <link rel="icon" href="{% static 'img/favicon.ico' %}" />
-    <link rel="stylesheet" href="{% static 'vendor/bootstrap-4.4.1-dist/css/bootstrap.min.css' %}">
-    <link rel="stylesheet" href="{% static 'rezepte/css/main.css' %}">
-    {% block extrahead %}{% endblock extrahead %}
-  </head>
-  <body>
-    <main class="container">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>{% block title %} Kita-Rezepte {% endblock title %}</title>
+  <meta name="description" content="Planung von Menüs in Kitas">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/apple-touch-icon.png' %}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicon-32x32.png' %}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/favicon-16x16.png' %}">
+  <link rel="icon" href="{% static 'img/favicon.ico' %}" />
+  <link rel="stylesheet" href="{% static 'vendor/bootstrap-4.4.1-dist/css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'rezepte/css/main.css' %}">
+  {% block extrahead %}{% endblock extrahead %}
+</head>
+
+<body>
+  <main class="container">
     {% block navigation %}
-      {% include "rezepte/navigation.html" %}
+    {% include "rezepte/navigation.html" %}
     {% endblock navigation %}
     {% block content %} {% endblock content %}
-    </main> <!-- /.container -->
+  </main> <!-- /.container -->
 
-    <footer class="footer">
-      <div class="container">
-        <a class="mx-3" href="/impressum/">Impressum</a>
-        <a class="mx-3" href="https://kita-rezepte.de">kita-rezepte.de</a>
-        {% if user.is_authenticated and request.session.provider_id != request.provider.id %}
-        <span>Angemeldet für <a href="{{ request.session.provider_path }}">{{ request.session.provider_name }}</a></span>
-        {% endif %}
-      </div>
-    </footer>
+  <footer class="footer">
+    <div class="container">
+      <a class="mx-3" href="/impressum/">Impressum</a>
+      <a class="mx-3" href="https://{{ request.META.HTTP_HOST }}">
+        {{ request.META.HTTP_HOST }}
+      </a>
+      {% if user.is_authenticated and request.session.provider_id != request.provider.id %}
+      <span>Angemeldet für <a href="{{ request.session.provider_path }}">{{ request.session.provider_name }}</a></span>
+      {% endif %}
+    </div>
+  </footer>
 
-    <script src="{% static 'vendor/jquery-3.3.1.js' %}"></script>
-    <script src="{% static 'vendor/bootstrap-4.4.1-dist/js/bootstrap.js' %}"></script>
-    {% block extrascripts %}
-    {% endblock extrascripts %}
-  </body>
+  <script src="{% static 'vendor/jquery-3.3.1.js' %}"></script>
+  <script src="{% static 'vendor/bootstrap-4.4.1-dist/js/bootstrap.js' %}"></script>
+  {% block extrascripts %}
+  {% endblock extrascripts %}
+</body>
+
 </html>
